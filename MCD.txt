@@ -1,0 +1,7 @@
+t_code_help(-idCode,code,comment)
+t_group(idGroup,group)
+t_log(-idLog,lenTot,CodeSender,valueSender,CodeDestination,lenDestination,
+	  valueDestination,CodeMessage,lenMessage,valueMessage,CodeDate,
+	  lenDate,valueDate,state,forGroup)
+t_state(-idState,state)
+t_uses(-idUser,password,connection,#idGroup)
