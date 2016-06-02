@@ -60,9 +60,9 @@ namespace talkEntreprise
             this.Connect = new Connection(this);
             this.User = new User(this);
             this.Conversion = new Converter(this);
-            this.FrmMain = new frmProgram(this);
+            this.FrmMain = new FrmProgram(this);
             this.Request = new RequestSQL(this);
-            this.ManageFrienMess = new ManageMessage(this);
+            this.ManageFrienMessage = new ManageMessage(this);
 
         }
     }
