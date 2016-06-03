@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="classThread\ClientConnectToServ.cs" />
     <Compile Include="Controler.cs" />
     <Compile Include="FrmConnection.cs">
       <SubType>Form</SubType>

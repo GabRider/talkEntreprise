@@ -27,9 +27,12 @@ namespace talkEntreprise_client
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            if (this.Ctrl.connection(tbxId.Text,tbxPassword.Text))
+            if (this.Ctrl.connection(tbxId.Text, tbxPassword.Text))
             {
-                
+                MessageBox.Show("k", "erreur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else {
+                MessageBox.Show("connection impossible ou connexion incorrecte ", "erreur", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

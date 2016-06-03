@@ -52,28 +52,42 @@ namespace talkEntreprise_client
             this.ClientSocket.Connect("127.0.0.1", 8888);
             this.ServerStream = this.ClientSocket.GetStream();
         }
-        //////////////méthode////////////
+        //////////////méthodes////////////
+        /// <summary>
+        /// elle permet de savoir si l'utilisateur se trouve dans la base de données
+        /// </summary>
+        /// <param name="id">identifiant de l'utilisateur</param>
+        /// <param name="password">mot de passe de l'utilisateur</param>
+        /// <returns>vrais ou faux</returns>
         public bool connection(string id, string password)
         {
             string cryptedPassword = this.Ctrl.sha1(password);
             return connectionServer(id, cryptedPassword);
         }
-
+        /// <summary>
+        /// elle permet d'envoyer l'identifiant et le mot de passe au serveur et récupérer la réponse.
+        /// </summary>
+        /// <param name="id">identifiant de l'utilisateur</param>
+        /// <param name="password">mot de passe de l'utilisateur</param>
+        /// <returns>vrais ou faux</returns>
         private bool connectionServer(string id, string password)
         {
             byte[] inStream = new byte[10025];
             int buffSize = 0;
             string toSend = id + " " + password;
-
-            byte[] outStream = System.Text.Encoding.ASCII.GetBytes(toSend + "$");
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(toSend + "$");
+            //Envoie au serveur les données
             this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
             this.ServerStream.Flush();
 
-           
-           
+
+            //Savoir la taille de mémoire à allouer
             buffSize = this.ClientSocket.ReceiveBufferSize;
+            //Assignation de la valeur envoyée par le serveur(sous forme de tableau de bytes)
             this.ServerStream.Read(inStream, 0, buffSize);
-            bool result =Convert.ToBoolean( System.Text.Encoding.ASCII.GetString(inStream));
+            bool result =Convert.ToBoolean( Encoding.ASCII.GetString(inStream));
             return result;
         }
     }
