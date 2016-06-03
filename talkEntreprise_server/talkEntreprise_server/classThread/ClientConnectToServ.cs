@@ -17,11 +17,25 @@ namespace talkEntreprise_server.classThread
             get { return _serv; }
             set { _serv = value; }
         }
+        private Thread _userUpdate;
 
+        public Thread UserUpdate
+        {
+            get { return _userUpdate; }
+            set { _userUpdate = value; }
+        }
+
+        //////////////////Constructeur///////////
         public ClientConnectToServ(Server s)
         {
             this.Serv = s;
         }
+        //////////////////méthodes///////////
+        public Boolean validateConnection(string id, string password)
+        {
+            return this.Serv.validateConnection(id, password);
+        }
+
         public void init()
         {
             TcpListener serverSocket = new TcpListener(8888);
@@ -49,24 +63,18 @@ namespace talkEntreprise_server.classThread
                 dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
                 id = dataFromClient.Split(' ')[0];
                 password = dataFromClient.Split(' ')[1];
-                if (this.Serv.validateConnection(id, password))
+                if (this.validateConnection(id, password))
                 {
                     sendToClient = true;
-                   this.Serv.update(id, clientSocket);
+                   
                 }
-                else
-                {
-                    sendToClient = false;
-                }
+               
+                this.Serv.update(id, clientSocket);
                 Thread.Sleep(10);
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
                 networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
-
-                /* broadcast(dataFromClient + " Joined ", dataFromClient, false);
-
-                 Console.WriteLine(dataFromClient + " Joined chat room ");
-                 handleClinet client = new handleClinet();
-                 client.startClient(clientSocket, dataFromClient, clientsList);*/
+                this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient,this).update);
+                
             }
 
             clientSocket.Close();
