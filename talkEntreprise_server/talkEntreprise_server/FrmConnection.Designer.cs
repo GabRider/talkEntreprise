@@ -1,6 +1,6 @@
 ﻿namespace talkEntreprise_server
 {
-    partial class Form1
+    partial class FrmConnection
     {
         /// <summary>
         /// Variable nécessaire au concepteur.

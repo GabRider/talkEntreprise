@@ -12,9 +12,25 @@ namespace talkEntreprise_client
 {
     public partial class Form1 : Form
     {
+        private Controler _ctrl;
+
+        public Controler Ctrl
+        {
+            get { return _ctrl; }
+            set { _ctrl = value; }
+        }
         public Form1()
         {
             InitializeComponent();
+            this.Ctrl = new Controler();
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            if (this.Ctrl.connection(tbxId.Text,tbxPassword.Text))
+            {
+                
+            }
         }
     }
 }

@@ -9,12 +9,21 @@ using System.Threading.Tasks;
 
 namespace talkEntreprise_server
 {
-    class Server
+    public class Server
     {
         public static Hashtable clientsList = new Hashtable();
-        public Server()
+        private Controler _ctrl;
+
+        internal Controler Ctrl
         {
+            get { return _ctrl; }
+            set { _ctrl = value; }
+        }
+        public Server(Controler c)
+        {
+            this.Ctrl = c;
             this.init();
+            
         }
 
         private void init()
@@ -30,22 +39,38 @@ namespace talkEntreprise_server
             {
                 counter += 1;
                 clientSocket = serverSocket.AcceptTcpClient();
-
+                Byte[] sendBytedMessage = null;
                 byte[] bytesFrom = new byte[10025];
                 string dataFromClient = null;
-
+                string id = string.Empty;
+                string password = string.Empty;
+                bool sendToClient= false;
                 NetworkStream networkStream = clientSocket.GetStream();
                 networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
+                //encode le tableau de bytes
                 dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
+                //récupère la valeure envoyée
                 dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
+                id= dataFromClient.Split(' ')[0];
+                password = dataFromClient.Split(' ')[1];
+                if (this.Ctrl.validateConnection(id,password))
+                {
+                    sendToClient = true;
+                    clientsList.Add(id, clientSocket);
+                }
+                else
+                {
+                    sendToClient = false;
+                }
+                Thread.Sleep(10);
+                sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
+                networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
 
-                clientsList.Add(dataFromClient, clientSocket);
-
-                broadcast(dataFromClient + " Joined ", dataFromClient, false);
+               /* broadcast(dataFromClient + " Joined ", dataFromClient, false);
 
                 Console.WriteLine(dataFromClient + " Joined chat room ");
                 handleClinet client = new handleClinet();
-                client.startClient(clientSocket, dataFromClient, clientsList);
+                client.startClient(clientSocket, dataFromClient, clientsList);*/
             }
 
             clientSocket.Close();

@@ -32,6 +32,8 @@
             this.lblID = new System.Windows.Forms.Label();
             this.tbxPassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnQuit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbxId
@@ -69,11 +71,32 @@
             this.lblPassword.TabIndex = 3;
             this.lblPassword.Text = "mot de passe :";
             // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(81, 87);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.TabIndex = 4;
+            this.btnConnect.Text = "Connexion";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // btnQuit
+            // 
+            this.btnQuit.Location = new System.Drawing.Point(174, 87);
+            this.btnQuit.Name = "btnQuit";
+            this.btnQuit.Size = new System.Drawing.Size(75, 23);
+            this.btnQuit.TabIndex = 5;
+            this.btnQuit.Text = "Quitter";
+            this.btnQuit.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(365, 110);
+            this.ClientSize = new System.Drawing.Size(365, 118);
+            this.Controls.Add(this.btnQuit);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.tbxPassword);
             this.Controls.Add(this.lblID);
@@ -94,6 +117,8 @@
         private System.Windows.Forms.Label lblID;
         private System.Windows.Forms.TextBox tbxPassword;
         private System.Windows.Forms.Label lblPassword;
+        private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.Button btnQuit;
     }
 }
 

@@ -10,11 +10,19 @@ using System.Windows.Forms;
 
 namespace talkEntreprise_server
 {
-    public partial class Form1 : Form
+    public partial class FrmConnection : Form
     {
-        public Form1()
+        private Controler _ctrl;
+
+        internal Controler Ctrl
+        {
+            get { return _ctrl; }
+            set { _ctrl = value; }
+        }
+        public FrmConnection()
         {
             InitializeComponent();
+            this.Ctrl = new Controler(this);
         }
     }
 }
