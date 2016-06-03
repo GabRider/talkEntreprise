@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{538060B7-DAA7-4223-A2D6-BAFE5B44DD89}</ProjectGuid>
+    <ProjectGuid>{4B2E5265-BEF7-4D2B-897E-E9B361201E76}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>talkEntreprise</RootNamespace>
-    <AssemblyName>talkEntreprise</AssemblyName>
+    <RootNamespace>talkEntreprise_server</RootNamespace>
+    <AssemblyName>talkEntreprise_server</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,34 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection.cs" />
     <Compile Include="Controler.cs" />
-    <Compile Include="Converter.cs" />
-    <Compile Include="FrmConnection.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmConnection.Designer.cs">
-      <DependentUpon>FrmConnection.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmProgram.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmProgram.Designer.cs">
-      <DependentUpon>FrmProgram.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ManageMessage.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="Messages.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestSQL.cs" />
-    <Compile Include="User.cs" />
-    <EmbeddedResource Include="FrmConnection.resx">
-      <DependentUpon>FrmConnection.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmProgram.resx">
-      <DependentUpon>FrmProgram.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="Server.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

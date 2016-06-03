@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace talkEntreprise
+namespace talkEntreprise_server
 {
-    class Messages
+    class RequestSQL
     {
     }
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace talkEntreprise.Properties
+namespace talkEntreprise_client.Properties
 {
 
 

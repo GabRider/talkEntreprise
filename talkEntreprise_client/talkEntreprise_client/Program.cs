@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace talkEntreprise
+namespace talkEntreprise_client
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace talkEntreprise
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmConnection());
+            Application.Run(new Form1());
         }
     }
 }
