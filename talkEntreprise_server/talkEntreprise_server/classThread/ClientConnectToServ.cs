@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using talkEntreprise_server;
 namespace talkEntreprise_server.classThread
 {
-    class ClientConnectToServ
+   public class ClientConnectToServ
     {
         private Server _serv;
 
@@ -66,14 +66,15 @@ namespace talkEntreprise_server.classThread
                 if (this.validateConnection(id, password))
                 {
                     sendToClient = true;
-                   
+                 //   this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
                 }
                
                 this.Serv.update(id, clientSocket);
                 Thread.Sleep(10);
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
                 networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
-                this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient,this).update);
+                this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
+                this.UserUpdate.Start();
                 
             }
 

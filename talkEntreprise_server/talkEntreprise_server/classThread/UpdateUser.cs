@@ -9,7 +9,7 @@ using talkEntreprise_server;
 
 namespace talkEntreprise_server.classThread
 {
-    class UpdateUser
+    public class UpdateUser
     {
         private bool _isConnected;
         private NetworkStream _stream;
