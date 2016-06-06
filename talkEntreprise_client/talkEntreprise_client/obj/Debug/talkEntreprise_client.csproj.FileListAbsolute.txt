@@ -1,0 +1,10 @@
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\bin\Debug\talkEntreprise_client.exe.config
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\bin\Debug\talkEntreprise_client.exe
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\bin\Debug\talkEntreprise_client.pdb
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.Properties.Resources.resources
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.csproj.GenerateResource.Cache
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.exe
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.pdb
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.csprojResolveAssemblyReference.cache
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.Connection.resources
+C:\Users\STRANOG_INFO\Desktop\talkEntreprise\talkEntreprise_client\talkEntreprise_client\obj\Debug\talkEntreprise_client.FrmProgram.resources
