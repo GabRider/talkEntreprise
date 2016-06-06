@@ -70,5 +70,13 @@ namespace talkEntreprise_server
         {
             return this.Request.GetInformation(user);
         }
+        public string GetEmployee(string nameGroup, int idGroup, string user)
+        {
+           return this.Request.GetEmployee(nameGroup,idGroup,user);
+        }
+        public List<User> LstGetEmployee(string nameGroup, int idGroup, string idUser)
+        {
+            return this.Request.LstGetEmployee( nameGroup,  idGroup,  idUser);
+        }
     }
 }

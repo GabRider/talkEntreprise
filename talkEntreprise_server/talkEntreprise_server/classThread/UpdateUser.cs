@@ -48,13 +48,13 @@ namespace talkEntreprise_server.classThread
         public UpdateUser(TcpClient c, NetworkStream s, bool stateConnect, ClientConnectToServ clientToServ, string user)
         {
           
-            List<string> userInformations = this.ClientServ.GetInformation(user);            
+              
             this.Client = c;
-            this.UserInformations= new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
+           
             this.Stream = s;
             this.ClientServ = clientToServ;
-            
-
+            List<string> userInformations = this.ClientServ.GetInformation(user);
+            this.UserInformations = new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
         }
 
 
@@ -64,14 +64,15 @@ namespace talkEntreprise_server.classThread
             Byte[] sendBytedMessage = null;
             byte[] bytesFrom = new byte[10025];
             string dataFromClient = null;
+            this.ClientServ.sendLstEmployeeUpdate(this.UserInformations.getGroupName(),this.UserInformations.getGroupUser(),this.UserInformations.getidUser());
 
 
-
-            while (this.IsConnected)
+            while (this.UserInformations.getConnection())
             {
                 //permet de récupérer les informations envoyé par le client
                 this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
                 //encode le tableau de bytes
+                
                 dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
                 //récupère la valeure envoyée
                 dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
@@ -79,14 +80,19 @@ namespace talkEntreprise_server.classThread
                 if (dataFromClient.Contains("#0002"))
                 {
 
-                    this.IsConnected = false;
+                    this.UserInformations.setConnection(false);
                 }
 
 
 
 
             }
-            this.ClientServ.CloseConnection(this.IdUser);
+            this.ClientServ.CloseConnection(this.UserInformations.getidUser());
+        }
+
+        public string GetEmployee(string nameGroup, int idGroup, string user)
+        {
+            return this.ClientServ.GetEmployee(nameGroup,idGroup,user);
         }
     }
 }

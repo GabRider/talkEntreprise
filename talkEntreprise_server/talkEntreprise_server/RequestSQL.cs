@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 
 namespace talkEntreprise_server
 {
-     public class RequestSQL
+    public class RequestSQL
     {
+        const int STATEDEFAULT = 2;
+        const int STATENOTREAD = 3;
+        const int STATEREAD = 4;
+
+
         private MySqlConnection _connectionUser;
+        private Controler _ctrl;
 
         public MySqlConnection ConnectionUser
         {
             get { return _connectionUser; }
             set { _connectionUser = value; }
         }
-        private Controler _ctrl;
-
         public Controler Ctrl
         {
             get { return _ctrl; }
@@ -69,17 +73,17 @@ namespace talkEntreprise_server
                 reader.Read();
                 if (Convert.ToInt32(reader.GetString("total")) == 1)
                 {
-                  /*  reader.Close();
-                    cmd.CommandText = String.Format("SELECT * FROM t_users where  idUser  = '{0}' AND Password = '{1}'", user, password);
-                    cmd.ExecuteNonQuery();
-                    reader = cmd.ExecuteReader();
-                    reader.Read();*/
+                    /*  reader.Close();
+                      cmd.CommandText = String.Format("SELECT * FROM t_users where  idUser  = '{0}' AND Password = '{1}'", user, password);
+                      cmd.ExecuteNonQuery();
+                      reader = cmd.ExecuteReader();
+                      reader.Read();*/
                     result = true;
-                  ///  Ctrl.setUser(reader.GetString("idUser"), reader.GetString("Password"), Convert.ToInt32(reader.GetString("idGroupe")));
+                    ///  Ctrl.setUser(reader.GetString("idUser"), reader.GetString("Password"), Convert.ToInt32(reader.GetString("idGroupe")));
                 }
                 else
                 {
-                   
+
                     result = false;
                 }
                 reader.Close();
@@ -94,10 +98,11 @@ namespace talkEntreprise_server
             }
             return result;
         }
+
         public List<string> GetInformation(string user)
         {
             List<string> lstInfoUser = new List<string>();
-            
+
             if (this.connectionDB())
             {
                 string sql = String.Format("SELECT u.idGroup, g.group, password FROM t_users u, t_group g where u.idGroup = g.idGroup AND  idUser  = '{0}'", user);
@@ -112,6 +117,7 @@ namespace talkEntreprise_server
 
             return lstInfoUser;
         }
+
         public void SucessConnectionToServer(string user)
         {
 
@@ -198,5 +204,137 @@ namespace talkEntreprise_server
                 this.shutdownConnectionDB();
             }
         }
+
+        public int getStatesMessages(string userconnected, string usernameDestination, bool forGroup)
+        {
+            string sql = string.Empty;
+            int numberMessages = 0;
+            if (forGroup)
+            {
+                sql = string.Format("SELECT Count( Distinct valueMessage,valueDate) as numberMessages FROM t_log"
+               + " where  valueDestination=\'{0}\' AND forGroup ={1}   ", userconnected, forGroup);
+            }
+            else
+            {
+                sql = String.Format("SELECT COUNT(*) as numberMessages FROM t_log where valueSender = \'{0}\' AND valueDestination = \'{1}\' AND state = {2} AND forGroup={3} OR valueSender = \'{4}\' AND valueDestination = \'{5}\' AND state= {6} AND forGroup={7} ", usernameDestination, userconnected, STATEDEFAULT, forGroup, usernameDestination, userconnected, STATENOTREAD, forGroup);
+            }
+
+            if (this.connectionDB())
+            {
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+
+                numberMessages = reader.GetInt32("numberMessages");
+                reader.Close();
+                if (forGroup)
+                {
+                    cmd.CommandText = String.Format("Update t_log SET state=\'{0}\' where  valueDestination = \'{1}\' AND state = {2} AND forGroup={3} ", STATENOTREAD, userconnected, STATEDEFAULT, forGroup);
+                }
+                else
+                {
+                    cmd.CommandText = String.Format("Update t_log SET state=\'{0}\' where valueSender = \'{1}\' AND valueDestination = \'{2}\' AND state = {3} AND forGroup={4} ", STATENOTREAD, usernameDestination, userconnected, STATEDEFAULT, forGroup);
+                }
+
+                cmd.ExecuteNonQuery();
+                this.shutdownConnectionDB();
+            }
+
+            return numberMessages;
+        }
+       
+        public string GetEmployee(string nameGroup,int idGroup, string idUser)
+        {
+            List<User> lsbUsers = new List<User>();
+            bool first = true;
+            string listEmployee = "#0015;";
+            //  bool ConnectedFriend = true;
+            //bool NotConnectedFriend = true;
+            //  List<string> lsbFriends = new List<string>();
+            //  string sql = string.Format("SELECT * From users where idGroup = {0} AND idUser!= \"{1}\" ORDER BY Connection DESC,idUser ASC", idGroup, this.Ctrl.getIdUser());
+            string sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, idUser);
+
+            
+            lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0,nameGroup));
+            if (this.connectionDB())
+            {
+
+
+
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0,nameGroup));
+
+                }
+                shutdownConnectionDB();
+            }
+            foreach (User employee in lsbUsers)
+            {
+
+                if (first)
+                {
+                    employee.setMessagesNotRead(getStatesMessages(idUser, employee.getidUser(), true));
+                    first = false;
+                    listEmployee += ""+employee.getidUser()+","+employee.getPassword()+","+employee.getConnection()+","+employee.getConnection();
+                }
+                else
+                {
+                    employee.setMessagesNotRead(getStatesMessages(idUser, employee.getidUser(), false));
+                    listEmployee += ";" + employee.getidUser() + "," + employee.getPassword() + "," + employee.getConnection() + "," + employee.getConnection();
+                }
+
+            }
+            return listEmployee;
+        }
+        public List<User> LstGetEmployee(string nameGroup, int idGroup, string idUser)
+        {
+            List<User> lsbUsers = new List<User>();
+            bool first = true;
+            
+            //  bool ConnectedFriend = true;
+            //bool NotConnectedFriend = true;
+            //  List<string> lsbFriends = new List<string>();
+            //  string sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser!= \"{1}\" ORDER BY Connection DESC,idUser ASC", idGroup, this.Ctrl.getIdUser());
+            string sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, idUser);
+
+
+            lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
+            if (this.connectionDB())
+            {
+
+
+
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0, nameGroup));
+
+                }
+                shutdownConnectionDB();
+            }
+            foreach (User employee in lsbUsers)
+            {
+
+                if (first)
+                {
+                    employee.setMessagesNotRead(getStatesMessages(idUser, employee.getidUser(), true));
+                    first = false;
+                   
+                }
+                else
+                {
+                    employee.setMessagesNotRead(getStatesMessages(idUser, employee.getidUser(), false));
+                    
+                }
+
+            }
+            return lsbUsers;
+        }
     }
+
 }

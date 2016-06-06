@@ -5,25 +5,37 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using talkEntreprise_client.classThread;
 
 namespace talkEntreprise_client
 {
+    delegate string Employees();
+    delegate void updateLstEmployee();
     public partial class FrmProgram : Form
     {
         private Controler _ctrl;
+        private Thread _tEmployee;
 
         public Controler Ctrl
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
+        public Thread TEmployee
+        {
+            get { return _tEmployee; }
+            set { _tEmployee = value; }
+        }
 
         public FrmProgram(Controler c)
         {
             InitializeComponent();
             this.Ctrl = c;
+            TEmployee = new Thread(new EmployeesUpdate(this).init);
+            TEmployee.Start();
         }
 
         private void FrmProgram_FormClosing(object sender, FormClosingEventArgs e)
@@ -98,7 +110,15 @@ namespace talkEntreprise_client
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
         }
-        
-        
+       
+        public string Employees()
+        {
+            return Invoke(new MethodInvoker(delegate {  this.Ctrl.Employees(); })) as string;
+        }
+        public void updateLstEmployee(List<User> lst)
+        {
+            
+            lsbConversations.DataSource = lst ;
+        }
     }
 }

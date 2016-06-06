@@ -6,15 +6,30 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Windows.Threading;
 using System.Threading;
+using System.Net.Sockets;
+
 namespace talkEntreprise_client
 {
     delegate void VisibleChange();
     delegate void CloseConnection();
+    delegate string GetEmployees();
     public class Controler
     {
         private Client _client;
         private Connection _connect;
+        private TcpClient _tcpCli;
+        private NetworkStream _netStream;
 
+        public NetworkStream NetStream
+        {
+            get { return _netStream; }
+            set { _netStream = value; }
+        }
+        public TcpClient TcpCli
+        {
+            get { return _tcpCli; }
+            set { _tcpCli = value; }
+        }
         public Client Client
         {
             get { return _client; }
@@ -31,9 +46,15 @@ namespace talkEntreprise_client
         {
             this.Connect = c;
             this.Client = new Client(this);
+            
         }
         //////méthodes Générales///////
 
+        private void setTcp(TcpClient t, NetworkStream s)
+        {
+            this.TcpCli = t;
+            this.NetStream = s;
+        }
         /// <summary>
         /// permet de coder le mot de passe de l'utilisateur
         /// </summary>
@@ -84,6 +105,10 @@ namespace talkEntreprise_client
         public void ResetConnection()
         {
             this.Client.ResetConnection();
+        }
+        public string Employees()
+        {
+            return this.Client.GetEmployees();
         }
     }
 }

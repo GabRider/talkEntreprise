@@ -9,14 +9,14 @@ namespace talkEntreprise_server
     public class User
     {
 
-    
+
         private string _idUser;
         private string _password;
         private int _idGroup;
         private bool _connection;
         private string _groupeName;
 
-      
+
 
         public bool Connection
         {
@@ -51,19 +51,20 @@ namespace talkEntreprise_server
             get { return _groupeName; }
             set { _groupeName = value; }
         }
-        public User( )
+        public User()
         {
-         
+
         }
         public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
         {
-            setUser(id,pwd,group,connect,nbMessagesNotRead, nameGroup);
+            setUser(id, pwd, group, connect, nbMessagesNotRead, nameGroup);
         }
         public void setUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
         {
             this.IdUser = id;
             this.Password = pwd;
             this.IdGroup = group;
+            this.GroupeName = nameGroup;
             this.Connection = connect;
             this.MessageNotRead = nbMessagesNotRead;
 
@@ -73,21 +74,34 @@ namespace talkEntreprise_server
         {
             return this.IdUser;
         }
-        public bool getInformationConnection()
-        {
-            return this.Connection;
-        }
+   
         public int getGroupUser()
         {
             return this.IdGroup;
+        }
+        public string getGroupName()
+        {
+            return this.GroupeName;
+        }
+        public string getPassword()
+        {
+            return this.Password;
         }
         public int getMessagesNotRead()
         {
             return this.MessageNotRead;
         }
-        public void setMessagesNotRead( int nbmessagesNotRead)
+        public void setMessagesNotRead(int nbmessagesNotRead)
         {
             this.MessageNotRead = nbmessagesNotRead;
+        }
+        public void setConnection(bool c)
+        {
+            this.Connection = c;
+        }
+        public bool getConnection()
+        {
+            return this.Connection;
         }
     }
 }

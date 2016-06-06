@@ -88,7 +88,22 @@ namespace talkEntreprise_client
             //Assignation de la valeur envoyée par le serveur(sous forme de tableau de bytes)
             this.ServerStream.Read(inStream, 0, inStream.Length);
             bool result =Convert.ToBoolean( Encoding.ASCII.GetString(inStream));
+            if (result)
+            {
+                this.Ctrl.set
+            }
             return result;
+        }
+        public string GetEmployees()
+        {
+            byte[] inStream = new byte[10025];
+            this.ServerStream.Read(inStream, 0, inStream.Length);
+            string result = Encoding.ASCII.GetString(inStream);
+            if (result.Contains("#0015"))
+            {
+                return result;
+            }
+            return "false";
         }
         public void ResetConnection()
         {

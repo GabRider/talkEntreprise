@@ -1,4 +1,4 @@
-﻿using System;
+﻿  using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -49,7 +49,7 @@ namespace talkEntreprise_server.classThread
             {
                 counter += 1;
                 clientSocket = serverSocket.AcceptTcpClient();
-                Byte[] sendBytedMessage = null;
+                byte[] sendBytedMessage = null;
                 byte[] bytesFrom = new byte[10025];
                 string dataFromClient = null;
                 string user = string.Empty;
@@ -101,6 +101,32 @@ namespace talkEntreprise_server.classThread
         public List<string> GetInformation(string user)
         {
             return this.Serv.GetInformation(user);
+        }
+        public string GetEmployee(string nameGroup, int idGroup, string user)
+        {
+            return this.Serv.GetEmployee(nameGroup, idGroup, user);
+        }
+        public void sendLstEmployeeUpdate( string nameGroup, int idGroup, string user)
+        {
+            byte[] sendBytedMessage = null;
+            byte[] bytesFrom = new byte[10025];
+            NetworkStream networkStream ;
+            networkStream = this.Serv.GetTcpClientLst(user).GetStream();
+            sendBytedMessage = Encoding.ASCII.GetBytes(this.Serv.GetEmployee(nameGroup, idGroup, user));
+            networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+            foreach (User userInfo in this.Serv.GetEmployeeLst(nameGroup,idGroup,user))
+            {
+                
+                if (this.Serv.ContainInClientList(userInfo.getidUser()))
+	{
+                    networkStream = this.Serv.GetTcpClientLst(userInfo.getidUser()).GetStream();
+		 sendBytedMessage = Encoding.ASCII.GetBytes(this.Serv.GetEmployee(nameGroup,idGroup,user));
+            networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+	}
+            }
+           
+           
+            
         }
     }
 }

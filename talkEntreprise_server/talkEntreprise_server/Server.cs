@@ -77,6 +77,31 @@ namespace talkEntreprise_server
         {
             return this.Ctrl.GetInformation(user);
         }
+        public TcpClient GetTcpClientLst(string user)
+        {
+            return clientsList[user] as TcpClient;
+        }
+        public bool ContainInClientList(string user)
+        {
+            if (clientsList.ContainsKey(user))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public string GetEmployee(string nameGroup, int idGroup, string user)
+        {
+            return this.Ctrl.GetEmployee(nameGroup, idGroup, user);
+        }
+        public List<User> GetEmployeeLst(string nameGroup, int idGroup, string user)
+        {
+            return this.Ctrl.LstGetEmployee(nameGroup,idGroup,user);
+        }
+
+       
     }//end Main class
     //permet de lancer en boucle la méthode init sur un autre processus
 
