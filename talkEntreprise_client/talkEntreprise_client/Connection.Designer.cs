@@ -1,6 +1,6 @@
 ﻿namespace talkEntreprise_client
 {
-    partial class Form1
+    partial class Connection
     {
         /// <summary>
         /// Variable nécessaire au concepteur.

@@ -84,11 +84,23 @@ namespace talkEntreprise_client
 
 
             //Savoir la taille de mémoire à allouer
-            buffSize = this.ClientSocket.ReceiveBufferSize;
+
             //Assignation de la valeur envoyée par le serveur(sous forme de tableau de bytes)
-            this.ServerStream.Read(inStream, 0, buffSize);
+            this.ServerStream.Read(inStream, 0, inStream.Length);
             bool result =Convert.ToBoolean( Encoding.ASCII.GetString(inStream));
             return result;
+        }
+        public void CloseConnection()
+        {
+            byte[] inStream = new byte[10025];
+            int buffSize = 0;
+            string toSend = "deconnection";
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(toSend + "$");
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
         }
     }
 }

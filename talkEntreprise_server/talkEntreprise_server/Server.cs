@@ -14,6 +14,7 @@ namespace talkEntreprise_server
     {
         //tableau contenant les différentes connexions (nom utilisateur, connexion)
         public static Hashtable clientsList = new Hashtable();
+        public static Hashtable UserThreadsList = new Hashtable();
 
         private Controler _ctrl;
         private Thread _firstConnection;
@@ -38,7 +39,7 @@ namespace talkEntreprise_server
 
             this.FirstConnection = new Thread(new ClientConnectToServ(this).init);
             this.FirstConnection.Start();
-
+            
         }
         public void update(string id, TcpClient tcp)
         {
@@ -46,13 +47,32 @@ namespace talkEntreprise_server
             {
                 clientsList.Add(id, tcp);
             }
-           
         }
+           public void AddThreadList(string user,Thread t)
+        {
+           UserThreadsList.Add(user,t);
+        }
+           public Thread getThreadlist(string user)
+           {
+               return UserThreadsList[user] as Thread;
+           }
+           public void DelInList(string user)
+           {
+               UserThreadsList.Remove(UserThreadsList[user]);
+               clientsList.Remove(clientsList[user]);
+           }
         public Boolean validateConnection(string id, string password)
         {
             return this.Ctrl.validateConnection(id, password);
         }
-
+        public void SucessConnectionToServer(string user)
+        {
+            this.Ctrl.SucessConnectionToServer(user);
+        }
+        public void DeconnectionToServer(string user)
+        {
+            this.Ctrl.DeconnectionToServer(user);
+        }
     }//end Main class
     //permet de lancer en boucle la méthode init sur un autre processus
 

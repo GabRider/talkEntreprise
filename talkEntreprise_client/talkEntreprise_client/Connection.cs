@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace talkEntreprise_client
 {
-    public partial class Form1 : Form
+    public partial class Connection : Form
     {
         private Controler _ctrl;
 
@@ -19,17 +19,17 @@ namespace talkEntreprise_client
             get { return _ctrl; }
             set { _ctrl = value; }
         }
-        public Form1()
+        public Connection()
         {
             InitializeComponent();
-            this.Ctrl = new Controler();
+            this.Ctrl = new Controler(this);
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
             if (this.Ctrl.connection(tbxId.Text, tbxPassword.Text))
             {
-                MessageBox.Show("k", "erreur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Ctrl.CreateProgram();
             }
             else {
                 MessageBox.Show("connection impossible ou connexion incorrecte ", "erreur", MessageBoxButtons.OK, MessageBoxIcon.Information);

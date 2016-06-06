@@ -4,20 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Windows.Threading;
+using System.Threading;
 namespace talkEntreprise_client
 {
+    delegate void VisibleChange();
+    delegate void CloseConnection();
     public class Controler
     {
         private Client _client;
+        private Connection _connect;
 
         public Client Client
         {
             get { return _client; }
             set { _client = value; }
         }
-
-        public Controler()
+       
+        public Connection Connect
         {
+            get { return _connect; }
+            set { _connect = value; }
+        }
+
+        public Controler( Connection c)
+        {
+            this.Connect = c;
             this.Client = new Client(this);
         }
         //////méthodes Générales///////
@@ -47,6 +59,27 @@ namespace talkEntreprise_client
         public bool connection(string id, string password)
         {
             return this.Client.connection(id,password);
+        }
+        public void CreateProgram()
+        {
+            Thread frmProg = new Thread(new ThreadStart(ThreadProgram));
+            frmProg.SetApartmentState(ApartmentState.STA);
+            frmProg.IsBackground = true;
+            frmProg.Start();
+        }
+        public void ThreadProgram()
+        {
+            FrmProgram prog = new FrmProgram(this);
+            prog.Show();
+            Dispatcher.Run();
+        }
+        public void VisibleChange()
+        {
+            this.Connect.Visible = !this.Connect.Visible;
+        }
+        public void CloseConnection()
+        {
+            this.Client.CloseConnection();
         }
     }
 }

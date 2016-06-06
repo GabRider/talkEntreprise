@@ -48,6 +48,7 @@
     <Compile Include="classThread\ClientConnectToServ.cs" />
     <Compile Include="classThread\UpdateUser.cs" />
     <Compile Include="Controler.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="FrmConnection.cs">
       <SubType>Form</SubType>
     </Compile>

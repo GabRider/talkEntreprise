@@ -8,53 +8,59 @@ using System.Threading.Tasks;
 using talkEntreprise_server;
 namespace talkEntreprise_server.classThread
 {
-   public class ClientConnectToServ
+   public class ClientToServer
     {
         private Server _serv;
-
+        private Thread _userUpdate;
+ 
+       
+       ///////////////////////////
+       
         public Server Serv
         {
             get { return _serv; }
             set { _serv = value; }
         }
-        private Thread _userUpdate;
-
+        
         public Thread UserUpdate
         {
             get { return _userUpdate; }
             set { _userUpdate = value; }
         }
+        
+
 
         //////////////////Constructeur///////////
-        public ClientConnectToServ(Server s)
+        public ClientToServer(Server s)
         {
             this.Serv = s;
         }
         //////////////////méthodes///////////
         public Boolean validateConnection(string id, string password)
         {
-            return this.Serv.validateConnection(id, password);
+            return this.Serv.ValidateConnection(id, password);
         }
 
         public void init()
         {
             TcpListener serverSocket = new TcpListener(8888);
             TcpClient clientSocket = default(TcpClient);
-            int counter = 0;
+  
 
             serverSocket.Start();
 
-            counter = 0;
             while ((true))
             {
-                counter += 1;
-                clientSocket = serverSocket.AcceptTcpClient();
+
+                Thread userThread = null;
                 Byte[] sendBytedMessage = null;
                 byte[] bytesFrom = new byte[10025];
+
                 string dataFromClient = null;
-                string user = string.Empty;
+                string id = string.Empty;
                 string password = string.Empty;
                 bool sendToClient = false;
+                clientSocket = serverSocket.AcceptTcpClient();
                 NetworkStream networkStream = clientSocket.GetStream();
                 networkStream.Read(bytesFrom, 0, bytesFrom.Length);
                 //encode le tableau de bytes
@@ -63,25 +69,27 @@ namespace talkEntreprise_server.classThread
                 if (dataFromClient.Contains("$"))
                 {
                     dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
-                    user = dataFromClient.Split(' ')[0];
-                    password = dataFromClient.Split(' ')[1]; 
+                    id = dataFromClient.Split(' ')[0];
+                    password = dataFromClient.Split(' ')[1];
+                }
+              
+                if (this.validateConnection(id, password))
+                {
+                    sendToClient = true;
+                 //   this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
+                    this.Serv.SucessConnectionToServer(id);
+                    userThread = new Thread(new UpdateUser(clientSocket, networkStream, this, id).update);
+                    
+                    userThread.Start();
+                    this.Serv.Update(id, clientSocket,userThread);
+                    
                 }
                
-                if (this.validateConnection(user, password))
-                {
-                    
-                    sendToClient = true;
-                    this.Serv.update(user, clientSocket);
-                 //   this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
-                    this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this,user).update);
-                    this.UserUpdate.Start();
-                    this.Serv.AddThreadList(user, UserUpdate);
-                    this.Serv.SucessConnectionToServer(user);
-                } 
+                
                 Thread.Sleep(10);
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
                 networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
-
+                
                 
             }
 
@@ -90,12 +98,15 @@ namespace talkEntreprise_server.classThread
             Console.WriteLine("exit");
             Console.ReadLine();
         }
-        public void CloseConnection(string user)
+
+        
+       public void shutdownConnection(string user)
         {
+            Thread t = this.Serv.getThreadByName(user);
+            this.Serv.ShutdownConnection(user);
             this.Serv.DeconnectionToServer(user);
-            Thread t = this.Serv.getThreadlist(user);
-            this.Serv.DelInList(user);
             t.Abort();
+           
         }
     }
 }
