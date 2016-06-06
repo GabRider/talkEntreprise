@@ -11,52 +11,53 @@ namespace talkEntreprise_server.classThread
 {
     public class UpdateUser
     {
-        private bool _isConnected;
+
         private NetworkStream _stream;
         private TcpClient _client;
         private ClientConnectToServ _clientServ;
-        private string _idUser;
+        private User _userInformations;
 
-       
-        public bool IsConnected
-        {
-            get { return _isConnected; }
-            set { _isConnected = value; }
-        }
         public NetworkStream Stream
         {
             get { return _stream; }
             set { _stream = value; }
         }
-        
+
 
         public TcpClient Client
         {
             get { return _client; }
             set { _client = value; }
         }
-       
+        
 
         private ClientConnectToServ ClientServ
         {
             get { return _clientServ; }
             set { _clientServ = value; }
         }
-        public string IdUser
+
+        public User UserInformations
         {
-            get { return _idUser; }
-            set { _idUser = value; }
+            get { return _userInformations; }
+            set { _userInformations = value; }
         }
+  
         ////////////Constructeur//////////////////
-      
-        public UpdateUser(TcpClient c, NetworkStream s, bool stateConnect,ClientConnectToServ clientToServ, string user)
+
+        public UpdateUser(TcpClient c, NetworkStream s, bool stateConnect, ClientConnectToServ clientToServ, string user)
         {
+          
+            List<string> userInformations = this.ClientServ.GetInformation(user);            
             this.Client = c;
-            this.IsConnected = stateConnect;
+            this.UserInformations= new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
             this.Stream = s;
             this.ClientServ = clientToServ;
-            this.IdUser = user;
+            
+
         }
+
+
         ////////////méthodes//////////////////
         public void update()
         {
@@ -64,9 +65,9 @@ namespace talkEntreprise_server.classThread
             byte[] bytesFrom = new byte[10025];
             string dataFromClient = null;
 
-           
 
-            while (!this.IsConnected)
+
+            while (this.IsConnected)
             {
                 //permet de récupérer les informations envoyé par le client
                 this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
@@ -75,15 +76,15 @@ namespace talkEntreprise_server.classThread
                 //récupère la valeure envoyée
                 dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
 
-                if (dataFromClient =="deconnection")
+                if (dataFromClient.Contains("#0002"))
                 {
-                    this.ClientServ.CloseConnection(this.IdUser);
-                }
-               
 
-              
-               
-               
+                    this.IsConnected = false;
+                }
+
+
+
+
             }
             this.ClientServ.CloseConnection(this.IdUser);
         }

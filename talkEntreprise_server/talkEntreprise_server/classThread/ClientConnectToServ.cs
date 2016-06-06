@@ -60,23 +60,24 @@ namespace talkEntreprise_server.classThread
                 //encode le tableau de bytes
                 dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
                 //récupère la valeure envoyée
-                if (dataFromClient.Contains("$"))
+                if (dataFromClient.Contains("#0001"))
                 {
-                    dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
-                    user = dataFromClient.Split(' ')[0];
-                    password = dataFromClient.Split(' ')[1]; 
+                    dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("####"));
+                    user = dataFromClient.Split(';')[1];
+                    password = dataFromClient.Split(';')[2]; 
                 }
                
                 if (this.validateConnection(user, password))
                 {
-                    
+                    this.Serv.SucessConnectionToServer(user);
                     sendToClient = true;
                     this.Serv.update(user, clientSocket);
                  //   this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
                     this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this,user).update);
-                    this.UserUpdate.Start();
                     this.Serv.AddThreadList(user, UserUpdate);
-                    this.Serv.SucessConnectionToServer(user);
+                    this.UserUpdate.Start();
+                    
+                   
                 } 
                 Thread.Sleep(10);
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
@@ -96,6 +97,10 @@ namespace talkEntreprise_server.classThread
             Thread t = this.Serv.getThreadlist(user);
             this.Serv.DelInList(user);
             t.Abort();
+        }
+        public List<string> GetInformation(string user)
+        {
+            return this.Serv.GetInformation(user);
         }
     }
 }

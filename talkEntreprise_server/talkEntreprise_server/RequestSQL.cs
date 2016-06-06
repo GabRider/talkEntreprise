@@ -34,8 +34,8 @@ namespace talkEntreprise_server
             {
 
                 string connectionString = @"server=127.0.0.1;userid=IT;password=Super;database=db_talkEntreprise";
-                ConnectionUser = new MySqlConnection(connectionString);
-                ConnectionUser.Open();
+                this.ConnectionUser = new MySqlConnection(connectionString);
+                this.ConnectionUser.Open();
                 return true;
             }
             catch (MySqlException ex)
@@ -93,8 +93,25 @@ namespace talkEntreprise_server
                 result = false;
             }
             return result;
-        }   
+        }
+        public List<string> GetInformation(string user)
+        {
+            List<string> lstInfoUser = new List<string>();
+            
+            if (this.connectionDB())
+            {
+                string sql = String.Format("SELECT u.idGroup, g.group, password FROM t_users u, t_group g where u.idGroup = g.idGroup AND  idUser  = '{0}'", user);
+                MySqlCommand cmd = new MySqlCommand(sql, ConnectionUser);
+                cmd.ExecuteNonQuery();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                lstInfoUser.Add(reader.GetString("idGroup"));
+                lstInfoUser.Add(reader.GetString("group"));
+                lstInfoUser.Add(reader.GetString("password"));
+            }
 
+            return lstInfoUser;
+        }
         public void SucessConnectionToServer(string user)
         {
 

@@ -66,5 +66,9 @@ namespace talkEntreprise_server
         {
             this.Request.DeconnectionToServer(user);
         }
+        public List<string> GetInformation(string user)
+        {
+            return this.Request.GetInformation(user);
+        }
     }
 }

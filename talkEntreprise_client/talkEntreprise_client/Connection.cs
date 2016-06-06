@@ -32,8 +32,14 @@ namespace talkEntreprise_client
                 this.Ctrl.CreateProgram();
             }
             else {
+                this.Ctrl.ResetConnection();
                 MessageBox.Show("connection impossible ou connexion incorrecte ", "erreur", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void btnQuit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

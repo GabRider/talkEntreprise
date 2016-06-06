@@ -58,8 +58,8 @@ namespace talkEntreprise_server
            }
            public void DelInList(string user)
            {
-               UserThreadsList.Remove(UserThreadsList[user]);
-               clientsList.Remove(clientsList[user]);
+               UserThreadsList.Remove(user);
+               clientsList.Remove(user);
            }
         public Boolean validateConnection(string id, string password)
         {
@@ -72,6 +72,10 @@ namespace talkEntreprise_server
         public void DeconnectionToServer(string user)
         {
             this.Ctrl.DeconnectionToServer(user);
+        }
+        public List<string> GetInformation(string user)
+        {
+            return this.Ctrl.GetInformation(user);
         }
     }//end Main class
     //permet de lancer en boucle la méthode init sur un autre processus

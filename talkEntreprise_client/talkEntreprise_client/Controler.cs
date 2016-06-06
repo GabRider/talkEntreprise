@@ -81,5 +81,9 @@ namespace talkEntreprise_client
         {
             this.Client.CloseConnection();
         }
+        public void ResetConnection()
+        {
+            this.Client.ResetConnection();
+        }
     }
 }

@@ -74,9 +74,9 @@ namespace talkEntreprise_client
         {
             byte[] inStream = new byte[10025];
             int buffSize = 0;
-            string toSend = id + " " + password;
+            string toSend = "#0001;" + id + ";" + password + ";####";
             //Encode le texte en tableau de byte
-            byte[] outStream = Encoding.ASCII.GetBytes(toSend + "$");
+            byte[] outStream = Encoding.ASCII.GetBytes(toSend);
             //Envoie au serveur les données
             this.ServerStream.Write(outStream, 0, outStream.Length);
             //Efface l'historique
@@ -90,11 +90,22 @@ namespace talkEntreprise_client
             bool result =Convert.ToBoolean( Encoding.ASCII.GetString(inStream));
             return result;
         }
+        public void ResetConnection()
+        {
+           
+            this.ClientSocket = new TcpClient();
+            this.ServerStream = default(NetworkStream);
+            this.ReadData = null;
+
+            this.ClientSocket.Connect("127.0.0.1", 8888);
+            this.ServerStream = this.ClientSocket.GetStream();
+        }
+
         public void CloseConnection()
         {
             byte[] inStream = new byte[10025];
             int buffSize = 0;
-            string toSend = "deconnection";
+            string toSend = "#0002####";
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(toSend + "$");
             //Envoie au serveur les données
