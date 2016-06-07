@@ -16,7 +16,7 @@ namespace talkEntreprise_client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Connection());
+            Application.Run(new FrmConnection());
         }
     }
 }

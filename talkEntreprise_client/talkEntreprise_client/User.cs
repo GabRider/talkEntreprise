@@ -8,21 +8,16 @@ namespace talkEntreprise_client
 {
     public class User
     {
-
-        private Controler _ctrl;
-
-        public Controler Ctrl
-        {
-            get { return _ctrl; }
-            set { _ctrl = value; }
-        }
-
-
+        ///////Champs///////////
         private string _idUser;
         private string _password;
         private int _idGroup;
         private bool _connection;
+        private string _groupeName;
 
+        
+        ///////propriétées///////
+       
         public bool Connection
         {
             get { return _connection; }
@@ -51,42 +46,104 @@ namespace talkEntreprise_client
             get { return _messageNotRead; }
             set { _messageNotRead = value; }
         }
-        public User(Controler cont)
+        public string GroupeName
         {
-            Ctrl = cont;
+            get { return _groupeName; }
+            set { _groupeName = value; }
         }
-        public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead)
+
+         
+         ////////Constructeur/////////
+       
+        public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
         {
-            setUser(id,pwd,group,connect,nbMessagesNotRead);
+            setUser(id, pwd, group, connect, nbMessagesNotRead, nameGroup);
         }
-        public void setUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead)
+
+        /////////méthodes/////////
+        /// <summary>
+        /// permet d'initialiser les informations de l'utilisateur
+        /// </summary>
+        /// <param name="id">identifiant de connexion</param>
+        /// <param name="pwd">mot de passe de l'utilisateur</param>
+        /// <param name="group">numéro du groupe de l'utilisateur</param>
+        /// <param name="connect">état de connection de l'utilisateur</param>
+        /// <param name="nbMessagesNotRead">nombre de message en attente</param>
+        /// <param name="nameGroup">nom du groupe de l'utilisateur</param>
+        public void setUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
         {
             this.IdUser = id;
             this.Password = pwd;
             this.IdGroup = group;
             this.Connection = connect;
             this.MessageNotRead = nbMessagesNotRead;
-        }
+            this.GroupeName = nameGroup;
 
-        public string getidUser()
+        }
+        ///////////méthodes//////////
+        /// <summary>
+        /// donne le nom du groupe de l'utiliateur
+        /// </summary>
+        /// <returns>nom du groupe de l'utilisateur</returns>
+        public string GetNameGroup()
+        {
+            return this.GroupeName;
+        }
+        /// <summary>
+        /// donne l'identifiant de connexion de l'utilisateur
+        /// </summary>
+        /// <returns></returns>
+        public string GetidUser()
         {
             return this.IdUser;
         }
-        public bool getInformationConnection()
+        /// <summary>
+        /// donne l'information si l'utilisateur est connecté ou pas
+        /// </summary>
+        /// <returns>true ou false</returns>
+        public bool GetInformationConnection()
         {
             return this.Connection;
         }
-        public int getGroupUser()
+        /// <summary>
+        /// donne l'identifiant du groupe de l'utilisateur
+        /// </summary>
+        /// <returns></returns>
+        public int GetGroupUser()
         {
             return this.IdGroup;
         }
-        public int getMessagesNotRead()
+        /// <summary>
+        /// retourne le nombre de message non lu de l'utilisateur
+        /// </summary>
+        /// <returns>nombre de message non lu</returns>
+        public int GetMessagesNotRead()
         {
             return this.MessageNotRead;
         }
-        public void setMessagesNotRead( int nbmessagesNotRead)
+        /// <summary>
+        /// permet de mettre à jour le nombre de message non lu de l'utilisateur
+        /// </summary>
+        /// <param name="nbmessagesNotRead">nombre de messages non lu</param>
+        public void SetMessagesNotRead(int nbmessagesNotRead)
         {
             this.MessageNotRead = nbmessagesNotRead;
+        }
+        /// <summary>
+        /// met à jour la connexion de l'utilisateur
+        /// </summary>
+        /// <param name="b"></param>
+        public void SetConnection(bool b)
+        {
+            this.Connection = b;
+        }
+        /// <summary>
+        /// retourne le mot de passe de l'utilisateur
+        /// </summary>
+        /// <returns>mot de passe de l'utilisateur</returns>
+        public string GetPassword()
+        {
+            return this.Password;
         }
     }
 }

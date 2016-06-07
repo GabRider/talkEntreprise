@@ -1,6 +1,6 @@
 ﻿namespace talkEntreprise_client
 {
-    partial class Connection
+    partial class FrmConnection
     {
         /// <summary>
         /// Variable nécessaire au concepteur.
@@ -91,7 +91,7 @@
             this.btnQuit.UseVisualStyleBackColor = true;
             this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
             // 
-            // Connection
+            // FrmConnection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -104,7 +104,7 @@
             this.Controls.Add(this.tbxId);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Connection";
+            this.Name = "FrmConnection";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = " ";
             this.ResumeLayout(false);

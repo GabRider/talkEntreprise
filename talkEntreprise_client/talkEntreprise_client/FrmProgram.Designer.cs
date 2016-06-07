@@ -30,7 +30,7 @@
         {
             this.btnSend = new System.Windows.Forms.Button();
             this.tbxWriteMessage = new System.Windows.Forms.TextBox();
-            this.lsbConversations = new System.Windows.Forms.ListBox();
+            this.lsbEmployees = new System.Windows.Forms.ListBox();
             this.tbxUser = new System.Windows.Forms.TextBox();
             this.tsmIOption = new System.Windows.Forms.ToolStripMenuItem();
             this.enregistrersousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,6 +40,7 @@
             this.tsmHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tssDate = new System.Windows.Forms.ToolStripStatusLabel();
             this.ssProgram = new System.Windows.Forms.StatusStrip();
+            this.tbxMessage = new System.Windows.Forms.TextBox();
             this.msProgram.SuspendLayout();
             this.ssProgram.SuspendLayout();
             this.SuspendLayout();
@@ -66,22 +67,22 @@
             this.tbxWriteMessage.Size = new System.Drawing.Size(509, 80);
             this.tbxWriteMessage.TabIndex = 12;
             // 
-            // lsbConversations
+            // lsbEmployees
             // 
-            this.lsbConversations.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.lsbConversations.FormattingEnabled = true;
-            this.lsbConversations.ItemHeight = 50;
-            this.lsbConversations.Location = new System.Drawing.Point(1, 74);
-            this.lsbConversations.Name = "lsbConversations";
-            this.lsbConversations.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lsbConversations.Size = new System.Drawing.Size(139, 354);
-            this.lsbConversations.TabIndex = 11;
-            this.lsbConversations.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lsbConversations_DrawItem);
+            this.lsbEmployees.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.lsbEmployees.FormattingEnabled = true;
+            this.lsbEmployees.ItemHeight = 50;
+            this.lsbEmployees.Location = new System.Drawing.Point(1, 74);
+            this.lsbEmployees.Name = "lsbEmployees";
+            this.lsbEmployees.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lsbEmployees.Size = new System.Drawing.Size(139, 354);
+            this.lsbEmployees.TabIndex = 11;
+            this.lsbEmployees.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lsbEmployees_DrawItem);
             // 
             // tbxUser
             // 
             this.tbxUser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbxUser.Font = new System.Drawing.Font("Times New Roman", 11F);
+            this.tbxUser.Font = new System.Drawing.Font("Times New Roman", 10F);
             this.tbxUser.Location = new System.Drawing.Point(1, 26);
             this.tbxUser.Multiline = true;
             this.tbxUser.Name = "tbxUser";
@@ -152,14 +153,26 @@
             this.ssProgram.SizingGrip = false;
             this.ssProgram.TabIndex = 15;
             // 
+            // tbxMessage
+            // 
+            this.tbxMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.tbxMessage.Location = new System.Drawing.Point(139, 24);
+            this.tbxMessage.Multiline = true;
+            this.tbxMessage.Name = "tbxMessage";
+            this.tbxMessage.ReadOnly = true;
+            this.tbxMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbxMessage.Size = new System.Drawing.Size(581, 324);
+            this.tbxMessage.TabIndex = 17;
+            // 
             // FrmProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(723, 460);
+            this.Controls.Add(this.tbxMessage);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.tbxWriteMessage);
-            this.Controls.Add(this.lsbConversations);
+            this.Controls.Add(this.lsbEmployees);
             this.Controls.Add(this.tbxUser);
             this.Controls.Add(this.msProgram);
             this.Controls.Add(this.ssProgram);
@@ -179,7 +192,7 @@
 
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.TextBox tbxWriteMessage;
-        private System.Windows.Forms.ListBox lsbConversations;
+        private System.Windows.Forms.ListBox lsbEmployees;
         private System.Windows.Forms.TextBox tbxUser;
         private System.Windows.Forms.ToolStripMenuItem tsmIOption;
         private System.Windows.Forms.ToolStripMenuItem enregistrersousToolStripMenuItem;
@@ -189,5 +202,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmHelp;
         private System.Windows.Forms.ToolStripStatusLabel tssDate;
         private System.Windows.Forms.StatusStrip ssProgram;
+        private System.Windows.Forms.TextBox tbxMessage;
     }
 }

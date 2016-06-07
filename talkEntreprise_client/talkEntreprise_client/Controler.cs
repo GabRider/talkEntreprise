@@ -7,54 +7,72 @@ using System.Security.Cryptography;
 using System.Windows.Threading;
 using System.Threading;
 using System.Net.Sockets;
-
 namespace talkEntreprise_client
 {
     delegate void VisibleChange();
     delegate void CloseConnection();
-    delegate string GetEmployees();
     public class Controler
     {
+        ////////////////Champs/////////////
         private Client _client;
-        private Connection _connect;
-        private TcpClient _tcpCli;
-        private NetworkStream _netStream;
+        private FrmConnection _connect;
+        private TcpClient _tClient;
+        private NetworkStream _stream;
+        private Thread _frmProg;
+        private User _userInformation;
+        private ManageMessage _manMessage;
 
-        public NetworkStream NetStream
+        public ManageMessage ManMessage
         {
-            get { return _netStream; }
-            set { _netStream = value; }
+            get { return _manMessage; }
+            set { _manMessage = value; }
         }
-        public TcpClient TcpCli
-        {
-            get { return _tcpCli; }
-            set { _tcpCli = value; }
-        }
+        
+        
+        //////////////propriétées///////////
+        
+
         public Client Client
         {
             get { return _client; }
             set { _client = value; }
         }
-       
-        public Connection Connect
+
+        public FrmConnection Connect
         {
             get { return _connect; }
             set { _connect = value; }
         }
+        public TcpClient TClient
+        {
+            get { return _tClient; }
+            set { _tClient = value; }
+        }
+        public NetworkStream Stream
+        {
+            get { return _stream; }
+            set { _stream = value; }
+        }
+        public Thread FrmProg
+        {
+            get { return _frmProg; }
+            set { _frmProg = value; }
+        } 
+        public User UserInformation
+        {
+            get { return _userInformation; }
+            set { _userInformation = value; }
+        }
+        //////////////Constructeur///////////
 
-        public Controler( Connection c)
+        public Controler(FrmConnection c)
         {
             this.Connect = c;
             this.Client = new Client(this);
-            
         }
+
         //////méthodes Générales///////
 
-        private void setTcp(TcpClient t, NetworkStream s)
-        {
-            this.TcpCli = t;
-            this.NetStream = s;
-        }
         /// <summary>
         /// permet de coder le mot de passe de l'utilisateur
         /// </summary>
@@ -77,38 +95,102 @@ namespace talkEntreprise_client
             // return hexadecimal string
             return returnValue.ToString();
         }
-        public bool connection(string id, string password)
+        /// <summary>
+        /// elle permet de lancer le programme principal 
+        /// </summary>
+        public void CreateProgram(string user)
         {
-            return this.Client.connection(id,password);
+            //création d'un nouveau processus
+            this.FrmProg = new Thread(new ThreadStart(ThreadProgram));
+            this.FrmProg.SetApartmentState(ApartmentState.STA);
+            //donne le droit de travailler en arrière plan
+            this.FrmProg.IsBackground = true;
+            //lancer le processus
+            this.FrmProg.Start();
         }
-        public void CreateProgram()
-        {
-            Thread frmProg = new Thread(new ThreadStart(ThreadProgram));
-            frmProg.SetApartmentState(ApartmentState.STA);
-            frmProg.IsBackground = true;
-            frmProg.Start();
-        }
+        /// <summary>
+        /// permet de créer la fenêre FrmProgram dans un aute processus
+        /// </summary>
         public void ThreadProgram()
         {
             FrmProgram prog = new FrmProgram(this);
             prog.Show();
+            //permet de garder la fenêtre ouverte
             Dispatcher.Run();
         }
-        public void VisibleChange()
+        /// <summary>
+        /// permet de sauvegarder la connexion existente au serveur
+        /// </summary>
+        /// <param name="t">connexion du client</param>
+        /// <param name="s">flux d'information entre le client et le serveur</param>
+        public void setTcpClientAndNetworkStream(TcpClient t, NetworkStream s)
         {
-            this.Connect.Visible = !this.Connect.Visible;
+            this.TClient = t;
+            this.Stream = s;
         }
+        ///////////////méthodes Client /////////////////7
+        /// <summary>
+        /// elle permet de savoir si l'utilisateur peut se connecter
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="password">mot de passe de l'utilisateur</param>
+        /// <returns></returns>
+        public bool Connection(string user, string password)
+        {
+            return this.Client.connection(user, password);
+        }
+
+        /// <summary>
+        /// permet d'avertire le serveur que l'utilisateur se déconnecte
+        /// </summary>
         public void CloseConnection()
         {
+           
+            this.FrmProg.Interrupt();
+            Dispatcher.ExitAllFrames();
             this.Client.CloseConnection();
+          
         }
+        /// <summary>
+        /// permet de réinitialiser la connexion avec le server
+        /// </summary>
         public void ResetConnection()
         {
             this.Client.ResetConnection();
         }
-        public string Employees()
+        /////////////méthodes FrmConnection//////////////
+        /// <summary>
+        /// permet de modifier la visibilité de la vue
+        /// </summary>
+        public void VisibleChange()
         {
-            return this.Client.GetEmployees();
+            this.Connect.Visible = !this.Connect.Visible;
+        }
+        /////////////méthodes spécifique au controler////
+        /// <summary>
+        /// permet de donner la connexion du client
+        /// </summary>
+        /// <returns>connexion du client</returns>
+        public TcpClient GetTcpClient()
+        {
+            return this.TClient;
+        }
+        /// <summary>
+        /// permet de donner le flux d'information du client
+        /// </summary>
+        /// <returns>flux d'information du client</returns>
+        public NetworkStream GetNetStream()
+        {
+            return this.Stream;
+        }
+
+        public void setUserConnected()
+        {
+            this.UserInformation = this.Client.getInformationUserConnected();
+        }
+        public User GetUserConnected()
+        {
+            return this.UserInformation;
         }
     }
 }

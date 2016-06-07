@@ -11,12 +11,12 @@ namespace talkEntreprise_server.classThread
 {
     public class UpdateUser
     {
-
-        private NetworkStream _stream;
+        //////////Champs//////////
+                private NetworkStream _stream;
         private TcpClient _client;
         private ClientConnectToServ _clientServ;
         private User _userInformations;
-
+        ////////////propriétées///////////
         public NetworkStream Stream
         {
             get { return _stream; }
@@ -48,51 +48,54 @@ namespace talkEntreprise_server.classThread
         public UpdateUser(TcpClient c, NetworkStream s, bool stateConnect, ClientConnectToServ clientToServ, string user)
         {
           
-              
+            
             this.Client = c;
            
             this.Stream = s;
             this.ClientServ = clientToServ;
             List<string> userInformations = this.ClientServ.GetInformation(user);
             this.UserInformations = new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
+            this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(),this.UserInformations.GetGroupUser(),this.UserInformations.GetidUser());
         }
 
 
         ////////////méthodes//////////////////
+        /// <summary>
+        /// permet de récupérer les informations du client
+        /// </summary>
         public void update()
         {
             Byte[] sendBytedMessage = null;
             byte[] bytesFrom = new byte[10025];
             string dataFromClient = null;
-            this.ClientServ.sendLstEmployeeUpdate(this.UserInformations.getGroupName(),this.UserInformations.getGroupUser(),this.UserInformations.getidUser());
+            string sendClient = null;
 
-
-            while (this.UserInformations.getConnection())
+            ////tant que l'utilisateur est connecté
+            while (this.UserInformations.GetInformationConnection())
             {
                 //permet de récupérer les informations envoyé par le client
                 this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
                 //encode le tableau de bytes
-                
                 dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
                 //récupère la valeure envoyée
-                dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
-
+                if (dataFromClient.Contains("####"))
+                {
+                    dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("####"));
+                }
+                
+                //permet de déconnecter la personne
                 if (dataFromClient.Contains("#0002"))
                 {
 
-                    this.UserInformations.setConnection(false);
+                    this.UserInformations.SetConnection(false);
                 }
-
+                //permet de récupprer et d'envoyer les informations au client
+                
 
 
 
             }
-            this.ClientServ.CloseConnection(this.UserInformations.getidUser());
-        }
-
-        public string GetEmployee(string nameGroup, int idGroup, string user)
-        {
-            return this.ClientServ.GetEmployee(nameGroup,idGroup,user);
+            this.ClientServ.CloseConnection(this.UserInformations.GetidUser(),this.UserInformations.GetNameGroup(),this.UserInformations.GetGroupUser());
         }
     }
 }
