@@ -12,7 +12,7 @@ namespace talkEntreprise_server.classThread
     public class UpdateUser
     {
         //////////Champs//////////
-                private NetworkStream _stream;
+        private NetworkStream _stream;
         private TcpClient _client;
         private ClientConnectToServ _clientServ;
         private User _userInformations;
@@ -29,7 +29,7 @@ namespace talkEntreprise_server.classThread
             get { return _client; }
             set { _client = value; }
         }
-        
+
 
         private ClientConnectToServ ClientServ
         {
@@ -42,20 +42,20 @@ namespace talkEntreprise_server.classThread
             get { return _userInformations; }
             set { _userInformations = value; }
         }
-  
+
         ////////////Constructeur//////////////////
 
         public UpdateUser(TcpClient c, NetworkStream s, bool stateConnect, ClientConnectToServ clientToServ, string user)
         {
-          
-            
+
+
             this.Client = c;
-           
+
             this.Stream = s;
             this.ClientServ = clientToServ;
             List<string> userInformations = this.ClientServ.GetInformation(user);
             this.UserInformations = new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
-            this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(),this.UserInformations.GetGroupUser(),this.UserInformations.GetidUser());
+            this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup(), this.UserInformations.GetidUser());
         }
 
 
@@ -65,6 +65,7 @@ namespace talkEntreprise_server.classThread
         /// </summary>
         public void update()
         {
+            List<string> destinationMessag = new List<string>();
             Byte[] sendBytedMessage = null;
             byte[] bytesFrom = new byte[10025];
             string dataFromClient = null;
@@ -73,6 +74,7 @@ namespace talkEntreprise_server.classThread
             ////tant que l'utilisateur est connecté
             while (this.UserInformations.GetInformationConnection())
             {
+                destinationMessag.Clear();
                 //permet de récupérer les informations envoyé par le client
                 this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
                 //encode le tableau de bytes
@@ -82,20 +84,72 @@ namespace talkEntreprise_server.classThread
                 {
                     dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("####"));
                 }
-                
+
                 //permet de déconnecter la personne
                 if (dataFromClient.Contains("#0002"))
                 {
 
                     this.UserInformations.SetConnection(false);
                 }
+
+
+                if (dataFromClient.Contains("#0003") && !dataFromClient.Contains("!"))
+                {                  
+                    foreach (string messageInformation in dataFromClient.Split(';'))
+                    {
+                        if (!messageInformation.Contains("#0003"))
+                        {
+                            this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
+                            Thread.Sleep(1);
+                            this.ClientServ.updateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
+                        }
+                    }
+                }
+                else if (dataFromClient.Contains("#0003") && dataFromClient.Contains("!"))
+                {
+                    
+                       
+                            foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
+                            {
+                                if (info !="")
+                                {
+                                    this.ClientServ.sendMessage(dataFromClient.Split(';')[1].Split('-')[0], info, dataFromClient.Split('-')[2], Convert.ToBoolean(dataFromClient.Split('-')[3]));
+                                }
+                                
+                            }
+
+                            foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
+                            {
+                                Thread.Sleep(1);
+                                if (info !="")
+                                {
+                                    this.ClientServ.updateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
+                                
+                                }
+                                
+                            }
+                        
+                    
+                }
+
+
+                if (dataFromClient.Contains("#0004"))
+                {
+                    foreach (string info in dataFromClient.Split(';'))
+                    {
+                        if (!info.Contains("#0004"))
+                        {
+                            this.ClientServ.updateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
+                        }
+                    }
+                }
                 //permet de récupprer et d'envoyer les informations au client
-                
+
 
 
 
             }
-            this.ClientServ.CloseConnection(this.UserInformations.GetidUser(),this.UserInformations.GetNameGroup(),this.UserInformations.GetGroupUser());
+            this.ClientServ.CloseConnection(this.UserInformations.GetidUser(), this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup());
         }
     }
 }

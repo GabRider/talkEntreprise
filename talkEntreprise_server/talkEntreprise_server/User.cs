@@ -110,7 +110,7 @@ namespace talkEntreprise_server
         /// donne l'identifiant du groupe de l'utilisateur
         /// </summary>
         /// <returns></returns>
-        public int GetGroupUser()
+        public int GetIdGroup()
         {
             return this.IdGroup;
         }

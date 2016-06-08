@@ -47,12 +47,7 @@ namespace talkEntreprise_client
         public Client(Controler c)
         {
             this.Ctrl = c;
-            this.ClientSocket = new TcpClient();
-            this.ServerStream = default(NetworkStream);
-
-
-            this.ClientSocket.Connect("127.0.0.1", 8888);
-            this.ServerStream = this.ClientSocket.GetStream();
+            
         }
         //////////////méthodes////////////
         /// <summary>
@@ -74,8 +69,10 @@ namespace talkEntreprise_client
         /// <returns>vrais ou faux</returns>
         private bool connectionServer(string id, string password)
         {
+            this.ResetConnection();
+            Thread.Sleep(10);
             byte[] inStream = new byte[10025];
-            int buffSize = 0;
+          
             string toSend = "#0001;" + id + ";" + password + ";####";
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(toSend);
@@ -116,7 +113,7 @@ namespace talkEntreprise_client
         public void CloseConnection()
         {
             byte[] inStream = new byte[10025];
-            int buffSize = 0;
+           ;
             string toSend = "#0002####";
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(toSend + "####");
@@ -132,7 +129,7 @@ namespace talkEntreprise_client
         /// <returns>utilisateur</returns>
         public User getInformationUserConnected()
         {
-            bool first = true;
+            
             byte[] inStream = new byte[10025];
             List<string> lstInfo = new List<string>();
            
@@ -150,5 +147,60 @@ namespace talkEntreprise_client
             }
             return new User(lstInfo[0], lstInfo[3], Convert.ToInt32(lstInfo[1]), true, 0, lstInfo[2]);
          }
+
+        /// <summary>
+        /// permet d'envoyer le message ua serveur
+        /// </summary>
+        /// <param name="message">message</param>
+        public void sendMessage(string user,string destination,string message, bool forGroup)
+        {
+            string sendMessage = "#0003;" + user + "-" + destination + "-" +this.Ctrl.EncryptMessage(message)+"-"+ forGroup + "#####";
+            byte[] inStream = new byte[10025];
+
+         
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
+        }
+        /// <summary>
+        /// permet d'envoyer le message ua serveur
+        /// </summary>
+        /// <param name="message">message</param>
+        public void sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
+        {
+            string sendMessage = "#0003;" + user + "-" + Alldestination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
+            byte[] inStream = new byte[10025];
+
+
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
+        }
+        /// <summary>
+        /// permet d'afficher la conversation de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du message</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        public void GetConversation(string user,string destination, bool forGroup)
+        {
+            string sendMessage = "#0004;" + user + "-" + destination  + "-" + forGroup + "#####";
+            byte[] inStream = new byte[10025];
+
+
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
+        }
+       
     }
 }

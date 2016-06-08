@@ -20,17 +20,17 @@ namespace talkEntreprise_client
         private NetworkStream _stream;
         private Thread _frmProg;
         private User _userInformation;
-        private ManageMessage _manMessage;
+        private ManageMessages _manMessage;
 
-        public ManageMessage ManMessage
+        public ManageMessages ManMessage
         {
             get { return _manMessage; }
             set { _manMessage = value; }
         }
-        
-        
+
+
         //////////////propriétées///////////
-        
+
 
         public Client Client
         {
@@ -57,7 +57,7 @@ namespace talkEntreprise_client
         {
             get { return _frmProg; }
             set { _frmProg = value; }
-        } 
+        }
         public User UserInformation
         {
             get { return _userInformation; }
@@ -69,6 +69,7 @@ namespace talkEntreprise_client
         {
             this.Connect = c;
             this.Client = new Client(this);
+            this.ManMessage = new ManageMessages(this);
         }
 
         //////méthodes Générales///////
@@ -127,6 +128,7 @@ namespace talkEntreprise_client
         {
             this.TClient = t;
             this.Stream = s;
+
         }
         ///////////////méthodes Client /////////////////7
         /// <summary>
@@ -145,11 +147,11 @@ namespace talkEntreprise_client
         /// </summary>
         public void CloseConnection()
         {
-           
+
             this.FrmProg.Interrupt();
             Dispatcher.ExitAllFrames();
             this.Client.CloseConnection();
-          
+
         }
         /// <summary>
         /// permet de réinitialiser la connexion avec le server
@@ -157,6 +159,53 @@ namespace talkEntreprise_client
         public void ResetConnection()
         {
             this.Client.ResetConnection();
+        }
+
+        /// <summary>
+        /// permet d'envoyer le message ua serveur
+        /// </summary>
+        /// <param name="message">message</param>
+        public void sendMessage(string user, string destination, string message, bool forGroup)
+        {
+            this.Client.sendMessage(user, destination, message, forGroup);
+        }
+        /// <summary>
+        /// permet d'envoyer le message ua serveur
+        /// </summary>
+        /// <param name="message">message</param>
+        public void sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
+        {
+            this.Client.sendMessageGroup(user,Alldestination,message,forGroup);
+        }
+         /// <summary>
+        /// permet d'afficher la conversation de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du message</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        public void GetConversation(string user, string destination, bool forGroup)
+        {
+            this.Client.GetConversation(user,destination,forGroup);
+        }
+        /////////////méthodes ManageMessages/////////////
+        /// <summary>
+        /// permet de décrypter un message
+        /// </summary>
+        /// <param name="message">message de l'utilisateur</param>
+        /// <returns>message codé</returns>
+        public string EncryptMessage(string message)
+        {
+            return this.ManMessage.EncryptMessage(message);
+        }
+
+        /// <summary>
+        /// permet de décoder le message
+        /// </summary>
+        /// <param name="message">message codé</param>
+        /// <returns>message original</returns>
+        public string DecryptMessage(string message)
+        {
+            return this.ManMessage.DecryptMessage(message);
         }
         /////////////méthodes FrmConnection//////////////
         /// <summary>

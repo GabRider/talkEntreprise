@@ -102,19 +102,19 @@ namespace talkEntreprise_server.classThread
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
                 networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
 
-                
+
                 if (sendToClient)
                 {
                     Thread.Sleep(10);
-                UserInfo= this.GetInformation(user);
-                sendInfo = "#0004;"+user+",";
-                foreach (var info in UserInfo)
-                {
-                    sendInfo += info + ",";
-                }
-                sendInfo += "####";
-                sendBytedMessage = Encoding.ASCII.GetBytes(sendInfo);
-                networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+                    UserInfo = this.GetInformation(user);
+                    sendInfo = "#0004;" + user + ",";
+                    foreach (var info in UserInfo)
+                    {
+                        sendInfo += info + ",";
+                    }
+                    sendInfo += "####";
+                    sendBytedMessage = Encoding.ASCII.GetBytes(sendInfo);
+                    networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
                     //permet de mettre à jour la liste des threads
                     this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this, user).update);
                     this.Serv.AddThreadList(user, UserUpdate);
@@ -180,6 +180,54 @@ namespace talkEntreprise_server.classThread
                 }
 
             }
+        }
+        /// <summary>
+        /// permet  d'enregistrer le message dans la base de données
+        /// </summary>
+        /// <param name="message">message crypter</param>
+        /// <param name="user">nom de l'utilisateur</param>
+        /// <param name="destinationUsername">destinataire du message</param>
+        /// <param name="forGroup">si c'est pour un groupe</param>
+        public void sendMessage(string user, string destinationUsername, string message, bool forGroup)
+        {
+            this.Serv.sendMessage(user, destinationUsername, message, forGroup);
+        }
+        public void updateAllClientMessages(string user, string destination, bool forGroup)
+        {
+            byte[] sendBytedMessage = null;
+            TcpClient client = this.Serv.GetTcpClientInClientList(user);
+            NetworkStream stream = client.GetStream();
+            TcpClient client2 = null;
+            NetworkStream stream2 = null;
+            if (this.Serv.IsInClientList(destination))
+            {
+                Thread.Sleep(10);
+                 client2 = this.Serv.GetTcpClientInClientList(destination);
+                 stream2 = client2.GetStream();
+            }
+            string sendAllMessages = "#0004";
+            foreach (Message msg in this.Serv.GetConversation(user, destination, forGroup))
+            {
+                sendAllMessages = "#0004;" + msg.GetAuthor() + "-" + msg.GetContent() + "-" + msg.GetDate() + "-false####";
+                sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
+                stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+                if (client2 != null)
+                {
+                   Thread.Sleep(10);
+                    stream2.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+                }
+                Thread.Sleep(10);
+            }
+            sendAllMessages = "#0004;"+"true-"+user+"-"+destination+"####";
+            sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
+            stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+            Thread.Sleep(10);
+            if (client2 != null)
+            {
+                stream2.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+            }
+
+           
         }
     }
 

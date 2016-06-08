@@ -61,15 +61,15 @@ namespace talkEntreprise_server
             }
             return res;
         }
-        public string getDate()
+        public string GetDate()
         {
             return this.Date;
         }
-        public string getAuthor()
+        public string GetAuthor()
         {
             return this.Author;
         }
-        public string getContent()
+        public string GetContent()
         {
             return this.Content;
         }

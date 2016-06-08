@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,13 @@ namespace talkEntreprise_client
         private Thread _updateLstUser;
         private List<User> _lstUser;
         private User _userConnected;
+        private string _lastAuthor;
+        private int _nbMessages;
+        private User _lastSelectedUser;
+
+
+
+
 
 
 
@@ -41,6 +49,22 @@ namespace talkEntreprise_client
             get { return _userConnected; }
             set { _userConnected = value; }
         }
+        public int NbMessages
+        {
+            get { return _nbMessages; }
+            set { _nbMessages = value; }
+        }
+        public string LastAuthor
+        {
+            get { return _lastAuthor; }
+            set { _lastAuthor = value; }
+        }
+        public User LastSelectedUser
+        {
+            get { return _lastSelectedUser; }
+            set { _lastSelectedUser = value; }
+        }
+
         public FrmProgram(Controler c)
         {
             InitializeComponent();
@@ -50,8 +74,9 @@ namespace talkEntreprise_client
             this.UpdateLstUser.Start();
             this.UserConnected = this.Ctrl.GetUserConnected();
             this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetidUser();
+            this.NbMessages = 0;
 
-           
+
         }
 
         private void FrmProgram_FormClosing(object sender, FormClosingEventArgs e)
@@ -74,15 +99,22 @@ namespace talkEntreprise_client
 
             Invoke(new MethodInvoker(delegate
             {
+                int getLastSelected = lsbEmployees.SelectedIndex;
+                this.LastSelectedUser = lsbEmployees.SelectedItem as User;
                 this.lsbEmployees.DataSource = null;
                 this.lsbEmployees.DataSource = listUser;
-                List<Message> lstMessage = new List<Message>();
-                lstMessage.Add(new Message("gabriel@aspirateur.com", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaavv", "2016-03-21_10-10-10"));
-                lstMessage.Add(new Message("gabriel@aspirateur.com", "a", "2016-03-21_10-10-10"));
-                lstMessage.Add(new Message("gabriejl@aspirateur.com", "a", "2016-03-21_10-10-10"));
-                lstMessage.Add(new Message("gabrjkliel@aspirateur.com", "a", "2016-03-21_10-10-10"));
-                lstMessage.Add(new Message("gabriel@aspirateur.com", "a", "2016-03-21_10-10-10"));
-                lsbConversation.DataSource = lstMessage;
+
+                if (getLastSelected < 0)
+                {
+                    this.lsbEmployees.SelectedIndex = 0;
+                }
+                else
+                {
+                    this.lsbEmployees.SelectedIndex = getLastSelected;
+                }
+
+
+
             }));
 
 
@@ -152,22 +184,152 @@ namespace talkEntreprise_client
             e.DrawFocusRectangle();
         }
 
-        public void showMessage(int nbNewMessage)
+        public void showMessage(List<Message> lstNewMessages, string destination, string iduser)
         {
-            string messages = string.Empty;
-            for (int i = this.LstoldMessages.Count; i < this.LstNewMessages.Count; i++)
-            {
-                Message msg = LstNewMessages[i] as Message;
 
-                if (this.LastAuthor != msg.Author)
+            Invoke(new MethodInvoker(delegate
+            {
+                User user = this.lsbEmployees.SelectedItem as User;
+
+                if (user.GetidUser() == destination || user.GetidUser() == iduser || this.lsbEmployees.SelectedIndex == 0)
                 {
-                    messages += Environment.NewLine + String.Format("{0,30}----------------------------------", "") + this.Ctrl.UpFirstLetter(msg.getAuthor().Split('@')[0]) + "----------------------------------";
+
+                    string messages = string.Empty;
+                    for (int i = this.NbMessages; i < lstNewMessages.Count; i++)
+                    {
+                        Message msg = lstNewMessages[i] as Message;
+
+
+                        if (this.LastAuthor != msg.Author)
+                        {
+
+                            messages += Environment.NewLine + String.Format("{0,30}----------------------------------", "") + msg.GetAuthor().Split('@')[0] + "----------------------------------";
+                        }
+                        messages += Environment.NewLine + msg.GetContent() + Environment.NewLine + String.Format(" {0,130 }Date: ", string.Empty) + msg.GetDate();
+                        this.LastAuthor = msg.GetAuthor();
+                    }
+
+                    this.NbMessages = lstNewMessages.Count;
+                    tbxMessage.AppendText(messages);
                 }
-                messages += Environment.NewLine + this.Ctrl.DecryptMessage(msg.getContent()) + Environment.NewLine + String.Format(" {0,130 }Date: ", string.Empty) + msg.getDate();
-                this.LastAuthor = msg.getAuthor();
-            }
-            this.LstoldMessages = this.LstNewMessages;
-            tbxMessage.AppendText(messages);
+
+
+            }));
         }
+
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            string allDestinations = string.Empty;
+            bool first = true;
+            User destination = lsbEmployees.SelectedItem as User;
+            if (tbxWriteMessage.Text.Trim() != "")
+            {
+                if (lsbEmployees.SelectedIndex == 0)
+                {
+
+                    foreach (User user in lsbEmployees.Items)
+                    {
+                        if (user.GetIdGroup() == this.UserConnected.GetIdGroup())
+                        {
+                            if (first)
+                            {
+                                first = false;
+                            }
+                            else
+                            {
+                                allDestinations += user.GetidUser() + "!";
+
+
+                            }
+
+                        }
+                    }
+                    this.Ctrl.sendMessageGroup(this.UserConnected.GetidUser(),allDestinations, this.tbxWriteMessage.Text, true);
+                    this.tbxWriteMessage.Clear();
+                }
+                else
+                {
+                    this.Ctrl.sendMessage(this.UserConnected.GetidUser(), destination.GetidUser(), this.tbxWriteMessage.Text, false);
+                    this.tbxWriteMessage.Clear();
+                }
+
+            }
+
+        }
+        /// <summary>
+        /// permet de donner la connexion du client
+        /// </summary>
+        /// <returns>connexion du client</returns>
+        public TcpClient GetTcpClient()
+        {
+            return this.Ctrl.TClient;
+        }
+        /// <summary>
+        /// permet de donner le flux d'information du client
+        /// </summary>
+        /// <returns>flux d'information du client</returns>
+        public NetworkStream GetNetStream()
+        {
+            return this.Ctrl.Stream;
+        }
+
+        /// <summary>
+        /// permet de décoder le message
+        /// </summary>
+        /// <param name="message">message codé</param>
+        /// <returns>message original</returns>
+        public string DecryptMessage(string message)
+        {
+            return this.Ctrl.DecryptMessage(message);
+        }
+
+        private void lsbEmployees_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            User user = this.lsbEmployees.SelectedItem as User;
+            if (user != null)
+            {
+
+                if (this.LastSelectedUser != null)
+                {
+                    if (this.LastSelectedUser.GetidUser() != user.GetidUser())
+                    {
+                        this.NbMessages = 0;
+                        this.tbxMessage.Clear();
+                        if (lsbEmployees.SelectedIndex != 0)
+                        {
+                            this.Ctrl.GetConversation(this.UserConnected.GetidUser(), user.GetidUser(), false);
+                        }
+                        else
+                        {
+                            this.Ctrl.GetConversation(this.UserConnected.GetidUser(), user.GetidUser(), true);
+                        }
+
+                        this.LastSelectedUser = user;
+                    }
+                }
+                else
+                {
+                    this.LastSelectedUser = user;
+                    this.Ctrl.GetConversation(this.UserConnected.GetidUser(), user.GetidUser(), true);
+                }
+
+
+
+
+
+
+
+            }
+
+
+
+        }
+
+        private void lsbEmployees_DataSourceChanged(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

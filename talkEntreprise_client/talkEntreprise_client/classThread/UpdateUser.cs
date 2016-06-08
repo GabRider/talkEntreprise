@@ -13,7 +13,6 @@ namespace talkEntreprise_client.classThread
 
         //////Champs////////
 
-        private Controler _ctrl;
         private FrmProgram _prog;
         private TcpClient _tClient;
         private NetworkStream _stream;
@@ -21,11 +20,6 @@ namespace talkEntreprise_client.classThread
 
         ///////propriétées/////////
 
-        public Controler Ctrl
-        {
-            get { return _ctrl; }
-            set { _ctrl = value; }
-        }
 
         public FrmProgram Prog
         {
@@ -46,9 +40,9 @@ namespace talkEntreprise_client.classThread
         public UpdateUser(FrmProgram p, Controler c)
         {
             this.Prog = p;
-            Ctrl = c;
-            this.TClient = this.Ctrl.GetTcpClient();
-            this.Stream = this.Ctrl.GetNetStream();
+
+            this.TClient = this.Prog.GetTcpClient();
+            this.Stream = this.Prog.GetNetStream();
 
         }
         /////////méthodes///////////
@@ -61,12 +55,15 @@ namespace talkEntreprise_client.classThread
             byte[] inStream = new byte[10025];
             string result = string.Empty;
             List<User> lstUser = new List<User>();
+            List<Message> lstMessages = new List<Message>();
             string[] userInfo;
             bool first = true;
-
+            bool updateMessage = false;
             while (true)
             {
+                updateMessage = false;
                 lstUser.Clear();
+               
                 first = true;
                 //récupération du flux de données envoyé par le serveur --> recodage du message
                 this.Stream.Read(inStream, 0, inStream.Length);
@@ -81,7 +78,10 @@ namespace talkEntreprise_client.classThread
                         if (!first)
                         {
                             userInfo = user.Split(',');
-                            lstUser.Add(new User(userInfo[0], userInfo[1], Convert.ToInt32(userInfo[2]), Convert.ToBoolean(userInfo[3]), Convert.ToInt32(userInfo[4]), userInfo[5]));
+                            
+                           
+                                lstUser.Add(new User(userInfo[0], userInfo[1], Convert.ToInt32(userInfo[2]), Convert.ToBoolean(userInfo[3]), Convert.ToInt32(userInfo[4]), userInfo[5]));
+                            
                         }
                         else
                         {
@@ -91,6 +91,35 @@ namespace talkEntreprise_client.classThread
                     }
                     Thread.Sleep(10);
                     this.Prog.setEmployees(lstUser);
+                }
+                if (result.Contains("#0004"))
+                {
+                    foreach (string message in result.Split(';'))
+                    {
+                        if (result.Contains("false"))
+                        {
+
+
+                            if (!first)
+                            {
+                                lstMessages.Add(new Message(message.Split('-')[0], this.Prog.DecryptMessage(message.Split('-')[1]), message.Split('-')[2]));
+                            }
+                            else
+                            {
+                                first = false;
+                            }
+                        }
+                        else
+                        {
+
+                            this.Prog.showMessage(lstMessages, result.Split('-')[1],  result.Split('-')[2]);
+                                  
+                           
+                            lstMessages.Clear(); 
+                            break;
+                        }
+                    }
+
                 }
             }
 

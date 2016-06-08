@@ -35,41 +35,20 @@ namespace talkEntreprise_client
         {
             this.Author = user;
             this.Content = valueMessage;
-            this.Date = this.GetFormatedDate(valueDate);
+            this.Date = valueDate;
             
         }
         
-        public string GetFormatedDate( string oldDate)
-        {
-            bool first=true;
-            string[] InglobalDateOrHour;
-            string res = string.Empty;
-            foreach (string globalDateOrHour in oldDate.Split('_'))
-            {
-                 InglobalDateOrHour = globalDateOrHour.Split('-');
-                    if (first)
-                    {
-                        res += InglobalDateOrHour[2] + "." + InglobalDateOrHour[1] + "." + InglobalDateOrHour[0]+" ";
-                        first = false;
-                    }
-                    else
-                    {
-                        res += InglobalDateOrHour[0] + "." + InglobalDateOrHour[1] + "." + InglobalDateOrHour[2];
-                    }
-                    
-                
-            }
-            return res;
-        }
-        public string getDate()
+        
+        public string GetDate()
         {
             return this.Date;
         }
-        public string getAuthor()
+        public string GetAuthor()
         {
             return this.Author;
         }
-        public string getContent()
+        public string GetContent()
         {
             return this.Content;
         }

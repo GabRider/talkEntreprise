@@ -54,6 +54,7 @@
             this.btnSend.TabIndex = 13;
             this.btnSend.Text = "Envoyer";
             this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // tbxWriteMessage
             // 
@@ -78,6 +79,8 @@
             this.lsbEmployees.Size = new System.Drawing.Size(139, 354);
             this.lsbEmployees.TabIndex = 11;
             this.lsbEmployees.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lsbEmployees_DrawItem);
+            this.lsbEmployees.SelectedIndexChanged += new System.EventHandler(this.lsbEmployees_SelectedIndexChanged);
+            this.lsbEmployees.DataSourceChanged += new System.EventHandler(this.lsbEmployees_DataSourceChanged);
             // 
             // tbxUser
             // 

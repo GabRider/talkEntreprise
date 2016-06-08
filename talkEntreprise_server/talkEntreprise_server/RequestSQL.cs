@@ -313,13 +313,13 @@ namespace talkEntreprise_server
                 if (first)
                 {
                     userInfo.SetMessagesNotRead(getStatesMessages(user, userInfo.GetidUser(), true));
-                    result += userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetGroupUser() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
+                    result += userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                     first = false;
                 }
                 else
                 {
                     userInfo.SetMessagesNotRead(getStatesMessages(user, userInfo.GetidUser(), false));
-                    result +=";"+ userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetGroupUser() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
+                    result +=";"+ userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                 }
 
             }
@@ -369,8 +369,14 @@ namespace talkEntreprise_server
 
             return numberMessages;
         }
-
-        public void sendMessage(string message,string user, string destinationUsername, bool forGroup)
+         /// <summary>
+         /// permet  d'enregistrer le message dans la base de données
+         /// </summary>
+         /// <param name="message">message crypter</param>
+         /// <param name="user">identifiant de l'utilisateur</param>
+         /// <param name="destination">destinataire du message</param>
+         /// <param name="forGroup">si c'est pour un groupe</param>
+        public void sendMessage(string user, string destination,string message, bool forGroup)
         {
             if (this.connectionDB())
             {
@@ -384,8 +390,8 @@ namespace talkEntreprise_server
                     this.Ctrl.NumberToHexadecimal(user.Count()),//3 longueur de l'identifiant
                     user, //4 identifiant de la personne
                     "0012",//5 Code Destinataire
-                    this.Ctrl.NumberToHexadecimal(destinationUsername.Count()), //6 longueur du destinataire
-                    destinationUsername, //7 identifiant du destinataire
+                    this.Ctrl.NumberToHexadecimal(destination.Count()), //6 longueur du destinataire
+                    destination, //7 identifiant du destinataire
                     "0020",//8 code pour contenu du message
                     this.Ctrl.NumberToHexadecimal(message.Count()),//9 longueur du message
                     message, //10 Message à envoyer
@@ -399,12 +405,12 @@ namespace talkEntreprise_server
 
                 lastInsertId = cmd.LastInsertedId;
 
-                cmd.CommandText = String.Format("SELECT * FROM `log` where idLog = {0}", lastInsertId);
+                cmd.CommandText = String.Format("SELECT * FROM `t_log` where idLog = {0}", lastInsertId);
 
                 MySqlDataReader reader = cmd.ExecuteReader();
                 reader.Read();
 
-                sql = String.Format("Update `log` set lenTot = '{0}' where idLog = {1}",
+                sql = String.Format("Update `t_log` set lenTot = '{0}' where idLog = {1}",
                 this.Ctrl.NumberToHexadecimal(
                     reader.GetString("CodeSender").Count() + reader.GetString("lenSender").Count() + reader.GetString("valueSender").Count()
                     + reader.GetString("CodeDestination").Count() + reader.GetString("lenDestination").Count() + reader.GetString("valueDestination").Count()
@@ -419,7 +425,14 @@ namespace talkEntreprise_server
             }
         }
         
-         public List<Message> GetConversation(string userConnected, string usernameDestination, bool forGroup)
+         /// <summary>
+         /// permet de récupérer les messages envoyé par les utilisateur
+         /// </summary>
+         /// <param name="user">identifiant de l'utilisateur</param>
+         /// <param name="destination">destinataire du messahe</param>
+         /// <param name="forGroup">si c'est pour le groupe</param>
+         /// <returns></returns>
+         public List<Message> GetConversation(string user, string destination, bool forGroup)
         {
             List<Message> lsbMessage = new List<Message>();
             string date = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd");
@@ -429,7 +442,7 @@ namespace talkEntreprise_server
             {
                 sql = string.Format("SELECT DISTINCT  valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
                + " where valueSender=\'{0}\' AND valueMessage!=\"\" AND forGroup ={1} OR valueDestination=\'{2}\'  AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
-           + "AND forGroup ={5}   ", userConnected,forGroup, userConnected, LastDay, date, forGroup);
+           + "AND forGroup ={5}   ", user,forGroup, user, LastDay, date, forGroup);
             }
             else
             {
@@ -442,7 +455,7 @@ namespace talkEntreprise_server
                + "AND valueDestination = '{6}'"
 
                + "AND valuedate BETWEEN  '{7} 00:00:00' AND '{8} 23:59:59'"
-           + "AND forGroup  ={9} ", userConnected, usernameDestination,forGroup, LastDay, date,usernameDestination, userConnected, LastDay, date, forGroup);
+           + "AND forGroup  ={9} ", user, destination,forGroup, LastDay, date,destination, user, LastDay, date, forGroup);
             }
            
             if (this.connectionDB())

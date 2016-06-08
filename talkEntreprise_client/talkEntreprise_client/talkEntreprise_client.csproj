@@ -60,7 +60,7 @@
     <Compile Include="FrmProgram.Designer.cs">
       <DependentUpon>FrmProgram.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManageMessage.cs" />
+    <Compile Include="ManageMessages.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Program.cs" />

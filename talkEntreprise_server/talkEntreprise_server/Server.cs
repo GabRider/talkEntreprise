@@ -167,6 +167,29 @@ namespace talkEntreprise_server
         {
             return clientsList.ContainsKey(user);
         }
+           
+         /// <summary>
+         /// permet  d'enregistrer le message dans la base de données
+         /// </summary>
+         /// <param name="message">message crypter</param>
+         /// <param name="user">nom de l'utilisateur</param>
+         /// <param name="destinationUsername">destinataire du message</param>
+         /// <param name="forGroup">si c'est pour un groupe</param>
+        public void sendMessage(string user, string destinationUsername, string message, bool forGroup)
+        {
+            this.Ctrl.sendMessage(user, destinationUsername, message, forGroup);
+        }
+        /// <summary>
+        /// permet de récupérer les messages envoyé par les utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du messahe</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        /// <returns></returns>
+        public List<Message> GetConversation(string user, string destination, bool forGroup)
+        {
+            return this.Ctrl.GetConversation(user, destination, forGroup);
+        }
     }
 
 

@@ -14,8 +14,13 @@ namespace talkEntreprise_client
         private int _idGroup;
         private bool _connection;
         private string _groupeName;
+        private bool _forGroup;
 
-        
+        public bool ForGroup
+        {
+            get { return _forGroup; }
+            set { _forGroup = value; }
+        }        
         ///////propriétées///////
        
         public bool Connection
@@ -55,7 +60,7 @@ namespace talkEntreprise_client
          
          ////////Constructeur/////////
        
-        public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
+        public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
         {
             setUser(id, pwd, group, connect, nbMessagesNotRead, nameGroup);
         }
@@ -70,7 +75,7 @@ namespace talkEntreprise_client
         /// <param name="connect">état de connection de l'utilisateur</param>
         /// <param name="nbMessagesNotRead">nombre de message en attente</param>
         /// <param name="nameGroup">nom du groupe de l'utilisateur</param>
-        public void setUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
+        public void setUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
         {
             this.IdUser = id;
             this.Password = pwd;
@@ -109,7 +114,7 @@ namespace talkEntreprise_client
         /// donne l'identifiant du groupe de l'utilisateur
         /// </summary>
         /// <returns></returns>
-        public int GetGroupUser()
+        public int GetIdGroup()
         {
             return this.IdGroup;
         }
@@ -145,5 +150,6 @@ namespace talkEntreprise_client
         {
             return this.Password;
         }
+       
     }
 }
