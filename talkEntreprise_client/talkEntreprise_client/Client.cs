@@ -152,7 +152,7 @@ namespace talkEntreprise_client
         /// permet d'envoyer le message ua serveur
         /// </summary>
         /// <param name="message">message</param>
-        public void sendMessage(string user,string destination,string message, bool forGroup)
+        public void sendMessage(string user, string destination, string message, bool forGroup)
         {
             string sendMessage = "#0003;" + user + "-" + destination + "-" +this.Ctrl.EncryptMessage(message)+"-"+ forGroup + "#####";
             byte[] inStream = new byte[10025];
@@ -201,6 +201,24 @@ namespace talkEntreprise_client
             //Efface l'historique
             this.ServerStream.Flush();
         }
-       
+        /// <summary>
+        /// met à jour la liste des employés
+        /// </summary>
+        /// <param name="nameGroupe">nom du groupe de l'utilisateur</param>
+        /// <param name="user"> identifiant de l'utilisateur</param>
+        /// <param name="idGroup">id du groupe de l'utilisateur</param>
+        public void UpdateUsers(string nameGroupe,string user, int idGroup)
+        {
+            string sendMessage = "#0005;" + nameGroupe + ";" + user + ";" + idGroup + "#####";
+            byte[] inStream = new byte[10025];
+
+
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
+        }
     }
 }

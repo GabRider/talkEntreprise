@@ -102,6 +102,7 @@ namespace talkEntreprise_server.classThread
                             this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
                             Thread.Sleep(1);
                             this.ClientServ.updateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
+                        
                         }
                     }
                 }
@@ -142,6 +143,10 @@ namespace talkEntreprise_server.classThread
                             this.ClientServ.updateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
                         }
                     }
+                }
+                if (dataFromClient.Contains("#0005"))
+                {
+                    this.ClientServ.updateAllClient(dataFromClient.Split(';')[1],Convert.ToInt32(dataFromClient.Split(';')[3]),dataFromClient.Split(';')[2]);
                 }
                 //permet de récupprer et d'envoyer les informations au client
 

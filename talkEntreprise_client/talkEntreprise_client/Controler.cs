@@ -170,6 +170,16 @@ namespace talkEntreprise_client
             this.Client.sendMessage(user, destination, message, forGroup);
         }
         /// <summary>
+        /// met à jour la liste des employés
+        /// </summary>
+        /// <param name="nameGroupe">nom du groupe de l'utilisateur</param>
+        /// <param name="user"> identifiant de l'utilisateur</param>
+        /// <param name="idGroup">id du groupe de l'utilisateur</param>
+        public void UpdateUsers(string nameGroupe, string user, int idGroup)
+        {
+            this.Client.UpdateUsers(nameGroupe,user,idGroup);
+        }
+        /// <summary>
         /// permet d'envoyer le message ua serveur
         /// </summary>
         /// <param name="message">message</param>

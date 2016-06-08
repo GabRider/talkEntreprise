@@ -202,8 +202,8 @@ namespace talkEntreprise_server.classThread
             if (this.Serv.IsInClientList(destination))
             {
                 Thread.Sleep(10);
-                 client2 = this.Serv.GetTcpClientInClientList(destination);
-                 stream2 = client2.GetStream();
+                client2 = this.Serv.GetTcpClientInClientList(destination);
+                stream2 = client2.GetStream();
             }
             string sendAllMessages = "#0004";
             foreach (Message msg in this.Serv.GetConversation(user, destination, forGroup))
@@ -213,12 +213,12 @@ namespace talkEntreprise_server.classThread
                 stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
                 if (client2 != null)
                 {
-                   Thread.Sleep(10);
+                    Thread.Sleep(10);
                     stream2.Write(sendBytedMessage, 0, sendBytedMessage.Length);
                 }
                 Thread.Sleep(10);
             }
-            sendAllMessages = "#0004;"+"true-"+user+"-"+destination+"####";
+            sendAllMessages = "#0004;" + "true-" + user + "-" + destination + "####";
             sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
             stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             Thread.Sleep(10);
@@ -227,7 +227,7 @@ namespace talkEntreprise_server.classThread
                 stream2.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             }
 
-           
+
         }
     }
 

@@ -191,6 +191,7 @@ namespace talkEntreprise_client
             {
                 User user = this.lsbEmployees.SelectedItem as User;
 
+                
                 if (user.GetidUser() == destination || user.GetidUser() == iduser || this.lsbEmployees.SelectedIndex == 0)
                 {
 
@@ -245,11 +246,15 @@ namespace talkEntreprise_client
                         }
                     }
                     this.Ctrl.sendMessageGroup(this.UserConnected.GetidUser(),allDestinations, this.tbxWriteMessage.Text, true);
+                    Thread.Sleep(10);
+                    this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(),this.UserConnected.GetidUser(),this.UserConnected.GetIdGroup());
                     this.tbxWriteMessage.Clear();
                 }
                 else
                 {
                     this.Ctrl.sendMessage(this.UserConnected.GetidUser(), destination.GetidUser(), this.tbxWriteMessage.Text, false);
+                    Thread.Sleep(10);
+                    this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetidUser(), this.UserConnected.GetIdGroup());
                     this.tbxWriteMessage.Clear();
                 }
 

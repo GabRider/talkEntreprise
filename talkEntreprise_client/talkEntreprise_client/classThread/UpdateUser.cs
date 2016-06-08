@@ -58,10 +58,10 @@ namespace talkEntreprise_client.classThread
             List<Message> lstMessages = new List<Message>();
             string[] userInfo;
             bool first = true;
-            bool updateMessage = false;
+            
             while (true)
             {
-                updateMessage = false;
+               
                 lstUser.Clear();
                
                 first = true;
