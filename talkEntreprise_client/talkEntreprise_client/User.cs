@@ -15,7 +15,9 @@ namespace talkEntreprise_client
         private bool _connection;
         private string _groupeName;
         private bool _forGroup;
+        private string _admin;
 
+       
         public bool ForGroup
         {
             get { return _forGroup; }
@@ -56,7 +58,11 @@ namespace talkEntreprise_client
             get { return _groupeName; }
             set { _groupeName = value; }
         }
-
+        public string Admin
+        {
+            get { return _admin; }
+            set { _admin = value; }
+        }
          
          ////////Constructeur/////////
        
@@ -84,6 +90,14 @@ namespace talkEntreprise_client
             this.MessageNotRead = nbMessagesNotRead;
             this.GroupeName = nameGroup;
 
+            if (this.IdGroup ==3)
+            {
+                this.Admin = "Administrateur";
+            }
+            else
+            {
+                this.Admin = "";
+            }
         }
         ///////////méthodes//////////
         /// <summary>
@@ -98,7 +112,7 @@ namespace talkEntreprise_client
         /// donne l'identifiant de connexion de l'utilisateur
         /// </summary>
         /// <returns></returns>
-        public string GetidUser()
+        public string GetIdUser()
         {
             return this.IdUser;
         }
@@ -150,6 +164,13 @@ namespace talkEntreprise_client
         {
             return this.Password;
         }
-       
+        /// <summary>
+        /// si la personne est admin
+        /// </summary>
+        /// <returns>si admin</returns>
+        public string GetAdmin()
+        {
+            return this.Admin;
+        }
     }
 }

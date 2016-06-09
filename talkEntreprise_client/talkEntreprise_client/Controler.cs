@@ -9,8 +9,7 @@ using System.Threading;
 using System.Net.Sockets;
 namespace talkEntreprise_client
 {
-    delegate void VisibleChange();
-    delegate void CloseConnection();
+
     public class Controler
     {
         ////////////////Champs/////////////
@@ -104,8 +103,7 @@ namespace talkEntreprise_client
             //création d'un nouveau processus
             this.FrmProg = new Thread(new ThreadStart(ThreadProgram));
             this.FrmProg.SetApartmentState(ApartmentState.STA);
-            //donne le droit de travailler en arrière plan
-            this.FrmProg.IsBackground = true;
+            
             //lancer le processus
             this.FrmProg.Start();
         }
@@ -115,7 +113,9 @@ namespace talkEntreprise_client
         public void ThreadProgram()
         {
             FrmProgram prog = new FrmProgram(this);
+            prog.FormClosed += (s, e) => Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
             prog.Show();
+            
             //permet de garder la fenêtre ouverte
             Dispatcher.Run();
         }
@@ -148,26 +148,25 @@ namespace talkEntreprise_client
         public void CloseConnection()
         {
 
-            this.FrmProg.Interrupt();
-            Dispatcher.ExitAllFrames();
             this.Client.CloseConnection();
+
 
         }
         /// <summary>
         /// permet de réinitialiser la connexion avec le server
         /// </summary>
-        public void ResetConnection()
+        public bool ResetConnection()
         {
-            this.Client.ResetConnection();
+            return this.Client.ResetConnection();
         }
 
         /// <summary>
         /// permet d'envoyer le message ua serveur
         /// </summary>
         /// <param name="message">message</param>
-        public void sendMessage(string user, string destination, string message, bool forGroup)
+        public bool sendMessage(string user, string destination, string message, bool forGroup)
         {
-            this.Client.sendMessage(user, destination, message, forGroup);
+            return this.Client.sendMessage(user, destination, message, forGroup);
         }
         /// <summary>
         /// met à jour la liste des employés
@@ -183,9 +182,9 @@ namespace talkEntreprise_client
         /// permet d'envoyer le message ua serveur
         /// </summary>
         /// <param name="message">message</param>
-        public void sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
+        public bool sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
         {
-            this.Client.sendMessageGroup(user,Alldestination,message,forGroup);
+           return this.Client.sendMessageGroup(user,Alldestination,message,forGroup);
         }
          /// <summary>
         /// permet d'afficher la conversation de l'utilisateur
@@ -193,9 +192,19 @@ namespace talkEntreprise_client
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="destination">destinataire du message</param>
         /// <param name="forGroup">si c'est pour le groupe</param>
-        public void GetConversation(string user, string destination, bool forGroup)
+        public bool GetConversation(string user, string destination, bool forGroup)
         {
-            this.Client.GetConversation(user,destination,forGroup);
+            return this.Client.GetConversation(user,destination,forGroup);
+        }
+        /// <summary>
+        /// permet de mettre à jour l'état des messages
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire</param>
+        /// <param name="isForGroup">pour un groupe</param>
+        public bool UpdateStateMessages(string user, string destination, bool isForGroup, string nameGroup, int idGroup, string userSecure)
+        {
+           return this.Client.UpdateStateMessages(user,destination,isForGroup,nameGroup,idGroup,userSecure);
         }
         /////////////méthodes ManageMessages/////////////
         /// <summary>
@@ -221,9 +230,17 @@ namespace talkEntreprise_client
         /// <summary>
         /// permet de modifier la visibilité de la vue
         /// </summary>
-        public void VisibleChange()
+        public void VisibleChange(bool isAbort)
         {
-            this.Connect.Visible = !this.Connect.Visible;
+            this.Connect.VisibleChange();
+            if (isAbort)
+            {
+                this.TClient.Close();
+                this.Stream.Close();
+                
+                
+            }
+            
         }
         /////////////méthodes spécifique au controler////
         /// <summary>

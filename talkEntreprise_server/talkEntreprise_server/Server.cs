@@ -44,11 +44,22 @@ namespace talkEntreprise_server
             this.Ctrl = c;
 
             this.FirstConnection = new Thread(new ClientConnectToServ(this).init);
+            this.FirstConnection.IsBackground = true;
             this.FirstConnection.Start();
             
         }
 
         /////////méthodes////////
+        /// <summary>
+        /// permet de quitter la connection
+        /// </summary>
+        public void CloseConnection()
+        {
+           
+         
+            
+        }
+
         /// <summary>
         /// permet d'ajouter le nouveau client à la liste de client
         /// </summary>
@@ -189,6 +200,16 @@ namespace talkEntreprise_server
         public List<Message> GetConversation(string user, string destination, bool forGroup)
         {
             return this.Ctrl.GetConversation(user, destination, forGroup);
+        }
+        /// <summary>
+        /// permet de mettre à jour l'état des messages
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="destination"></param>
+        /// <param name="forGroup"></param>
+        public void UpdateStateMessages(string user, string destination, bool isforGroup)
+        {
+            this.Ctrl.UpdateStateMessages(user, destination, isforGroup);
         }
     }
 

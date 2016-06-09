@@ -141,5 +141,30 @@ namespace talkEntreprise_server
         {
             return this.Request.GetConversation(user,destination,forGroup);
         }
+         /// <summary>
+        /// permet de mettre à jour l'état des messages
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="destination"></param>
+        /// <param name="forGroup"></param>
+        public void UpdateStateMessages(string user, string destination, bool isforGroup)
+        {
+            this.Request.UpdateStateMessages(user,destination,isforGroup);
+        }
+         /// <summary>
+        /// permet de mettre à zéro tous les utilisateurs
+        /// </summary>
+        public void SetAllEmployeesDeconnected()
+        {
+            this.Request.SetAllEmployeesDeconnected();
+        }
+         //////méthodes Server///////
+          /// <summary>
+        /// permet de quitter la connection
+        /// </summary>
+        public void CloseConnection()
+        {
+            this.Serv.CloseConnection();
+        }
     }
 }

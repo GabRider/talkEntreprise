@@ -116,8 +116,9 @@ namespace talkEntreprise_server.classThread
                     sendBytedMessage = Encoding.ASCII.GetBytes(sendInfo);
                     networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
                     //permet de mettre à jour la liste des threads
-                    this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this, user).update);
+                    this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this, user).Update);
                     this.Serv.AddThreadList(user, UserUpdate);
+                    this.UserUpdate.IsBackground = true;
                     this.UserUpdate.Start();
                 }
 
@@ -135,8 +136,12 @@ namespace talkEntreprise_server.classThread
         {
             Thread t = this.Serv.getThreadlist(user);
             this.Serv.DeconnectionToServer(user);
-            this.updateAllClient(nameGroup, idGroup, user);
+            Thread.Sleep(5);
             this.Serv.DelInList(user);
+            Thread.Sleep(5);
+            this.updateAllClient(nameGroup, idGroup, user);
+
+
             t.Abort();
         }
         /// <summary>
@@ -158,11 +163,13 @@ namespace talkEntreprise_server.classThread
         {
             //envoiela liste des employee à l'utilisateur qui vient de se connecter
             byte[] sendBytedMessage = null;
-            TcpClient client = this.Serv.GetTcpClientInClientList(user);
-            NetworkStream stream = client.GetStream();
-            Thread.Sleep(10);
+            TcpClient client;
+            NetworkStream stream;
             if (this.Serv.IsInClientList(user))
             {
+                client = this.Serv.GetTcpClientInClientList(user);
+                stream = client.GetStream();
+                
                 sendBytedMessage = Encoding.ASCII.GetBytes(this.Serv.GetUserListInString(nameGroup, idGroup, user) + "####");
                 stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             }
@@ -192,7 +199,13 @@ namespace talkEntreprise_server.classThread
         {
             this.Serv.sendMessage(user, destinationUsername, message, forGroup);
         }
-        public void updateAllClientMessages(string user, string destination, bool forGroup)
+        /// <summary>
+        /// permet de mettre à jour la liste de conversation des utilisateurs
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire</param>
+        /// <param name="forGroup">pour un groupe</param>
+        public void UpdateAllClientMessages(string user, string destination, bool forGroup)
         {
             byte[] sendBytedMessage = null;
             TcpClient client = this.Serv.GetTcpClientInClientList(user);
@@ -218,7 +231,7 @@ namespace talkEntreprise_server.classThread
                 }
                 Thread.Sleep(10);
             }
-            sendAllMessages = "#0004;" + "true-" + user + "-" + destination + "####";
+            sendAllMessages = "#0004;" + "true-" + user + "-" + destination + "-" + forGroup + "####";
             sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
             stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             Thread.Sleep(10);
@@ -229,6 +242,18 @@ namespace talkEntreprise_server.classThread
 
 
         }
+
+        /// <summary>
+        /// permet de mettre à jour l'état des messages
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="destination"></param>
+        /// <param name="forGroup"></param>
+        public void UpdateStateMessages(string user, string destination, bool isforGroup)
+        {
+            this.Serv.UpdateStateMessages(user, destination, isforGroup);
+        }
+
     }
 
 }

@@ -80,7 +80,6 @@
             this.lsbEmployees.TabIndex = 11;
             this.lsbEmployees.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lsbEmployees_DrawItem);
             this.lsbEmployees.SelectedIndexChanged += new System.EventHandler(this.lsbEmployees_SelectedIndexChanged);
-            this.lsbEmployees.DataSourceChanged += new System.EventHandler(this.lsbEmployees_DataSourceChanged);
             // 
             // tbxUser
             // 

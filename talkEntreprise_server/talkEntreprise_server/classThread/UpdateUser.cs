@@ -63,7 +63,7 @@ namespace talkEntreprise_server.classThread
         /// <summary>
         /// permet de récupérer les informations du client
         /// </summary>
-        public void update()
+        public void Update()
         {
             List<string> destinationMessag = new List<string>();
             Byte[] sendBytedMessage = null;
@@ -86,14 +86,15 @@ namespace talkEntreprise_server.classThread
                 }
 
                 //permet de déconnecter la personne
-                if (dataFromClient.Contains("#0002"))
+                if (dataFromClient.Split(';')[0] == "#0002")
                 {
 
                     this.UserInformations.SetConnection(false);
+                    
                 }
 
 
-                if (dataFromClient.Contains("#0003") && !dataFromClient.Contains("!"))
+                if (dataFromClient.Split(';')[0] == "#0003" && !dataFromClient.Contains("!"))
                 {                  
                     foreach (string messageInformation in dataFromClient.Split(';'))
                     {
@@ -101,12 +102,13 @@ namespace talkEntreprise_server.classThread
                         {
                             this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
                             Thread.Sleep(1);
-                            this.ClientServ.updateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
+                            this.ClientServ.UpdateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
                         
                         }
                     }
                 }
-                else if (dataFromClient.Contains("#0003") && dataFromClient.Contains("!"))
+                    //envoi des messages dans le groupe
+                else if (dataFromClient.Split(';')[0] =="#0003" && dataFromClient.Contains("!"))
                 {
                     
                        
@@ -124,7 +126,7 @@ namespace talkEntreprise_server.classThread
                                 Thread.Sleep(1);
                                 if (info !="")
                                 {
-                                    this.ClientServ.updateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
+                                    this.ClientServ.UpdateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
                                 
                                 }
                                 
@@ -134,22 +136,29 @@ namespace talkEntreprise_server.classThread
                 }
 
 
-                if (dataFromClient.Contains("#0004"))
+                if (dataFromClient.Split(';')[0] =="#0004")
                 {
                     foreach (string info in dataFromClient.Split(';'))
                     {
                         if (!info.Contains("#0004"))
                         {
-                            this.ClientServ.updateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
+                           
+                            this.ClientServ.UpdateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
                         }
                     }
                 }
-                if (dataFromClient.Contains("#0005"))
+                if (dataFromClient.Split(';')[0] =="#0005")
                 {
                     this.ClientServ.updateAllClient(dataFromClient.Split(';')[1],Convert.ToInt32(dataFromClient.Split(';')[3]),dataFromClient.Split(';')[2]);
                 }
-                //permet de récupprer et d'envoyer les informations au client
-
+              
+                //permet de mettre à jour les  états des messages
+                if (dataFromClient.Split(';')[0] =="#0006")
+                {
+                    this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1],dataFromClient.Split(';')[2],Convert.ToBoolean(dataFromClient.Split(';')[3]));
+                    
+                    this.ClientServ.updateAllClient(dataFromClient.Split(';')[4], Convert.ToInt32(dataFromClient.Split(';')[5]), dataFromClient.Split(';')[6]);
+                }
 
 
 

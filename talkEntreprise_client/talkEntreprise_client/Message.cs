@@ -9,27 +9,29 @@ namespace talkEntreprise_client
     public class Message
     {
         private string _author;
+        private string _content;
+        private string _date;
 
         public string Author
         {
             get { return _author; }
             set { _author = value; }
         }
-        private string _content;
+
 
         public string Content
         {
             get { return _content; }
             set { _content = value; }
         }
-        private string _date;
+
 
         public string Date
         {
             get { return _date; }
             set { _date = value; }
         }
-        
+
 
         public Message(string user, string valueMessage, string valueDate)
         {
@@ -38,8 +40,8 @@ namespace talkEntreprise_client
             this.Date = valueDate;
             
         }
-        
-        
+
+
         public string GetDate()
         {
             return this.Date;
@@ -52,6 +54,6 @@ namespace talkEntreprise_client
         {
             return this.Content;
         }
-      
+
     }
 }

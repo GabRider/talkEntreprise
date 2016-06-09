@@ -23,6 +23,14 @@ namespace talkEntreprise_server
         {
             InitializeComponent();
             this.Ctrl = new Controler(this);
+            this.Ctrl.SetAllEmployeesDeconnected();
+        }
+
+        private void FrmConnection_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Ctrl.CloseConnection();
+           
+            Application.Exit();
         }
     }
 }

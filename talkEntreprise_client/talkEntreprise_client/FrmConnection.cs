@@ -37,32 +37,43 @@ namespace talkEntreprise_client
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            if (this.ReConnection)
-            {
-                this.Ctrl.ResetConnection();
-            }
-            else
-            {
-                this.ReConnection = true;
-            }
-            if (this.Ctrl.Connection(tbxId.Text, tbxPassword.Text))
+            if (this.Ctrl.ResetConnection())
             {
 
-                this.Visible = !this.Visible;
-                this.Ctrl.setUserConnected();
-                Thread.Sleep(40);
-                this.Ctrl.CreateProgram(tbxId.Text);
+
+                if (this.Ctrl.Connection(tbxId.Text, tbxPassword.Text))
+                {
+
+                    this.Visible = !this.Visible;
+                    this.Ctrl.setUserConnected();
+                    Thread.Sleep(40);
+                    this.Ctrl.CreateProgram(tbxId.Text);
+                }
+                else
+                {  
+                    MessageBox.Show("Identifiant ou mot de passe incorrecte. ", "Connexion non valide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             else
             {
-                this.Ctrl.ResetConnection();
-                MessageBox.Show("connection impossible ou connexion incorrecte ", "erreur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Le serveur est inaccessible pour le moment réessayé ultérieurement", "Serveur injoignable", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void btnQuit_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+        /// <summary>
+        /// permet de modifier la visibilité de la vue
+        /// </summary>
+        public void VisibleChange()
+        {
+            Invoke(new MethodInvoker(delegate
+            {
+                 this.Visible = !this.Visible;
+            }));
+           
         }
     }
 }

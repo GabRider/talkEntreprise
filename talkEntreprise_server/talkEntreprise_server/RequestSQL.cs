@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace talkEntreprise_server
 {
-     public class RequestSQL
+    public class RequestSQL
     {
-        
-         ///////Champs//////
-        
-        const int STATEDEFAULT = 2;
-        const int STATENOTREAD = 3;
-        const int STATEREAD = 4;
+
+        ///////Champs//////
+
+        private const int STATEDEFAULT = 2;
+        private const int STATENOTREAD = 3;
+        private const int STATEREAD = 4;
+        private const int IDADMINISTRATORS = 3;
         private MySqlConnection _connectionUser;
-        
-         /////propriétées///// 
+
+        /////propriétées///// 
 
         public MySqlConnection ConnectionUser
         {
@@ -32,19 +33,19 @@ namespace talkEntreprise_server
             set { _ctrl = value; }
         }
 
-         ///////Constructeur//// 
+        ///////Constructeur//// 
 
         public RequestSQL(Controler c)
         {
             this.Ctrl = c;
         }
-         
-         ///////méhthodes////
-         
-         /// <summary>
-         /// permet d'initialiser la connexion à la base de données
-         /// </summary>
-         /// <returns>true false</returns>
+
+        ///////méhthodes////
+
+        /// <summary>
+        /// permet d'initialiser la connexion à la base de données
+        /// </summary>
+        /// <returns>true false</returns>
         public bool connectionDB()
         {
             try
@@ -63,9 +64,9 @@ namespace talkEntreprise_server
 
         }
 
-         /// <summary>
-         /// permet de fermer la connexion à la base de données
-         /// </summary>
+        /// <summary>
+        /// permet de fermer la connexion à la base de données
+        /// </summary>
         public void shutdownConnectionDB()
         {
             ConnectionUser.Close();
@@ -89,13 +90,13 @@ namespace talkEntreprise_server
                 reader.Read();
                 if (Convert.ToInt32(reader.GetString("total")) == 1)
                 {
-                 
+
                     result = true;
-                  
+
                 }
                 else
                 {
-                   
+
                     result = false;
                 }
                 reader.Close();
@@ -110,15 +111,15 @@ namespace talkEntreprise_server
             }
             return result;
         }
-         /// <summary>
-         /// permet de récupérer les informations de l'utilisateur demmandé
-         /// </summary>
-         /// <param name="user">identifiant de l'utilisateu</param>
-         /// <returns>list des informations de l'utilisateur</returns>
+        /// <summary>
+        /// permet de récupérer les informations de l'utilisateur demmandé
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateu</param>
+        /// <returns>list des informations de l'utilisateur</returns>
         public List<string> GetInformation(string user)
         {
             List<string> lstInfoUser = new List<string>();
-            
+
             if (this.connectionDB())
             {
                 string sql = String.Format("SELECT u.idGroup, g.group, password FROM t_users u, t_group g where u.idGroup = g.idGroup AND  idUser  = '{0}'", user);
@@ -131,13 +132,14 @@ namespace talkEntreprise_server
                 lstInfoUser.Add(reader.GetString("password"));
             }
 
+
             return lstInfoUser;
         }
 
-         /// <summary>
-         /// permet de dire que l'utilisateur c'est connecté sur le server --> log de la base de données
-         /// </summary>
-         /// <param name="user">identifiant de l'utilisateur</param>
+        /// <summary>
+        /// permet de dire que l'utilisateur c'est connecté sur le server --> log de la base de données
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
         public void SucessConnectionToServer(string user)
         {
 
@@ -181,10 +183,10 @@ namespace talkEntreprise_server
             }
         }
 
-         /// <summary>
-         /// permet de dire que l'utilisateur c'est déconnecté du serveur
-         /// </summary>
-         /// <param name="user">identifiant de l'utilisateur</param>
+        /// <summary>
+        /// permet de dire que l'utilisateur c'est déconnecté du serveur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
         public void DeconnectionToServer(string user)
         {
 
@@ -228,22 +230,32 @@ namespace talkEntreprise_server
                 this.shutdownConnectionDB();
             }
         }
-         /// <summary>
-         /// récupération de la liste des employés
-         /// </summary>
-         /// <param name="nameGroup">nom du groupe de l'utilisateur</param>
-         /// <param name="idGroup">identifiant du groupe de l'utilisateur</param>
-         /// <param name="user">identifiant de l'utilisateur</param>
-         /// <returns>list des employés</returns>
-        public List<User> GetUserList(string nameGroup,int idGroup, string user)
+        /// <summary>
+        /// récupération de la liste des employés
+        /// </summary>
+        /// <param name="nameGroup">nom du groupe de l'utilisateur</param>
+        /// <param name="idGroup">identifiant du groupe de l'utilisateur</param>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <returns>list des employés</returns>
+        public List<User> GetUserList(string nameGroup, int idGroup, string user)
         {
             List<User> lsbUsers = new List<User>();
             bool first = true;
+            string sql = string.Empty;
             //  bool ConnectedFriend = true;
             //bool NotConnectedFriend = true;
             //  List<string> lsbFriends = new List<string>();
-            string sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, user);
-            lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0,nameGroup));
+ lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
+            if (idGroup == IDADMINISTRATORS)
+            {
+                    sql = string.Format("SELECT * From t_users where idGroup = {0} or idGroup = {1} AND idUser != \"{2}\" ORDER BY `idUser` ASC",IDADMINISTRATORS, idGroup, user);
+            }
+            else
+            {
+                 sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC",  idGroup, user);
+            }
+         
+           
             if (this.connectionDB())
             {
 
@@ -254,22 +266,26 @@ namespace talkEntreprise_server
 
                 while (reader.Read())
                 {
-                    lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0,nameGroup));
+                    lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0, nameGroup));
 
                 }
                 shutdownConnectionDB();
+            }
+            else
+            {
+                lsbUsers.Add(new User("DB", "", idGroup, false, 0, nameGroup));
             }
             foreach (User friend in lsbUsers)
             {
 
                 if (first)
                 {
-                    friend.SetMessagesNotRead(getStatesMessages(user, friend.GetidUser(), true));
+                    friend.SetMessagesNotRead(GetStatesMessages(user, friend.GetidUser(), true));
                     first = false;
                 }
                 else
                 {
-                    friend.SetMessagesNotRead(getStatesMessages(user, friend.GetidUser(), false));
+                    friend.SetMessagesNotRead(GetStatesMessages(user, friend.GetidUser(), false));
                 }
 
             }
@@ -290,7 +306,7 @@ namespace talkEntreprise_server
             //  bool ConnectedFriend = true;
             //bool NotConnectedFriend = true;
             //  List<string> lsbFriends = new List<string>();
-            string sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, user);
+            string sql = string.Format("SELECT * From t_users where idGroup = {0} or idGroup = {1} AND idUser != \"{2}\" ORDER BY `idUser` ASC", IDADMINISTRATORS, idGroup, user);
             lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
             if (this.connectionDB())
             {
@@ -307,39 +323,44 @@ namespace talkEntreprise_server
                 }
                 shutdownConnectionDB();
             }
+            else
+            {
+                lsbUsers.Add(new User("DB", "", idGroup, false, 0, nameGroup));
+            }
+
             foreach (User userInfo in lsbUsers)
             {
 
                 if (first)
                 {
-                    userInfo.SetMessagesNotRead(getStatesMessages(user, userInfo.GetidUser(), true));
+                    userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetidUser(), true));
                     result += userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                     first = false;
                 }
                 else
                 {
-                    userInfo.SetMessagesNotRead(getStatesMessages(user, userInfo.GetidUser(), false));
-                    result +=";"+ userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
+                    userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetidUser(), false));
+                    result += ";" + userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                 }
 
             }
             return result;
         }
-         /// <summary>
-         /// permet de récupérer les informations relatifs au messages non lu de l'utilisateur
-         /// </summary>
-         /// <param name="user">identifiant de l'utilisateur</param>
-         /// <param name="userDestination">identifiant d'un autre utilisateur</param>
-         /// <param name="forGroup">si le message est envoyé au groupe</param>
-         /// <returns>nombre de message eb abscence</returns>
-        public int getStatesMessages(string user, string userDestination, bool forGroup)
+        /// <summary>
+        /// permet de récupérer les informations relatifs au messages non lu de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="userDestination">identifiant d'un autre utilisateur</param>
+        /// <param name="forGroup">si le message est envoyé au groupe</param>
+        /// <returns>nombre de message eb abscence</returns>
+        public int GetStatesMessages(string user, string userDestination, bool forGroup)
         {
             string sql = string.Empty;
             int numberMessages = 0;
             if (forGroup)
             {
                 sql = string.Format("SELECT Count( Distinct valueMessage,valueDate) as numberMessages FROM t_log"
-               + " where  valueDestination=\'{0}\' AND forGroup ={1}   ", user, forGroup);
+               + " where  valueDestination=\'{0}\' AND forGroup ={1} AND state={2} OR valueDestination=\'{3}\' AND forGroup ={4} AND state={5}  ", user, forGroup, STATENOTREAD, user, forGroup, STATEDEFAULT);
             }
             else
             {
@@ -369,14 +390,14 @@ namespace talkEntreprise_server
 
             return numberMessages;
         }
-         /// <summary>
-         /// permet  d'enregistrer le message dans la base de données
-         /// </summary>
-         /// <param name="message">message crypter</param>
-         /// <param name="user">identifiant de l'utilisateur</param>
-         /// <param name="destination">destinataire du message</param>
-         /// <param name="forGroup">si c'est pour un groupe</param>
-        public void sendMessage(string user, string destination,string message, bool forGroup)
+        /// <summary>
+        /// permet  d'enregistrer le message dans la base de données
+        /// </summary>
+        /// <param name="message">message crypter</param>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du message</param>
+        /// <param name="forGroup">si c'est pour un groupe</param>
+        public void sendMessage(string user, string destination, string message, bool forGroup)
         {
             if (this.connectionDB())
             {
@@ -424,15 +445,15 @@ namespace talkEntreprise_server
                 this.shutdownConnectionDB();
             }
         }
-        
-         /// <summary>
-         /// permet de récupérer les messages envoyé par les utilisateur
-         /// </summary>
-         /// <param name="user">identifiant de l'utilisateur</param>
-         /// <param name="destination">destinataire du messahe</param>
-         /// <param name="forGroup">si c'est pour le groupe</param>
-         /// <returns></returns>
-         public List<Message> GetConversation(string user, string destination, bool forGroup)
+
+        /// <summary>
+        /// permet de récupérer les messages envoyé par les utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du messahe</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        /// <returns></returns>
+        public List<Message> GetConversation(string user, string destination, bool forGroup)
         {
             List<Message> lsbMessage = new List<Message>();
             string date = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd");
@@ -442,25 +463,25 @@ namespace talkEntreprise_server
             {
                 sql = string.Format("SELECT DISTINCT  valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
                + " where valueSender=\'{0}\' AND valueMessage!=\"\" AND forGroup ={1} OR valueDestination=\'{2}\'  AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
-           + "AND forGroup ={5}   ", user,forGroup, user, LastDay, date, forGroup);
+           + "AND forGroup ={5}   ", user, forGroup, user, LastDay, date, forGroup);
             }
             else
             {
-                 sql = string.Format("SELECT valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
-               + " where valueSender ='{0}'"
-               + "AND valueDestination = '{1}'"
-               +" AND forGroup={2} "
-                + "AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
-               + " OR valueSender ='{5}'"
-               + "AND valueDestination = '{6}'"
+                sql = string.Format("SELECT valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
+              + " where valueSender ='{0}'"
+              + "AND valueDestination = '{1}'"
+              + " AND forGroup={2} "
+               + "AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
+              + " OR valueSender ='{5}'"
+              + "AND valueDestination = '{6}'"
 
-               + "AND valuedate BETWEEN  '{7} 00:00:00' AND '{8} 23:59:59'"
-           + "AND forGroup  ={9} ", user, destination,forGroup, LastDay, date,destination, user, LastDay, date, forGroup);
+              + "AND valuedate BETWEEN  '{7} 00:00:00' AND '{8} 23:59:59'"
+          + "AND forGroup  ={9} ", user, destination, forGroup, LastDay, date, destination, user, LastDay, date, forGroup);
             }
-           
+
             if (this.connectionDB())
             {
-            
+
 
 
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
@@ -473,8 +494,49 @@ namespace talkEntreprise_server
                 reader.Close();
                 this.shutdownConnectionDB();
             }
+            else
+            {
+                lsbMessage.Add(new Message("DB", "", "2016-06-09_05-49-44"));
+            }
             return lsbMessage;
         }
+        /// <summary>
+        /// permet de mettre à jour l'état des messages
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="destination"></param>
+        /// <param name="isforGroup"></param>
+        public void UpdateStateMessages(string user, string destination, bool isforGroup)
+        {
+
+            string sql = String.Format("UPDATE t_log set state={0} where valueSender = \'{1}\' AND valueDestination = \'{2}\' AND state = {3}  AND forGroup={4}  ", STATEREAD, user, destination, STATENOTREAD, isforGroup);
+
+
+
+            if (this.connectionDB())
+            {
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                cmd.ExecuteNonQuery();
+                this.shutdownConnectionDB();
+            }
         }
+        /// <summary>
+        /// permet de mettre à zéro tous les utilisateurs
+        /// </summary>
+        public void SetAllEmployeesDeconnected()
+        {
+            string sql = "UPDATE t_users SET connection= false ";
+            if (this.connectionDB())
+            {
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                cmd.ExecuteNonQuery();
+                this.shutdownConnectionDB();
+
+            }
+        }
+
     }
+
+
+}
 
