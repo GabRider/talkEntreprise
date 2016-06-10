@@ -172,5 +172,9 @@ namespace talkEntreprise_client
         {
             return this.Admin;
         }
+        public void setPassword(string password)
+        {
+            this.Password = password;
+        }
     }
 }

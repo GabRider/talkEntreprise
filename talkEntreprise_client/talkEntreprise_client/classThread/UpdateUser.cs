@@ -218,6 +218,13 @@ namespace talkEntreprise_client.classThread
 
 
                 }
+                //si le mot de passe a été changé
+                if (result.Split(';')[0] == "#0008")
+                {
+
+                    this.Prog.PasswordIsChanged(Convert.ToBoolean(result.Split(';')[1]), result.Split(';')[2]);
+                }
+
 
             }
         }

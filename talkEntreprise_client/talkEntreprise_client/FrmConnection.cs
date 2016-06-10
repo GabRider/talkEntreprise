@@ -43,7 +43,8 @@ namespace talkEntreprise_client
 
                 if (this.Ctrl.Connection(tbxId.Text, tbxPassword.Text))
                 {
-
+                    tbxPassword.Clear();
+                    tbxPassword.Focus();
                     this.Visible = !this.Visible;
                     this.Ctrl.setUserConnected();
                     Thread.Sleep(40);

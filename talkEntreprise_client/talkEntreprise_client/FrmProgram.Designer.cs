@@ -119,6 +119,7 @@
             this.tsmiSettings.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
             this.tsmiSettings.Size = new System.Drawing.Size(227, 22);
             this.tsmiSettings.Text = "&Paramètre du compte";
+            this.tsmiSettings.Click += new System.EventHandler(this.tsmiSettings_Click);
             // 
             // toolStripSeparator2
             // 
@@ -258,7 +259,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmProgram";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmProgram_FormClosing);
-            this.Load += new System.EventHandler(this.FrmProgram_Load);
             this.msProgram.ResumeLayout(false);
             this.msProgram.PerformLayout();
             this.ssProgram.ResumeLayout(false);

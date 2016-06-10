@@ -61,7 +61,7 @@
             this.tbxPassword.PasswordChar = '*';
             this.tbxPassword.Size = new System.Drawing.Size(161, 20);
             this.tbxPassword.TabIndex = 2;
-            this.tbxPassword.Text = "123";
+            this.tbxPassword.Text = "123456";
             // 
             // lblPassword
             // 

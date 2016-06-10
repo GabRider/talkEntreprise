@@ -304,7 +304,7 @@ namespace talkEntreprise_server
             List<User> lsbUsers = new List<User>();
             bool first = true;
             string sql;
-        
+
             lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
             if (idGroup != IDADMINISTRATORS)
             {
@@ -469,7 +469,7 @@ namespace talkEntreprise_server
             {
                 sql = string.Format("SELECT DISTINCT  valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
                + " where valueSender=\'{0}\' AND valueMessage!=\"\"  AND forGroup ={1} AND valuedate BETWEEN  '{2} 00:00:00' AND '{3} 23:59:59'  OR valueMessage!=\"\"  AND valueDestination=\'{4}\' AND forGroup ={5} AND valuedate BETWEEN  '{6} 00:00:00' AND '{7} 23:59:59'"
-           , user,  forGroup, LastDay, date,user,  forGroup, LastDay, date);
+           , user, forGroup, LastDay, date, user, forGroup, LastDay, date);
             }
             else
             {
@@ -547,7 +547,7 @@ namespace talkEntreprise_server
         /// <param name="destination">destinataire du messahe</param>
         /// <param name="forGroup">si c'est pour le groupe</param>
         /// <returns></returns>
-        public List<Message> GetOldConversation(string user, string destination, bool forGroup,int nbDays)
+        public List<Message> GetOldConversation(string user, string destination, bool forGroup, int nbDays)
         {
             List<Message> lsbMessage = new List<Message>();
             string date = DateTime.Now.ToUniversalTime().AddDays(-1).ToString("yyyy-MM-dd");
@@ -594,8 +594,29 @@ namespace talkEntreprise_server
             }
             return lsbMessage;
         }
-    }
+        /// <summary>
+        /// permet de changer le mot de passe de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="password">nouveau mot de passe de l'utilisateur</param>
+        /// <returns>réussit ou annuler</returns>
+        public bool ChangePassword(string user, string password)
+        {
+            string sql = string.Format("UPDATE t_users SET password= '{0}' where idUser = '{1}' ", password, user);
+            if (this.connectionDB())
+            {
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                cmd.ExecuteNonQuery();
+                this.shutdownConnectionDB();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
+    }
 
 }
 

@@ -90,12 +90,12 @@ namespace talkEntreprise_server.classThread
                 {
 
                     this.UserInformations.SetConnection(false);
-                    
+
                 }
 
 
                 if (dataFromClient.Split(';')[0] == "#0003" && !dataFromClient.Contains("!"))
-                {                  
+                {
                     foreach (string messageInformation in dataFromClient.Split(';'))
                     {
                         if (!messageInformation.Contains("#0003"))
@@ -103,60 +103,60 @@ namespace talkEntreprise_server.classThread
                             this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
                             Thread.Sleep(1);
                             this.ClientServ.UpdateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
-                        
+
                         }
                     }
                 }
-                    //envoi des messages dans le groupe
-                else if (dataFromClient.Split(';')[0] =="#0003" && dataFromClient.Contains("!"))
+                //envoi des messages dans le groupe
+                else if (dataFromClient.Split(';')[0] == "#0003" && dataFromClient.Contains("!"))
                 {
-                    
-                       
-                            foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
-                            {
-                                if (info !="")
-                                {
-                                    this.ClientServ.sendMessage(dataFromClient.Split(';')[1].Split('-')[0], info, dataFromClient.Split('-')[2], Convert.ToBoolean(dataFromClient.Split('-')[3]));
-                                }
-                                
-                            }
 
-                            foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
-                            {
-                                Thread.Sleep(1);
-                                if (info !="")
-                                {
-                                    this.ClientServ.UpdateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
-                                
-                                }
-                                
-                            }
-                        
-                    
+
+                    foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
+                    {
+                        if (info != "")
+                        {
+                            this.ClientServ.sendMessage(dataFromClient.Split(';')[1].Split('-')[0], info, dataFromClient.Split('-')[2], Convert.ToBoolean(dataFromClient.Split('-')[3]));
+                        }
+
+                    }
+
+                    foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
+                    {
+                        Thread.Sleep(1);
+                        if (info != "")
+                        {
+                            this.ClientServ.UpdateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
+
+                        }
+
+                    }
+
+
                 }
 
 
-                if (dataFromClient.Split(';')[0] =="#0004")
+                if (dataFromClient.Split(';')[0] == "#0004")
                 {
                     foreach (string info in dataFromClient.Split(';'))
                     {
                         if (!info.Contains("#0004"))
                         {
-                           
+
                             this.ClientServ.UpdateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
                         }
                     }
                 }
-                if (dataFromClient.Split(';')[0] =="#0005")
+                if (dataFromClient.Split(';')[0] == "#0005")
                 {
-                    this.ClientServ.updateAllClient(dataFromClient.Split(';')[1],Convert.ToInt32(dataFromClient.Split(';')[3]),dataFromClient.Split(';')[2]);
+                    this.ClientServ.updateAllClient(dataFromClient.Split(';')[1], Convert.ToInt32(dataFromClient.Split(';')[3]), dataFromClient.Split(';')[2]);
                 }
-              
+
                 //permet de mettre à jour les  états des messages
-                if (dataFromClient.Split(';')[0] =="#0006")
+                if (dataFromClient.Split(';')[0] == "#0006")
                 {
-                    this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1],dataFromClient.Split(';')[2],Convert.ToBoolean(dataFromClient.Split(';')[3]));
-                    
+                    this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
+
                     this.ClientServ.updateAllClient(dataFromClient.Split(';')[4], Convert.ToInt32(dataFromClient.Split(';')[5]), dataFromClient.Split(';')[6]);
                 }
                 //récupération ancien messages
@@ -164,9 +164,19 @@ namespace talkEntreprise_server.classThread
                 {
                     this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
                     this.ClientServ.GetOldMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]), Convert.ToInt32(dataFromClient.Split(';')[4]));
-                    
-                }
 
+                }
+                if (dataFromClient.Split(';')[0] == "#0008")
+                {
+                    if (this.ClientServ.ChangePassword(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2]))
+                    {
+                        this.ClientServ.PasswordIsChanged(dataFromClient.Split(';')[1], true, dataFromClient.Split(';')[2]);
+                    }
+                    else
+                    {
+                        this.ClientServ.PasswordIsChanged(dataFromClient.Split(';')[1], false, dataFromClient.Split(';')[2]);
+                    }
+                }
             }
             this.ClientServ.CloseConnection(this.UserInformations.GetidUser(), this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup());
         }

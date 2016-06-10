@@ -169,13 +169,21 @@ namespace talkEntreprise_server
         {
             this.Request.SetAllEmployeesDeconnected();
         }
+        
+        /// <summary>
+        /// permet de changer le mot de passe de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="password">nouveau mot de passe de l'utilisateur</param>
+        /// <returns>réussit ou annuler</returns>
+          public bool ChangePassword(string user, string password)
+          {
+              return this.Request.ChangePassword(user, password);
+          }
          //////méthodes Server///////
           /// <summary>
         /// permet de quitter la connection
         /// </summary>
-        public void CloseConnection()
-        {
-            this.Serv.CloseConnection();
-        }
+        
     }
 }

@@ -294,6 +294,23 @@ namespace talkEntreprise_client
             //Efface l'historique
             this.ServerStream.Flush();
         }
+        /// <summary>
+        /// permet de modifier le mot de passe actuelle
+        /// </summary>
+        /// <param name="password"></param>
+        public void ChangePassword(string user,string password)
+        {
+            string sendMessage = "#0008;"+user+";"+password+"#####";
+            byte[] inStream = new byte[10025];
+
+
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
+        }
     }
     
 }

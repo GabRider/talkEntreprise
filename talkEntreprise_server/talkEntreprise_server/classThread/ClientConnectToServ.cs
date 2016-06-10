@@ -277,7 +277,26 @@ namespace talkEntreprise_server.classThread
         {
             this.Serv.UpdateStateMessages(user, destination, isforGroup);
         }
-
+        /// <summary>
+        /// permet de changer le mot de passe de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="password">nouveau mot de passe de l'utilisateur</param>
+        /// <returns>réussit ou annuler</returns>
+        public bool ChangePassword(string user, string password)
+        {
+            return this.Serv.ChangePassword(user, password);
+        }
+        public void PasswordIsChanged(string user, bool isChanged,string password)
+        {
+            byte[] sendBytedMessage = null;
+            TcpClient client = this.Serv.GetTcpClientInClientList(user);
+            NetworkStream stream = client.GetStream();
+            string sendAllMessages = "#0008;"+isChanged+";"+password;
+           
+            sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
+            stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+        }
     }
 
 }

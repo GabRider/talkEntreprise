@@ -206,6 +206,25 @@ namespace talkEntreprise_client
         {
             this.Client.UpdateStateMessages(user,destination,isForGroup,nameGroup,idGroup,userSecure);
         }
+        /// <summary>
+        /// permet de modifier le mot de passe actuelle
+        /// </summary>
+        /// <param name="password"></param>
+        public void ChangePassword(string user, string password)
+        {
+            this.Client.ChangePassword(user,password);
+        }
+        /// <summary>
+        /// permet de récupérer les anciens messages
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire</param>
+        /// <param name="forGroup">pour le groupe</param>
+        /// <param name="nbDays">jour avant aujourd'huit</param>
+        public void GetOldMessages(string user, string destination, bool forGroup, int nbDays)
+        {
+            this.Client.GetOldMessages(user, destination, forGroup, nbDays);
+        }
         /////////////méthodes ManageMessages/////////////
         /// <summary>
         /// permet de décrypter un message
@@ -268,16 +287,6 @@ namespace talkEntreprise_client
         {
             return this.UserInformation;
         }
-        /// <summary>
-        /// permet de récupérer les anciens messages
-        /// </summary>
-        /// <param name="user">identifiant de l'utilisateur</param>
-        /// <param name="destination">destinataire</param>
-        /// <param name="forGroup">pour le groupe</param>
-        /// <param name="nbDays">jour avant aujourd'huit</param>
-        public void GetOldMessages(string user, string destination, bool forGroup, int nbDays)
-        {
-            this.Client.GetOldMessages(user,destination,forGroup,nbDays);
-        }
+       
     }
 }

@@ -50,16 +50,7 @@ namespace talkEntreprise_server
         }
 
         /////////méthodes////////
-        /// <summary>
-        /// permet de quitter la connection
-        /// </summary>
-        public void CloseConnection()
-        {
-           
-         
-            
-        }
-
+     
         /// <summary>
         /// permet d'ajouter le nouveau client à la liste de client
         /// </summary>
@@ -220,6 +211,16 @@ namespace talkEntreprise_server
         public void UpdateStateMessages(string user, string destination, bool isforGroup)
         {
             this.Ctrl.UpdateStateMessages(user, destination, isforGroup);
+        }
+        /// <summary>
+        /// permet de changer le mot de passe de l'utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="password">nouveau mot de passe de l'utilisateur</param>
+        /// <returns>réussit ou annuler</returns>
+        public bool ChangePassword(string user, string password)
+        {
+            return this.Ctrl.ChangePassword(user, password);
         }
     }
 

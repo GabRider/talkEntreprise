@@ -113,20 +113,34 @@ namespace talkEntreprise_client
                     if (answer == DialogResult.OK)
                     {
 
-                        this.Ctrl.CloseConnection();
-                        Process.GetCurrentProcess().Kill();
+                        try
+                        {
+                            this.Ctrl.CloseConnection();
+                            Process.GetCurrentProcess().Kill();
+                        }
+                        catch (Exception)
+                        {
+
+                            
+                            Process.GetCurrentProcess().Kill();
+                        }
+
 
                     }
 
                     else
                     {
+                        try
+                        {
+                            this.Ctrl.CloseConnection();
+                            this.Ctrl.VisibleChange(true);
+                        }
+                        catch (Exception)
+                        {
+                            this.Ctrl.VisibleChange(true);
+                        }
 
 
-                        this.Ctrl.CloseConnection();
-
-
-
-                        this.Ctrl.VisibleChange(true);
                     }
                 }
             }
@@ -337,7 +351,7 @@ namespace talkEntreprise_client
                             }
                         }
 
-                        if (this.DayOldMessages !=0)
+                        if (this.DayOldMessages != 0)
                         {
                             this.GetOlDConversation();
                             Thread.Sleep(200);
@@ -446,12 +460,12 @@ namespace talkEntreprise_client
                             this.LastAuthor = string.Empty;
                             if (lsbEmployees.SelectedIndex != 0)
                             {
-                                if (this.DayOldMessages!=0)
+                                if (this.DayOldMessages != 0)
                                 {
                                     this.GetOlDConversation();
-                                Thread.Sleep(3);
+                                    Thread.Sleep(3);
                                 }
-                                
+
                                 this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
                                 Thread.Sleep(200);
                                 this.UpdateStateMessagesOneUser();
@@ -494,7 +508,7 @@ namespace talkEntreprise_client
                                 this.GetOlDConversation();
                                 Thread.Sleep(200);
                             }
-                           
+
                             this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
 
 
@@ -537,13 +551,13 @@ namespace talkEntreprise_client
 
         private void tsmiOldMesssage_Click(object sender, EventArgs e)
         {
-            this.LastAuthor ="";
+            this.LastAuthor = "";
             tbxMessage.Clear();
             User user = lsbEmployees.SelectedItem as User;
             ToolStripMenuItem tsmiFocus = sender as ToolStripMenuItem;
             foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
             {
-              
+
                 tsmi.Checked = false;
             }
             tsmiFocus.Checked = true;
@@ -573,7 +587,7 @@ namespace talkEntreprise_client
                 }
             }
 
-           
+
             this.NbMessages = 0;
         }
 
@@ -603,9 +617,9 @@ namespace talkEntreprise_client
                     if (Convert.ToInt32(tsmi.Tag) != this.DayOldMessages)
                     {
                         tbxMessage.Clear();
-                    this.NbMessages = 0;
+                        this.NbMessages = 0;
                     }
-                    
+
                     break;
                 }
             }
@@ -615,12 +629,56 @@ namespace talkEntreprise_client
 
         }
 
-        private void FrmProgram_Load(object sender, EventArgs e)
+        private void tsmiSettings_Click(object sender, EventArgs e)
         {
+            DialogResult res = new DialogResult();
+            FrmSettings settings = new FrmSettings(this,this.UserConnected.GetPassword());
+           res= settings.ShowDialog();
+           if (res == DialogResult.OK)
+           {
+               try
+               {
+                   if (settings.GetNewPassword() != string.Empty)
+                   {
+                       this.Ctrl.ChangePassword(this.UserConnected.GetIdUser(), settings.GetNewPassword());
+                   }
+                   else
+                   {
+                       tsmiSettings_Click(sender, e);
+                   }
+                       
+                   
 
+               }
+               catch (Exception)
+               {
+
+                   this.ServerClosed();
+               }
+           }
         }
-
-
+        // <summary>
+        /// permet de coder le mot de passe de l'utilisateur
+        /// </summary>
+        /// <param name="password">mot de passe de l'utilisateur</param>
+        /// <returns></returns>
+        public string sha1(string password)
+        {
+            return this.Ctrl.sha1(password);
+        }
+        public void PasswordIsChanged(bool isChanged, string password)
+        {
+            if (isChanged)
+            {
+                MessageBox.Show("Votre nouveau mot de passe a été enregistré", "Le mot de passe a été modifié", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.UserConnected.setPassword(password);
+            }
+            else
+            {
+                MessageBox.Show("Votre nouveau mot de passe a été enregistré", "Le mot de passe n'a pas pu être modifié", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.DatabaseClosed();
+            }
+        }
 
 
     }
