@@ -38,6 +38,7 @@
             // 
             // tbxId
             // 
+            this.tbxId.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbxId.Location = new System.Drawing.Point(125, 31);
             this.tbxId.Name = "tbxId";
             this.tbxId.Size = new System.Drawing.Size(161, 20);
@@ -73,7 +74,7 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(81, 87);
+            this.btnConnect.Location = new System.Drawing.Point(100, 87);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 4;
@@ -83,7 +84,7 @@
             // 
             // btnQuit
             // 
-            this.btnQuit.Location = new System.Drawing.Point(174, 87);
+            this.btnQuit.Location = new System.Drawing.Point(193, 87);
             this.btnQuit.Name = "btnQuit";
             this.btnQuit.Size = new System.Drawing.Size(75, 23);
             this.btnQuit.TabIndex = 5;
@@ -106,7 +107,7 @@
             this.MinimizeBox = false;
             this.Name = "FrmConnection";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = " ";
+            this.Text = " Connexion";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -33,11 +33,18 @@
             this.lsbEmployees = new System.Windows.Forms.ListBox();
             this.tbxUser = new System.Windows.Forms.TextBox();
             this.tsmIOption = new System.Windows.Forms.ToolStripMenuItem();
-            this.enregistrersousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.quitterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiQuit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.msProgram = new System.Windows.Forms.MenuStrip();
             this.tsmHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOldMessages = new System.Windows.Forms.ToolStripMenuItem();
+            this.aujourdhuiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOneDayAgo = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiTwoDaysAgo = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOneWeekAgo = new System.Windows.Forms.ToolStripMenuItem();
             this.tssDate = new System.Windows.Forms.ToolStripStatusLabel();
             this.ssProgram = new System.Windows.Forms.StatusStrip();
             this.tbxMessage = new System.Windows.Forms.TextBox();
@@ -48,9 +55,9 @@
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSend.Location = new System.Drawing.Point(647, 348);
+            this.btnSend.Location = new System.Drawing.Point(647, 346);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(73, 80);
+            this.btnSend.Size = new System.Drawing.Size(73, 83);
             this.btnSend.TabIndex = 13;
             this.btnSend.Text = "Envoyer";
             this.btnSend.UseVisualStyleBackColor = true;
@@ -61,15 +68,17 @@
             this.tbxWriteMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxWriteMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbxWriteMessage.Location = new System.Drawing.Point(139, 348);
+            this.tbxWriteMessage.Location = new System.Drawing.Point(139, 347);
             this.tbxWriteMessage.MaxLength = 600;
             this.tbxWriteMessage.Multiline = true;
             this.tbxWriteMessage.Name = "tbxWriteMessage";
-            this.tbxWriteMessage.Size = new System.Drawing.Size(509, 80);
+            this.tbxWriteMessage.Size = new System.Drawing.Size(509, 81);
             this.tbxWriteMessage.TabIndex = 12;
             // 
             // lsbEmployees
             // 
+            this.lsbEmployees.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lsbEmployees.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lsbEmployees.FormattingEnabled = true;
             this.lsbEmployees.ItemHeight = 50;
@@ -96,31 +105,38 @@
             // tsmIOption
             // 
             this.tsmIOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enregistrersousToolStripMenuItem,
+            this.tsmiSettings,
             this.toolStripSeparator2,
-            this.quitterToolStripMenuItem});
+            this.tsmiQuit,
+            this.toolStripMenuItem1});
             this.tsmIOption.Name = "tsmIOption";
             this.tsmIOption.Size = new System.Drawing.Size(56, 20);
             this.tsmIOption.Text = "&Option";
             // 
-            // enregistrersousToolStripMenuItem
+            // tsmiSettings
             // 
-            this.enregistrersousToolStripMenuItem.Name = "enregistrersousToolStripMenuItem";
-            this.enregistrersousToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
-            this.enregistrersousToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.enregistrersousToolStripMenuItem.Text = "&Paramètre du compte";
+            this.tsmiSettings.Name = "tsmiSettings";
+            this.tsmiSettings.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
+            this.tsmiSettings.Size = new System.Drawing.Size(227, 22);
+            this.tsmiSettings.Text = "&Paramètre du compte";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(224, 6);
             // 
-            // quitterToolStripMenuItem
+            // tsmiQuit
             // 
-            this.quitterToolStripMenuItem.Name = "quitterToolStripMenuItem";
-            this.quitterToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.quitterToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.quitterToolStripMenuItem.Text = "&Quitter";
+            this.tsmiQuit.Name = "tsmiQuit";
+            this.tsmiQuit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.tsmiQuit.Size = new System.Drawing.Size(227, 22);
+            this.tsmiQuit.Text = "&Quitter";
+            this.tsmiQuit.Click += new System.EventHandler(this.tsmiQuit_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
             // 
             // msProgram
             // 
@@ -135,9 +151,65 @@
             // 
             // tsmHelp
             // 
+            this.tsmHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAbout,
+            this.tsmiOldMessages});
             this.tsmHelp.Name = "tsmHelp";
-            this.tsmHelp.Size = new System.Drawing.Size(24, 20);
-            this.tsmHelp.Text = "?";
+            this.tsmHelp.Size = new System.Drawing.Size(56, 20);
+            this.tsmHelp.Text = "&Edition";
+            // 
+            // tsmiAbout
+            // 
+            this.tsmiAbout.Name = "tsmiAbout";
+            this.tsmiAbout.Size = new System.Drawing.Size(212, 22);
+            this.tsmiAbout.Text = "À &propos de talkEntreprise";
+            this.tsmiAbout.Click += new System.EventHandler(this.tsmiAbout_Click);
+            // 
+            // tsmiOldMessages
+            // 
+            this.tsmiOldMessages.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aujourdhuiToolStripMenuItem,
+            this.tsmiOneDayAgo,
+            this.tsmiTwoDaysAgo,
+            this.tsmiOneWeekAgo});
+            this.tsmiOldMessages.Name = "tsmiOldMessages";
+            this.tsmiOldMessages.Size = new System.Drawing.Size(212, 22);
+            this.tsmiOldMessages.Tag = "0";
+            this.tsmiOldMessages.Text = "voir anciens messages";
+            this.tsmiOldMessages.Click += new System.EventHandler(this.tsmiOldMessages_Click);
+            // 
+            // aujourdhuiToolStripMenuItem
+            // 
+            this.aujourdhuiToolStripMenuItem.Checked = true;
+            this.aujourdhuiToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.aujourdhuiToolStripMenuItem.Name = "aujourdhuiToolStripMenuItem";
+            this.aujourdhuiToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.aujourdhuiToolStripMenuItem.Text = "Aujourd\'hui";
+            this.aujourdhuiToolStripMenuItem.Click += new System.EventHandler(this.tsmiOldMesssage_Click);
+            // 
+            // tsmiOneDayAgo
+            // 
+            this.tsmiOneDayAgo.Name = "tsmiOneDayAgo";
+            this.tsmiOneDayAgo.Size = new System.Drawing.Size(159, 22);
+            this.tsmiOneDayAgo.Tag = "1";
+            this.tsmiOneDayAgo.Text = "1 jour avant";
+            this.tsmiOneDayAgo.Click += new System.EventHandler(this.tsmiOldMesssage_Click);
+            // 
+            // tsmiTwoDaysAgo
+            // 
+            this.tsmiTwoDaysAgo.Name = "tsmiTwoDaysAgo";
+            this.tsmiTwoDaysAgo.Size = new System.Drawing.Size(159, 22);
+            this.tsmiTwoDaysAgo.Tag = "2";
+            this.tsmiTwoDaysAgo.Text = "2 jours avant";
+            this.tsmiTwoDaysAgo.Click += new System.EventHandler(this.tsmiOldMesssage_Click);
+            // 
+            // tsmiOneWeekAgo
+            // 
+            this.tsmiOneWeekAgo.Name = "tsmiOneWeekAgo";
+            this.tsmiOneWeekAgo.Size = new System.Drawing.Size(159, 22);
+            this.tsmiOneWeekAgo.Tag = "7";
+            this.tsmiOneWeekAgo.Text = "1 semaine avant";
+            this.tsmiOneWeekAgo.Click += new System.EventHandler(this.tsmiOldMesssage_Click);
             // 
             // tssDate
             // 
@@ -149,7 +221,7 @@
             // 
             this.ssProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssDate});
-            this.ssProgram.Location = new System.Drawing.Point(0, 438);
+            this.ssProgram.Location = new System.Drawing.Point(0, 439);
             this.ssProgram.Name = "ssProgram";
             this.ssProgram.Size = new System.Drawing.Size(723, 22);
             this.ssProgram.SizingGrip = false;
@@ -158,19 +230,19 @@
             // tbxMessage
             // 
             this.tbxMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.tbxMessage.Location = new System.Drawing.Point(139, 24);
+            this.tbxMessage.Location = new System.Drawing.Point(139, 26);
             this.tbxMessage.Multiline = true;
             this.tbxMessage.Name = "tbxMessage";
             this.tbxMessage.ReadOnly = true;
             this.tbxMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbxMessage.Size = new System.Drawing.Size(581, 324);
+            this.tbxMessage.Size = new System.Drawing.Size(580, 322);
             this.tbxMessage.TabIndex = 17;
             // 
             // FrmProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(723, 460);
+            this.ClientSize = new System.Drawing.Size(723, 461);
             this.Controls.Add(this.tbxMessage);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.tbxWriteMessage);
@@ -178,9 +250,15 @@
             this.Controls.Add(this.tbxUser);
             this.Controls.Add(this.msProgram);
             this.Controls.Add(this.ssProgram);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(739, 499);
+            this.MinimumSize = new System.Drawing.Size(739, 499);
             this.Name = "FrmProgram";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmProgram";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmProgram_FormClosing);
+            this.Load += new System.EventHandler(this.FrmProgram_Load);
             this.msProgram.ResumeLayout(false);
             this.msProgram.PerformLayout();
             this.ssProgram.ResumeLayout(false);
@@ -197,13 +275,20 @@
         private System.Windows.Forms.ListBox lsbEmployees;
         private System.Windows.Forms.TextBox tbxUser;
         private System.Windows.Forms.ToolStripMenuItem tsmIOption;
-        private System.Windows.Forms.ToolStripMenuItem enregistrersousToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSettings;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem quitterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiQuit;
         private System.Windows.Forms.MenuStrip msProgram;
         private System.Windows.Forms.ToolStripMenuItem tsmHelp;
         private System.Windows.Forms.ToolStripStatusLabel tssDate;
         private System.Windows.Forms.StatusStrip ssProgram;
         private System.Windows.Forms.TextBox tbxMessage;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAbout;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOldMessages;
+        private System.Windows.Forms.ToolStripMenuItem aujourdhuiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOneDayAgo;
+        private System.Windows.Forms.ToolStripMenuItem tsmiTwoDaysAgo;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOneWeekAgo;
     }
 }

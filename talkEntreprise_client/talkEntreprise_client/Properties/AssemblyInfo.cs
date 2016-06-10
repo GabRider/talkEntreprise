@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Resources;
 
 // Les informations générales relatives à un assembly dépendent de 
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("talkEntreprise_client")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TalkEntreprise")]
+[assembly: AssemblyDescription("voici une messagerie instantanée qui permet d'améliorer la communication dans chaque département")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CFPT")]
 [assembly: AssemblyProduct("talkEntreprise_client")]
@@ -34,3 +35,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguageAttribute("fr-CH")]

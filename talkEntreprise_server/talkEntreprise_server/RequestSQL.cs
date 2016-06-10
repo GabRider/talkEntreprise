@@ -245,17 +245,17 @@ namespace talkEntreprise_server
             //  bool ConnectedFriend = true;
             //bool NotConnectedFriend = true;
             //  List<string> lsbFriends = new List<string>();
- lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
-            if (idGroup == IDADMINISTRATORS)
+            lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
+            if (idGroup != IDADMINISTRATORS)
             {
-                    sql = string.Format("SELECT * From t_users where idGroup = {0} or idGroup = {1} AND idUser != \"{2}\" ORDER BY `idUser` ASC",IDADMINISTRATORS, idGroup, user);
+                sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" OR idGroup = {2} AND idUser != \"{3}\" ORDER BY `idUser` ASC", IDADMINISTRATORS, user, idGroup, user);
             }
             else
             {
-                 sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC",  idGroup, user);
+                sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, user);
             }
-         
-           
+
+
             if (this.connectionDB())
             {
 
@@ -303,11 +303,17 @@ namespace talkEntreprise_server
             string result = "#0015;";
             List<User> lsbUsers = new List<User>();
             bool first = true;
-            //  bool ConnectedFriend = true;
-            //bool NotConnectedFriend = true;
-            //  List<string> lsbFriends = new List<string>();
-            string sql = string.Format("SELECT * From t_users where idGroup = {0} or idGroup = {1} AND idUser != \"{2}\" ORDER BY `idUser` ASC", IDADMINISTRATORS, idGroup, user);
+            string sql;
+        
             lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
+            if (idGroup != IDADMINISTRATORS)
+            {
+                sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" OR idGroup = {2} AND idUser != \"{3}\" ORDER BY `idUser` ASC", IDADMINISTRATORS, user, idGroup, user);
+            }
+            else
+            {
+                sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, user);
+            }
             if (this.connectionDB())
             {
 
@@ -402,8 +408,8 @@ namespace talkEntreprise_server
             if (this.connectionDB())
             {
                 long lastInsertId = 0;
+                //string date = DateTime.Now.ToUniversalTime().AddDays(-1).ToString("yyyy-MM-dd_HH-mm-ss");
                 string date = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd_HH-mm-ss");
-
                 string sql = String.Format("INSERT INTO t_log (`Code`,`lenTot`,`CodeSender`,`lenSender`,`valueSender`,`CodeDestination`,`lenDestination`,`valueDestination`,`CodeMessage`,`lenMessage`,`valueMessage`,`valueDate`,`CodeEnd`,`forGroup`) VALUES( '{0}', '{1}' , '{2}' , '{3}' , '{4}', '{5}', '{6}', '{7}', '{8}', '{9}','{10}','{11}','{12}',{13})",
                     "0003",//0 quel type de message
                     "0000", //1 longueur de tout la chaine (depuis idCode sender à idCodeEnd)
@@ -457,13 +463,13 @@ namespace talkEntreprise_server
         {
             List<Message> lsbMessage = new List<Message>();
             string date = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd");
-            string LastDay = DateTime.Now.ToUniversalTime().AddDays(-7).ToString("yyyy-MM-dd");
+            string LastDay = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd");
             string sql = string.Empty;
             if (forGroup)
             {
                 sql = string.Format("SELECT DISTINCT  valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
-               + " where valueSender=\'{0}\' AND valueMessage!=\"\" AND forGroup ={1} OR valueDestination=\'{2}\'  AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
-           + "AND forGroup ={5}   ", user, forGroup, user, LastDay, date, forGroup);
+               + " where valueSender=\'{0}\' AND valueMessage!=\"\"  AND forGroup ={1} AND valuedate BETWEEN  '{2} 00:00:00' AND '{3} 23:59:59'  OR valueMessage!=\"\"  AND valueDestination=\'{4}\' AND forGroup ={5} AND valuedate BETWEEN  '{6} 00:00:00' AND '{7} 23:59:59'"
+           , user,  forGroup, LastDay, date,user,  forGroup, LastDay, date);
             }
             else
             {
@@ -534,7 +540,60 @@ namespace talkEntreprise_server
 
             }
         }
+        /// <summary>
+        /// permet de récupérer les messages envoyé par les utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du messahe</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        /// <returns></returns>
+        public List<Message> GetOldConversation(string user, string destination, bool forGroup,int nbDays)
+        {
+            List<Message> lsbMessage = new List<Message>();
+            string date = DateTime.Now.ToUniversalTime().AddDays(-1).ToString("yyyy-MM-dd");
+            string oldDate = DateTime.Now.ToUniversalTime().AddDays(-nbDays).ToString("yyyy-MM-dd");
+            string sql = string.Empty;
+            if (forGroup)
+            {
+                sql = string.Format("SELECT DISTINCT  valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
+               + " where valueSender=\'{0}\' AND valueMessage!=\"\" AND forGroup ={1} OR valueDestination=\'{2}\'  AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
+           + "AND forGroup ={5}   ", user, forGroup, user, oldDate, date, forGroup);
+            }
+            else
+            {
+                sql = string.Format("SELECT valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
+              + " where valueSender ='{0}'"
+              + "AND valueDestination = '{1}'"
+              + " AND forGroup={2} "
+               + "AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
+              + " OR valueSender ='{5}'"
+              + "AND valueDestination = '{6}'"
 
+              + "AND valuedate BETWEEN  '{7} 00:00:00' AND '{8} 23:59:59'"
+          + "AND forGroup  ={9} ", user, destination, forGroup, oldDate, date, destination, user, oldDate, date, forGroup);
+            }
+
+            if (this.connectionDB())
+            {
+
+
+
+                MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    lsbMessage.Add(new Message(reader.GetString("valueSender"), reader.GetString("valueMessage"), reader.GetString("valueDate")));
+                }
+                reader.Close();
+                this.shutdownConnectionDB();
+            }
+            else
+            {
+                lsbMessage.Add(new Message("DB", "", "2016-06-09_05-49-44"));
+            }
+            return lsbMessage;
+        }
     }
 
 

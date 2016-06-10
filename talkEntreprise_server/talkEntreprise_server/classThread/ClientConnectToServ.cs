@@ -177,7 +177,7 @@ namespace talkEntreprise_server.classThread
             //permet d'envoyer la mise à jour des employés seulement aux employés du mêmes groupe et qui sont connecté.
             foreach (User Employees in this.Serv.GetUserList(nameGroup, idGroup, user))
             {
-                if (this.Serv.IsInClientList(Employees.GetidUser()))
+                if (this.Serv.IsInClientList(Employees.GetidUser())&& idGroup== Employees.GetIdGroup())
                 {
                     client = this.Serv.GetTcpClientInClientList(Employees.GetidUser());
                     stream = client.GetStream();
@@ -243,6 +243,30 @@ namespace talkEntreprise_server.classThread
 
         }
 
+        /// <summary>
+        /// permet de chercher les anciens messages de l'utilisateur.
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire</param>
+        /// <param name="forGroup"> id du groupe</param>
+        /// <param name="nbDays">nombre de jour avant la date d'aujourd'hui</param>
+        public void GetOldMessages(string user, string destination, bool forGroup, int nbDays)
+        {
+            byte[] sendBytedMessage = null;
+            TcpClient client = this.Serv.GetTcpClientInClientList(user);
+            NetworkStream stream = client.GetStream();
+            string sendAllMessages = "#0007";
+            foreach (Message msg in this.Serv.GetOldConversation(user, destination, forGroup, nbDays))
+            {
+                sendAllMessages = "#0007;" + msg.GetAuthor() + "-" + msg.GetContent() + "-" + msg.GetDate() + "-false####";
+                sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
+                stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+                Thread.Sleep(10);
+            }
+            sendAllMessages = "#0007;" + "true-" + user + "-" + destination + "-" + forGroup + "####";
+            sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
+            stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
+        }
         /// <summary>
         /// permet de mettre à jour l'état des messages
         /// </summary>

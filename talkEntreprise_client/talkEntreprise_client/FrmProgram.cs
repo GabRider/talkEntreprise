@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -24,7 +25,9 @@ namespace talkEntreprise_client
         private int _nbMessages;
         private User _lastSelectedUser;
         private bool _serverError;
-        private const int IDADMINISTRATOR=3;
+        private const int IDADMINISTRATOR = 3;
+        private int _dayOldMessages;
+
 
 
 
@@ -72,6 +75,11 @@ namespace talkEntreprise_client
             get { return _serverError; }
             set { _serverError = value; }
         }
+        public int DayOldMessages
+        {
+            get { return _dayOldMessages; }
+            set { _dayOldMessages = value; }
+        }
         public FrmProgram(Controler c)
         {
             InitializeComponent();
@@ -81,24 +89,55 @@ namespace talkEntreprise_client
             this.UpdateLstUser.IsBackground = true;
             this.UpdateLstUser.Start();
             this.UserConnected = this.Ctrl.GetUserConnected();
-            this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetIdUser();
+            this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetIdUser().Split('@')[0];
             this.NbMessages = 0;
+            this.DayOldMessages = 0;
 
 
         }
 
         private void FrmProgram_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-
             if (!this.ServerError)
             {
-                this.Ctrl.CloseConnection();
-               
+                DialogResult answer;
+                FrmExit exit = new FrmExit();
+                answer = exit.ShowDialog();
+                if (answer == DialogResult.Cancel)
+                {
+                    // empêche la fermeture de la fenêtre
+                    e.Cancel = true;
+                }
+                else
+                {
+                    if (answer == DialogResult.OK)
+                    {
+
+                        this.Ctrl.CloseConnection();
+                        Process.GetCurrentProcess().Kill();
+
+                    }
+
+                    else
+                    {
+
+
+                        this.Ctrl.CloseConnection();
+
+
+
+                        this.Ctrl.VisibleChange(true);
+                    }
+                }
+            }
+            else
+            {
+                this.Ctrl.VisibleChange(true);
             }
 
-            this.Ctrl.VisibleChange(true);
-            
+
+
+
 
 
 
@@ -182,10 +221,10 @@ namespace talkEntreprise_client
             myBrush = Brushes.Black;
             e.Graphics.DrawString(userDrawing.GetIdUser().Split('@')[0], new Font("Arial", 10, FontStyle.Bold), myBrush, e.Bounds.Left + 30, e.Bounds.Top + 15, StringFormat.GenericTypographic);
             // Dessine un Rectangle gris autour de chaque éléments
-           
-                myBrush = Brushes.Red;
-                e.Graphics.DrawString(userDrawing.GetAdmin(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 30, e.Bounds.Top + 32, StringFormat.GenericTypographic); 
-           
+
+            myBrush = Brushes.Red;
+            e.Graphics.DrawString(userDrawing.GetAdmin(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 30, e.Bounds.Top + 32, StringFormat.GenericTypographic);
+
 
             myPen.Color = Color.LightGray;
             myPen.Width = 1;
@@ -196,22 +235,22 @@ namespace talkEntreprise_client
                 myBrush = Brushes.Yellow;
                 myPen.Color = Color.Black;
                 myPen.Width = 2;
-                e.Graphics.FillEllipse(myBrush, e.Bounds.Left + 90, e.Bounds.Top + 15, 20, 20);
-                e.Graphics.DrawEllipse(myPen, e.Bounds.Left + 90, e.Bounds.Top + 15, 20, 20);
+                e.Graphics.FillEllipse(myBrush, e.Bounds.Left + 105, e.Bounds.Top + 15, 20, 20);
+                e.Graphics.DrawEllipse(myPen, e.Bounds.Left + 105, e.Bounds.Top + 15, 20, 20);
                 myBrush = Brushes.Black;
 
                 if (userDrawing.GetMessagesNotRead() >= 100)
                 {
-                    e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 91, e.Bounds.Top + 18, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 106, e.Bounds.Top + 18, StringFormat.GenericTypographic);
                 }
                 else if (userDrawing.GetMessagesNotRead() < 10)
                 {
 
-                    e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 97, e.Bounds.Top + 18, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 112, e.Bounds.Top + 18, StringFormat.GenericTypographic);
                 }
                 else
                 {
-                    e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 95, e.Bounds.Top + 18, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 110, e.Bounds.Top + 18, StringFormat.GenericTypographic);
                 }
 
             }
@@ -236,14 +275,13 @@ namespace talkEntreprise_client
                 {
 
 
-                 //   if ((user.GetidUser() == destination || user.GetidUser() == iduser) && user.GetidUser().Contains("@") && !isforGroup || (isforGroup && lsbEmployees.SelectedIndex == 0))
-                       if (this.LastSelectedUser.GetIdUser() == user.GetIdUser())
+                    if ((user.GetIdUser() == destination || user.GetIdUser() == iduser && user.GetIdUser().Contains("@")) || (isforGroup && lsbEmployees.SelectedIndex == 0))
                     {
 
                         string messages = string.Empty;
                         for (int i = this.NbMessages; i < lstNewMessages.Count; i++)
                         {
-                            
+
                             Message msg = lstNewMessages[i] as Message;
 
 
@@ -271,61 +309,75 @@ namespace talkEntreprise_client
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            string allDestinations = string.Empty;
-            bool first = true;
-            User destination = lsbEmployees.SelectedItem as User;
-            if (tbxWriteMessage.Text.Trim() != "" && destination != null)
+            try
             {
-                if (lsbEmployees.SelectedIndex == 0)
+
+
+                string allDestinations = string.Empty;
+                bool first = true;
+                User destination = lsbEmployees.SelectedItem as User;
+                if (tbxWriteMessage.Text.Trim() != "" && destination != null)
                 {
-
-                    foreach (User user in lsbEmployees.Items)
+                    if (lsbEmployees.SelectedIndex == 0)
                     {
-                        if (user.GetIdGroup() == this.UserConnected.GetIdGroup())
+
+                        foreach (User user in lsbEmployees.Items)
                         {
-                            if (first)
+                            if (user.GetIdGroup() == this.UserConnected.GetIdGroup())
                             {
-                                first = false;
-                            }
-                            else
-                            {
-                                allDestinations += user.GetIdUser() + "!";
-                            }
+                                if (first)
+                                {
+                                    first = false;
+                                }
+                                else
+                                {
+                                    allDestinations += user.GetIdUser() + "!";
+                                }
 
+                            }
                         }
-                    }
-                    if (this.Ctrl.sendMessageGroup(this.UserConnected.GetIdUser(), allDestinations, this.tbxWriteMessage.Text, true))
-                    {
+
+                        if (this.DayOldMessages !=0)
+                        {
+                            this.GetOlDConversation();
+                            Thread.Sleep(200);
+                        }
+                        this.Ctrl.sendMessageGroup(this.UserConnected.GetIdUser(), allDestinations, this.tbxWriteMessage.Text, true);
+
                         Thread.Sleep(10);
                         this.UpdateStateMessagesGroup();
                         Thread.Sleep(10);
                         this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetIdUser(), this.UserConnected.GetIdGroup());
                         this.tbxWriteMessage.Clear();
+
+
                     }
                     else
                     {
-                        this.ServerClosed();
-                    }
+                        if (this.DayOldMessages != 0)
+                        {
+                            this.GetOlDConversation();
+                            Thread.Sleep(200);
+                        }
+                        this.Ctrl.sendMessage(this.UserConnected.GetIdUser(), destination.GetIdUser(), this.tbxWriteMessage.Text, false);
 
-                }
-                else
-                {
-                    if (this.Ctrl.sendMessage(this.UserConnected.GetIdUser(), destination.GetIdUser(), this.tbxWriteMessage.Text, false))
-                    {
                         Thread.Sleep(10);
                         this.UpdateStateMessagesOneUser();
                         Thread.Sleep(10);
                         this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetIdUser(), this.UserConnected.GetIdGroup());
                         this.tbxWriteMessage.Clear();
-                    }
-                    else
-                    {
-                        this.ServerClosed();
-                    }
 
+
+
+                    }
 
                 }
 
+            }
+            catch (Exception)
+            {
+
+                this.ServerClosed();
             }
 
         }
@@ -373,78 +425,90 @@ namespace talkEntreprise_client
         {
             this.ServerError = true;
             MessageBox.Show("La base de donnée a été étinte. vous allez être automatiquement déconnecté", "Base de données Inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close() ;
+            this.Close();
         }
         private void lsbEmployees_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            User user = this.lsbEmployees.SelectedItem as User;
-            if (user != null)
+            try
             {
 
-                if (this.LastSelectedUser != null)
-                {
-                    if (this.LastSelectedUser.GetIdUser() != user.GetIdUser())
-                    {
-                        this.NbMessages = 0;
-                        this.tbxMessage.Clear();
-                        this.LastAuthor = string.Empty;
-                        if (lsbEmployees.SelectedIndex != 0)
-                        {
 
-                            if (this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false))
+                User user = this.lsbEmployees.SelectedItem as User;
+                if (user != null)
+                {
+
+                    if (this.LastSelectedUser != null)
+                    {
+                        if (this.LastSelectedUser.GetIdUser() != user.GetIdUser())
+                        {
+                            this.NbMessages = 0;
+                            this.tbxMessage.Clear();
+                            this.LastAuthor = string.Empty;
+                            if (lsbEmployees.SelectedIndex != 0)
                             {
+                                if (this.DayOldMessages!=0)
+                                {
+                                    this.GetOlDConversation();
                                 Thread.Sleep(3);
+                                }
+                                
+                                this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
+                                Thread.Sleep(200);
                                 this.UpdateStateMessagesOneUser();
+
+
+
                             }
                             else
                             {
-                                this.ServerClosed();
-                            }
-                        }
-                        else
-                        {
-                            if (this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true))
-                            {
-                                Thread.Sleep(3);
+                                if (this.DayOldMessages != 0)
+                                {
+                                    this.GetOlDConversation();
+                                    Thread.Sleep(200);
+                                }
+                                this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+                                Thread.Sleep(20);
+
+                                Thread.Sleep(20);
                                 this.UpdateStateMessagesGroup();
-                            }
-                            else
-                            {
-                                this.ServerClosed();
+
+
                             }
 
+                            this.LastSelectedUser = user;
                         }
 
-                        this.LastSelectedUser = user;
+
                     }
-
-
-                }
-                else
-                {
-                    this.LastSelectedUser = user;
-                    foreach (User userInfo in this.lsbEmployees.Items)
+                    else
                     {
-                        if (this.Ctrl.UpdateStateMessages(userInfo.GetIdUser(), this.UserConnected.GetIdUser(), true, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser()))
+                        this.LastSelectedUser = user;
+                        foreach (User userInfo in this.lsbEmployees.Items)
                         {
+
                             Thread.Sleep(3);
+                            this.Ctrl.UpdateStateMessages(userInfo.GetIdUser(), this.UserConnected.GetIdUser(), true, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
+                            Thread.Sleep(3);
+                            if (this.DayOldMessages != 0)
+                            {
+                                this.GetOlDConversation();
+                                Thread.Sleep(200);
+                            }
+                           
                             this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+
+
+
                         }
-
-
                     }
+
                 }
-
-
-
-
-
-
 
             }
-
-
+            catch (Exception)
+            {
+                this.ServerClosed();
+            }
 
         }
         private void UpdateStateMessagesGroup()
@@ -452,7 +516,7 @@ namespace talkEntreprise_client
 
             foreach (User userInfo in this.lsbEmployees.Items)
             {
-                if (userInfo.GetIdUser().Contains("@"))
+                if (userInfo.GetIdUser().Contains("@") && userInfo.GetIdGroup() == this.UserConnected.GetIdGroup())
                 {
                     this.Ctrl.UpdateStateMessages(userInfo.GetIdUser(), this.UserConnected.GetIdUser(), true, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
                     Thread.Sleep(4);
@@ -464,6 +528,96 @@ namespace talkEntreprise_client
         {
             User user = this.lsbEmployees.SelectedItem as User;
             this.Ctrl.UpdateStateMessages(user.GetIdUser(), this.UserConnected.GetIdUser(), false, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
+        }
+
+        private void tsmiQuit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void tsmiOldMesssage_Click(object sender, EventArgs e)
+        {
+            this.LastAuthor ="";
+            tbxMessage.Clear();
+            User user = lsbEmployees.SelectedItem as User;
+            ToolStripMenuItem tsmiFocus = sender as ToolStripMenuItem;
+            foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
+            {
+              
+                tsmi.Checked = false;
+            }
+            tsmiFocus.Checked = true;
+            this.DayOldMessages = Convert.ToInt32(tsmiFocus.Tag);
+            Thread.Sleep(10);
+            if (lsbEmployees.SelectedIndex != 0)
+            {
+                if (this.DayOldMessages != 0)
+                {
+                    this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), false, this.DayOldMessages);
+                    Thread.Sleep(10);
+                    this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
+                }
+
+            }
+            else
+            {
+                if (this.DayOldMessages != 0)
+                {
+                    this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), true, this.DayOldMessages);
+                    Thread.Sleep(10);
+                    this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+                }
+                else
+                {
+                    this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+                }
+            }
+
+           
+            this.NbMessages = 0;
+        }
+
+        private void tsmiAbout_Click(object sender, EventArgs e)
+        {
+            FrmAbout about = new FrmAbout();
+            about.ShowDialog();
+        }
+
+        private void GetOlDConversation()
+        {
+            foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
+            {
+                User user = lsbEmployees.SelectedItem as User;
+
+                if (tsmi.Checked)
+                {
+                    if (lsbEmployees.SelectedIndex != 0)
+                    {
+                        this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), false, this.DayOldMessages);
+                    }
+                    else
+                    {
+                        this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), true, this.DayOldMessages);
+                    }
+
+                    if (Convert.ToInt32(tsmi.Tag) != this.DayOldMessages)
+                    {
+                        tbxMessage.Clear();
+                    this.NbMessages = 0;
+                    }
+                    
+                    break;
+                }
+            }
+        }
+        private void tsmiOldMessages_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FrmProgram_Load(object sender, EventArgs e)
+        {
+
         }
 
 

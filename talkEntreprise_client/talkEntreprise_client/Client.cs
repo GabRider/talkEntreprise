@@ -184,13 +184,12 @@ namespace talkEntreprise_client
           
         }
         /// <summary>
-        /// permet d'envoyer le message ua serveur
+        /// permet d'envoyer le message au serveur
         /// </summary>
         /// <param name="message">message</param>
-        public bool sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
+        public void sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
         {
-            try
-            {
+         
  string sendMessage = "#0003;" + user + "-" + Alldestination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
             byte[] inStream = new byte[10025];
 
@@ -201,13 +200,8 @@ namespace talkEntreprise_client
             this.ServerStream.Write(outStream, 0, outStream.Length);
             //Efface l'historique
             this.ServerStream.Flush();
-            return true;
-            }
-            catch (Exception)
-            {
-                
-                return false;
-            }
+           
+           
            
         }
         /// <summary>
@@ -216,7 +210,7 @@ namespace talkEntreprise_client
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="destination">destinataire du message</param>
         /// <param name="forGroup">si c'est pour le groupe</param>
-        public bool GetConversation(string user, string destination, bool forGroup)
+        public void GetConversation(string user, string destination, bool forGroup)
         {
             string sendMessage = "#0004;" + user + "-" + destination + "-" + forGroup + "#####";
             byte[] inStream = new byte[10025];
@@ -229,12 +223,12 @@ namespace talkEntreprise_client
                 this.ServerStream.Write(outStream, 0, outStream.Length);
                 //Efface l'historique
                 this.ServerStream.Flush();
-                return true;
+             
             }
             catch (Exception)
             {
 
-                return false ;
+               
             }
 
 
@@ -264,10 +258,9 @@ namespace talkEntreprise_client
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="destination">destinataire</param>
         /// <param name="isForGroup">pour un groupe</param>
-        public bool UpdateStateMessages(string user, string destination, bool isForGroup, string nameGroup, int idGroup, string userSecure)
+        public void UpdateStateMessages(string user, string destination, bool isForGroup, string nameGroup, int idGroup, string userSecure)
         {
-            try
-            {
+           
  string sendMessage = "#0006;" + user + ";" + destination + ";" + isForGroup + ";" + nameGroup + ";" + idGroup + ";" + userSecure + "#####";
             byte[] inStream = new byte[10025];
 
@@ -278,14 +271,29 @@ namespace talkEntreprise_client
             this.ServerStream.Write(outStream, 0, outStream.Length);
             //Efface l'historique
             this.ServerStream.Flush();
-            return true;
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
+          
            
         }
+        /// <summary>
+        /// permet de récupérer les anciens messages
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire</param>
+        /// <param name="forGroup">pour le groupe</param>
+        /// <param name="nbDays">jour avant aujourd'huit</param>
+        public void GetOldMessages(string user, string destination,bool forGroup, int nbDays)
+        {
+            string sendMessage = "#0007;" + user + ";" + destination + ";" +forGroup+";"+nbDays+ "#####";
+            byte[] inStream = new byte[10025];
+
+
+            //Encode le texte en tableau de byte
+            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+            //Envoie au serveur les données
+            this.ServerStream.Write(outStream, 0, outStream.Length);
+            //Efface l'historique
+            this.ServerStream.Flush();
+        }
     }
+    
 }

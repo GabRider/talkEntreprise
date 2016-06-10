@@ -201,6 +201,16 @@ namespace talkEntreprise_server
         {
             return this.Ctrl.GetConversation(user, destination, forGroup);
         }
+         /// permet de récupérer les anciens messages envoyé par les utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du messahe</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        /// <returns></returns>
+        public List<Message> GetOldConversation(string user, string destination, bool forGroup, int nbDays)
+        {
+            return this.Ctrl.GetOldConversation(user,destination,forGroup,nbDays);
+        }
         /// <summary>
         /// permet de mettre à jour l'état des messages
         /// </summary>

@@ -16,7 +16,9 @@ namespace talkEntreprise_client.classThread
         private FrmProgram _prog;
         private TcpClient _tClient;
         private NetworkStream _stream;
+        private List<Message> _lstOldMessages;
 
+       
 
         ///////propriétées/////////
 
@@ -36,6 +38,11 @@ namespace talkEntreprise_client.classThread
             get { return _stream; }
             set { _stream = value; }
         }
+        public List<Message> LstOldMessages
+        {
+            get { return _lstOldMessages; }
+            set { _lstOldMessages = value; }
+        }
         ///////Constructeur////////
         public UpdateUser(FrmProgram p, Controler c)
         {
@@ -52,6 +59,7 @@ namespace talkEntreprise_client.classThread
         /// </summary>
         public void init()
         {
+           this.LstOldMessages= new List<Message>();
             bool stop = false;
             byte[] inStream = new byte[10025];
             string result = string.Empty;
@@ -62,27 +70,28 @@ namespace talkEntreprise_client.classThread
 
             while (true)
             {
-             
+
                 lstUser.Clear();
-
+               
+                
                 first = true;
-            
 
 
-                    try
-                    {
-                        //récupération du flux de données envoyé par le serveur --> recodage du message
-                        this.Stream.Read(inStream, 0, inStream.Length);
-                        result = Encoding.ASCII.GetString(inStream);
-                        result = result.Substring(0, result.IndexOf("####"));
-                    }
-                    catch (Exception)
-                    {
-                        stop = true;
-                     
 
-                    }
-              
+                try
+                {
+                    //récupération du flux de données envoyé par le serveur --> recodage du message
+                    this.Stream.Read(inStream, 0, inStream.Length);
+                    result = Encoding.ASCII.GetString(inStream);
+                    result = result.Substring(0, result.IndexOf("####"));
+                }
+                catch (Exception)
+                {
+                    stop = true;
+
+
+                }
+
 
                 if (stop)
                 {
@@ -118,7 +127,7 @@ namespace talkEntreprise_client.classThread
                         }
 
                     }
-                  
+
                     this.Prog.setEmployees(lstUser);
                 }
                 //permet de mettre à jour la liste des messages
@@ -155,23 +164,62 @@ namespace talkEntreprise_client.classThread
                             {
                                 break;
                             }
-                            if (lstMessages.Count !=0)
+                            if (lstMessages.Count != 0)
                             {
-                                  this.Prog.showMessage(lstMessages, result.Split('-')[1], result.Split('-')[2], Convert.ToBoolean(result.Split('-')[3]));
+                                lstMessages = this.LstOldMessages.Concat(lstMessages).ToList<Message>();
+                                this.Prog.showMessage(lstMessages, result.Split('-')[1], result.Split('-')[2], Convert.ToBoolean(result.Split('-')[3]));
+                                lstMessages.Clear();
+                                LstOldMessages.Clear();
                             }
-                          
-                          
 
-                            lstMessages.Clear();
+
+
+
 
                         }
                     }
 
                 }
+                //récupération des anciens Messages
+                if (result.Split(';')[0] == "#0007")
+                {
+                    
+                    foreach (string message in result.Split(';'))
+                    {
+                        if (result.Contains("false"))
+                        {
+                            if (!first)
+                            {
+                                if (message.Split('-')[0] != "DB")
+                                {
+                                    this.LstOldMessages.Add(new Message(message.Split('-')[0], this.Prog.DecryptMessage(message.Split('-')[1]), message.Split('-')[2]));
+                                }
+                                else
+                                {
+                                    this.Prog.DatabaseClosed();
+                                    stop = true;
+                                }
 
-              
+                            }
+                            else
+                            {
+                                first = false;
+                            }
+                        }
+                        else
+                        {
+                            if (stop)
+                            {
+                                break;
+                            }
+
+                        }
+                    }
+
+
+                }
+
             }
-
         }
     }
 }
