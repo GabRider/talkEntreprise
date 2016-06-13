@@ -54,7 +54,9 @@ namespace talkEntreprise_server.classThread
             this.Stream = s;
             this.ClientServ = clientToServ;
             List<string> userInformations = this.ClientServ.GetInformation(user);
+            Thread.Sleep(10);
             this.UserInformations = new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
+            Thread.Sleep(10);
             this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup(), this.UserInformations.GetidUser());
         }
 
@@ -86,97 +88,98 @@ namespace talkEntreprise_server.classThread
                 }
 
                 //permet de déconnecter la personne
-                if (dataFromClient.Split(';')[0] == "#0002")
+
+                switch (dataFromClient.Split(';')[0])
                 {
-
-                    this.UserInformations.SetConnection(false);
-
-                }
-
-
-                if (dataFromClient.Split(';')[0] == "#0003" && !dataFromClient.Contains("!"))
-                {
-                    foreach (string messageInformation in dataFromClient.Split(';'))
-                    {
-                        if (!messageInformation.Contains("#0003"))
+                    case "#0002":
+                        this.UserInformations.SetConnection(false);
+                        break;
+                    case "#0003":
+                        //permet d'enregistrer dans la base de données, le message d'un utilisateur qui l'envoi à un autre utilisateur
+                        if (!dataFromClient.Contains("!"))
                         {
-                            this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
-                            Thread.Sleep(1);
-                            this.ClientServ.UpdateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
+                            foreach (string messageInformation in dataFromClient.Split(';'))
+                            {
+                                if (!messageInformation.Contains("#0003"))
+                                {
+                                    this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
+                                    Thread.Sleep(1);
+                                    this.ClientServ.UpdateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
 
+                                }
+                            }
                         }
-                    }
-                }
-                //envoi des messages dans le groupe
-                else if (dataFromClient.Split(';')[0] == "#0003" && dataFromClient.Contains("!"))
-                {
-
-
-                    foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
-                    {
-                        if (info != "")
-                        {
-                            this.ClientServ.sendMessage(dataFromClient.Split(';')[1].Split('-')[0], info, dataFromClient.Split('-')[2], Convert.ToBoolean(dataFromClient.Split('-')[3]));
-                        }
-
-                    }
-
-                    foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
-                    {
-                        Thread.Sleep(1);
-                        if (info != "")
-                        {
-                            this.ClientServ.UpdateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
-
-                        }
-
-                    }
-
-
-                }
-
-
-                if (dataFromClient.Split(';')[0] == "#0004")
-                {
-                    foreach (string info in dataFromClient.Split(';'))
-                    {
-                        if (!info.Contains("#0004"))
+                        //enregistre les messages dans la base de données,
+                        else if (dataFromClient.Contains("!"))
                         {
 
-                            this.ClientServ.UpdateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
+
+                            foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
+                            {
+                                if (info != "")
+                                {
+                                    this.ClientServ.sendMessage(dataFromClient.Split(';')[1].Split('-')[0], info, dataFromClient.Split('-')[2], Convert.ToBoolean(dataFromClient.Split('-')[3]));
+                                }
+
+                            }
+
+                            foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
+                            {
+                                Thread.Sleep(1);
+                                if (info != "")
+                                {
+                                    this.ClientServ.UpdateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
+
+                                }
+
+                            }
+
+
                         }
-                    }
-                }
-                if (dataFromClient.Split(';')[0] == "#0005")
-                {
-                    this.ClientServ.updateAllClient(dataFromClient.Split(';')[1], Convert.ToInt32(dataFromClient.Split(';')[3]), dataFromClient.Split(';')[2]);
-                }
+                        break;
+                    case "#0004":
+                        //permet de mettre à jour les messages de tous les clients conscernés
+                        foreach (string info in dataFromClient.Split(';'))
+                        {
+                            if (!info.Contains("#0004"))
+                            {
 
-                //permet de mettre à jour les  états des messages
-                if (dataFromClient.Split(';')[0] == "#0006")
-                {
-                    this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
-
+                                this.ClientServ.UpdateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
+                            }
+                        }
+                        break;
+                    case "#0005":
+                        this.ClientServ.updateAllClient(dataFromClient.Split(';')[1], Convert.ToInt32(dataFromClient.Split(';')[3]), dataFromClient.Split(';')[2]);
+                        break;
+                    case "#0006":
+ //permet de mettre à jour les  états des messages
+                         this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
                     this.ClientServ.updateAllClient(dataFromClient.Split(';')[4], Convert.ToInt32(dataFromClient.Split(';')[5]), dataFromClient.Split(';')[6]);
-                }
-                //récupération ancien messages
-                if (dataFromClient.Split(';')[0] == "#0007")
-                {
-                    this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
+                        break;
+                    case "#0007":
+                        //récupération ancien messages
+                         this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
                     this.ClientServ.GetOldMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]), Convert.ToInt32(dataFromClient.Split(';')[4]));
 
+                        break;
+                    case "#0008":
+                        if (this.ClientServ.ChangePassword(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2]))
+                        {
+                            this.ClientServ.PasswordIsChanged(dataFromClient.Split(';')[1], true, dataFromClient.Split(';')[2]);
+                        }
+                        else
+                        {
+                            this.ClientServ.PasswordIsChanged(dataFromClient.Split(';')[1], false, dataFromClient.Split(';')[2]);
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                if (dataFromClient.Split(';')[0] == "#0008")
-                {
-                    if (this.ClientServ.ChangePassword(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2]))
-                    {
-                        this.ClientServ.PasswordIsChanged(dataFromClient.Split(';')[1], true, dataFromClient.Split(';')[2]);
-                    }
-                    else
-                    {
-                        this.ClientServ.PasswordIsChanged(dataFromClient.Split(';')[1], false, dataFromClient.Split(';')[2]);
-                    }
-                }
+               
+                
+                
+                
+               
             }
             this.ClientServ.CloseConnection(this.UserInformations.GetidUser(), this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup());
         }

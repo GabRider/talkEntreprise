@@ -18,7 +18,7 @@ namespace talkEntreprise_client.classThread
         private NetworkStream _stream;
         private List<Message> _lstOldMessages;
 
-       
+
 
         ///////propriétées/////////
 
@@ -57,23 +57,24 @@ namespace talkEntreprise_client.classThread
         /// <summary>
         /// permet de vérifier si l'utilisateur reçoit un message du serveur
         /// </summary>
-        public void init()
+        public void Init()
         {
-           this.LstOldMessages= new List<Message>();
+            this.LstOldMessages = new List<Message>();
             bool stop = false;
             byte[] inStream = new byte[10025];
             string result = string.Empty;
-            List<User> lstUser = new List<User>();
+            List<User> lstUsers = new List<User>();
             List<Message> lstMessages = new List<Message>();
-            string[] userInfo;
+            string[] userInfos;
             bool first = true;
+
 
             while (true)
             {
 
-                lstUser.Clear();
-               
-                
+                lstUsers.Clear();
+
+
                 first = true;
 
 
@@ -92,140 +93,117 @@ namespace talkEntreprise_client.classThread
 
                 }
 
-
                 if (stop)
                 {
                     break;
                 }
-                if (result.Split(';')[0] == "#0015")
+                switch (result.Split(';')[0])
                 {
-
-                    //création des utilisateurs donnés par le serveur
-                    foreach (string user in result.Split(';'))
-                    {
-                        if (!first)
+                    case "#0015":
+                        //création des utilisateurs donnés par le serveur
+                        foreach (string user in result.Split(';'))
                         {
-                            userInfo = user.Split(',');
-
-                            if (userInfo[0] != "DB")
-                            {
-
-                                lstUser.Add(new User(userInfo[0], userInfo[1], Convert.ToInt32(userInfo[2]), Convert.ToBoolean(userInfo[3]), Convert.ToInt32(userInfo[4]), userInfo[5]));
-
-                            }
-                            else
-                            {
-                                this.Prog.DatabaseClosed();
-                                stop = true;
-                            }
-
-
-                        }
-                        else
-                        {
-                            first = false;
-                        }
-
-                    }
-
-                    this.Prog.setEmployees(lstUser);
-                }
-                //permet de mettre à jour la liste des messages
-                if (result.Split(';')[0] == "#0004")
-                {
-                    foreach (string message in result.Split(';'))
-                    {
-                        if (result.Contains("false"))
-                        {
-
-
                             if (!first)
                             {
-                                if (message.Split('-')[0] != "DB")
-                                {
+                                userInfos = user.Split(',');
 
-                                    lstMessages.Add(new Message(message.Split('-')[0], this.Prog.DecryptMessage(message.Split('-')[1]), message.Split('-')[2]));
+                                if (userInfos[0] != "DB")
+                                {
+                                    lstUsers.Add(new User(userInfos[0], userInfos[1], Convert.ToInt32(userInfos[2]), Convert.ToBoolean(userInfos[3]), Convert.ToInt32(userInfos[4]), userInfos[5]));
                                 }
                                 else
                                 {
                                     this.Prog.DatabaseClosed();
                                     stop = true;
                                 }
-
                             }
                             else
                             {
                                 first = false;
                             }
                         }
-                        else
+                        this.Prog.SetEmployees(lstUsers);
+                        break;
+                        ///récupération des messages envoyés par le serveur
+                    case "#0004":
+                        foreach (string message in result.Split(';'))
                         {
-                            if (stop)
+                            if (result.Contains("false"))
                             {
-                                break;
-                            }
-                            if (lstMessages.Count != 0)
-                            {
-                                lstMessages = this.LstOldMessages.Concat(lstMessages).ToList<Message>();
-                                this.Prog.showMessage(lstMessages, result.Split('-')[1], result.Split('-')[2], Convert.ToBoolean(result.Split('-')[3]));
-                                lstMessages.Clear();
-                                LstOldMessages.Clear();
-                            }
-
-
-
-
-
-                        }
-                    }
-
-                }
-                //récupération des anciens Messages
-                if (result.Split(';')[0] == "#0007")
-                {
-                    
-                    foreach (string message in result.Split(';'))
-                    {
-                        if (result.Contains("false"))
-                        {
-                            if (!first)
-                            {
-                                if (message.Split('-')[0] != "DB")
+                                if (!first)
                                 {
-                                    this.LstOldMessages.Add(new Message(message.Split('-')[0], this.Prog.DecryptMessage(message.Split('-')[1]), message.Split('-')[2]));
+                                    if (message.Split('-')[0] != "DB")
+                                    {
+
+                                        lstMessages.Add(new Message(message.Split('-')[0], this.Prog.DecryptMessage(message.Split('-')[1]), message.Split('-')[2]));
+                                    }
+                                    else
+                                    {
+                                        this.Prog.DatabaseClosed();
+                                        stop = true;
+                                    }
                                 }
                                 else
                                 {
-                                    this.Prog.DatabaseClosed();
-                                    stop = true;
+                                    first = false;
                                 }
-
                             }
                             else
                             {
-                                first = false;
+                                if (stop)
+                                {
+                                    break;
+                                }
+                                if (lstMessages.Count != 0)
+                                {
+                                    lstMessages = this.LstOldMessages.Concat(lstMessages).ToList<Message>();
+                                    this.Prog.ShowMessages(lstMessages, result.Split('-')[1], result.Split('-')[2], Convert.ToBoolean(result.Split('-')[3]));
+                                    lstMessages.Clear();
+                                    LstOldMessages.Clear();
+                                }
                             }
                         }
-                        else
+                        break;
+
+                    case "#0007":
+                        foreach (string message in result.Split(';'))
                         {
-                            if (stop)
+                            if (result.Contains("false"))
                             {
-                                break;
+                                if (!first)
+                                {
+                                    if (message.Split('-')[0] != "DB")
+                                    {
+                                        this.LstOldMessages.Add(new Message(message.Split('-')[0], this.Prog.DecryptMessage(message.Split('-')[1]), message.Split('-')[2]));
+                                    }
+                                    else
+                                    {
+                                        this.Prog.DatabaseClosed();
+                                        stop = true;
+                                    }
+                                }
+                                else
+                                {
+                                    first = false;
+                                }
                             }
-
+                            else
+                            {
+                                if (stop)
+                                {
+                                    break;
+                                }
+                            }
                         }
-                    }
+                        break;
 
-
+                    case "#0008":
+                        this.Prog.PasswordIsChanged(Convert.ToBoolean(result.Split(';')[1]), result.Split(';')[2]);
+                        break;
+                    default:
+                        stop = true;
+                        break;
                 }
-                //si le mot de passe a été changé
-                if (result.Split(';')[0] == "#0008")
-                {
-
-                    this.Prog.PasswordIsChanged(Convert.ToBoolean(result.Split(';')[1]), result.Split(';')[2]);
-                }
-
-
             }
         }
     }

@@ -32,8 +32,8 @@
             this.tbxOldPassword = new System.Windows.Forms.TextBox();
             this.lblNewPassword = new System.Windows.Forms.Label();
             this.lblOldPassword = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnChange = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.lblInfo = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -71,26 +71,26 @@
             this.lblOldPassword.TabIndex = 3;
             this.lblOldPassword.Text = "Ancien mot de passe :";
             // 
-            // button1
+            // btnChange
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(157, 135);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Modifier";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnChange.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnChange.Location = new System.Drawing.Point(157, 135);
+            this.btnChange.Name = "btnChange";
+            this.btnChange.Size = new System.Drawing.Size(75, 23);
+            this.btnChange.TabIndex = 4;
+            this.btnChange.Text = "Modifier";
+            this.btnChange.UseVisualStyleBackColor = true;
+            this.btnChange.Click += new System.EventHandler(this.btnChange_Click);
             // 
-            // button2
+            // btnCancel
             // 
-            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(254, 135);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Annuler";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(254, 135);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Annuler";
+            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // lblInfo
             // 
@@ -106,10 +106,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 191);
+            this.ClientSize = new System.Drawing.Size(454, 190);
             this.Controls.Add(this.lblInfo);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnChange);
             this.Controls.Add(this.lblOldPassword);
             this.Controls.Add(this.lblNewPassword);
             this.Controls.Add(this.tbxOldPassword);
@@ -132,8 +132,8 @@
         private System.Windows.Forms.TextBox tbxOldPassword;
         private System.Windows.Forms.Label lblNewPassword;
         private System.Windows.Forms.Label lblOldPassword;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnChange;
+        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblInfo;
     }
 }

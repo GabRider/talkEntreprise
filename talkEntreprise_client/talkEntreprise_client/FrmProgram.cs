@@ -80,22 +80,27 @@ namespace talkEntreprise_client
             get { return _dayOldMessages; }
             set { _dayOldMessages = value; }
         }
+
+        /////////Constructeur////////
+
         public FrmProgram(Controler c)
         {
             InitializeComponent();
             this.Ctrl = c;
             this.ServerError = false;
-            this.UpdateLstUser = new Thread(new UpdateUser(this, this.Ctrl).init);
+            this.UpdateLstUser = new Thread(new UpdateUser(this, this.Ctrl).Init);
             this.UpdateLstUser.IsBackground = true;
             this.UpdateLstUser.Start();
             this.UserConnected = this.Ctrl.GetUserConnected();
             this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetIdUser().Split('@')[0];
             this.NbMessages = 0;
             this.DayOldMessages = 0;
-
+            
+            // this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), this.UserConnected.GetIdUser(), true);
 
         }
 
+        ////méthodes de la fenêtre//////////
         private void FrmProgram_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!this.ServerError)
@@ -112,7 +117,6 @@ namespace talkEntreprise_client
                 {
                     if (answer == DialogResult.OK)
                     {
-
                         try
                         {
                             this.Ctrl.CloseConnection();
@@ -120,12 +124,8 @@ namespace talkEntreprise_client
                         }
                         catch (Exception)
                         {
-
-                            
                             Process.GetCurrentProcess().Kill();
                         }
-
-
                     }
 
                     else
@@ -148,60 +148,7 @@ namespace talkEntreprise_client
             {
                 this.Ctrl.VisibleChange(true);
             }
-
-
-
-
-
-
-
         }
-
-
-
-
-
-        public void setEmployees(List<User> listUser)
-        {
-            this.LstUser = listUser;
-
-
-            Invoke(new MethodInvoker(delegate
-            {
-
-                try
-                {
-                    int getLastSelected = lsbEmployees.SelectedIndex;
-                    this.LastSelectedUser = lsbEmployees.SelectedItem as User;
-                    this.lsbEmployees.DataSource = null;
-                    this.lsbEmployees.DataSource = listUser;
-
-                    if (getLastSelected < 0)
-                    {
-                        this.lsbEmployees.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        this.lsbEmployees.SelectedIndex = getLastSelected;
-                    }
-                }
-                catch (Exception)
-                {
-
-                    this.Close();
-                }
-
-
-
-
-
-
-
-            }));
-
-
-        }
-
         private void lsbEmployees_DrawItem(object sender, DrawItemEventArgs e)
         {
             //repris d'un exercice fait avec M.Beney
@@ -271,6 +218,290 @@ namespace talkEntreprise_client
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
         }
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string allDestinations = string.Empty;
+                bool first = true;
+                User destination = lsbEmployees.SelectedItem as User;
+                if (tbxWriteMessage.Text.Trim() != "" && destination != null)
+                {
+                    if (lsbEmployees.SelectedIndex == 0)
+                    {
+
+                        foreach (User user in lsbEmployees.Items)
+                        {
+                            if (user.GetIdGroup() == this.UserConnected.GetIdGroup())
+                            {
+                                if (first)
+                                {
+                                    first = false;
+                                }
+                                else
+                                {
+                                    allDestinations += user.GetIdUser() + "!";
+                                }
+                            }
+                        }
+
+                        if (this.DayOldMessages != 0)
+                        {
+                            this.GetOldConversation();
+                            Thread.Sleep(200);
+                        }
+                        this.Ctrl.SendMessageGroup(this.UserConnected.GetIdUser(), allDestinations, this.tbxWriteMessage.Text, true);
+
+                        Thread.Sleep(10);
+                        this.UpdateStateMessagesGroup();
+                        Thread.Sleep(10);
+                        this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetIdUser(), this.UserConnected.GetIdGroup());
+                        this.tbxWriteMessage.Clear();
+                    }
+                    else
+                    {
+                        if (this.DayOldMessages != 0)
+                        {
+                            this.GetOldConversation();
+                            Thread.Sleep(200);
+                        }
+                        this.Ctrl.SendMessage(this.UserConnected.GetIdUser(), destination.GetIdUser(), this.tbxWriteMessage.Text, false);
+
+                        Thread.Sleep(10);
+                        this.UpdateStateMessagesOneUser();
+                        Thread.Sleep(10);
+                        this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetIdUser(), this.UserConnected.GetIdGroup());
+                        this.tbxWriteMessage.Clear();
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+
+                this.ServerClosed();
+            }
+
+        }
+        private void lsbEmployees_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+
+
+                User user = this.lsbEmployees.SelectedItem as User;
+                if (user != null)
+                {
+
+                    if (this.LastSelectedUser != null)
+                    {
+                        if (this.LastSelectedUser.GetIdUser() != user.GetIdUser())
+                        {
+                            this.NbMessages = 0;
+                            this.tbxMessage.Clear();
+                            this.LastAuthor = string.Empty;
+                            if (lsbEmployees.SelectedIndex != 0)
+                            {
+                                if (this.DayOldMessages != 0)
+                                {
+                                    this.GetOldConversation();
+                                    Thread.Sleep(3);
+                                }
+
+                                this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
+                                Thread.Sleep(200);
+                                this.UpdateStateMessagesOneUser();
+
+
+
+                            }
+                            else
+                            {
+                                if (this.DayOldMessages != 0)
+                                {
+                                    this.GetOldConversation();
+                                    Thread.Sleep(200);
+                                }
+                                this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+                                Thread.Sleep(20);
+
+                                Thread.Sleep(20);
+                                this.UpdateStateMessagesGroup();
+
+
+                            }
+
+                            this.LastSelectedUser = user;
+                        }
+
+
+                    }
+                    else
+                    {
+                        this.LastSelectedUser = user;
+                        foreach (User userInfo in this.lsbEmployees.Items)
+                        {
+
+                            Thread.Sleep(3);
+                            this.Ctrl.UpdateStateMessages(userInfo.GetIdUser(), this.UserConnected.GetIdUser(), true, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
+                            Thread.Sleep(3);
+                            if (this.DayOldMessages != 0)
+                            {
+                                this.GetOldConversation();
+                                Thread.Sleep(200);
+                            }
+
+                            this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+
+
+
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception)
+            {
+                this.ServerClosed();
+            }
+
+        }
+        private void tsmiQuit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        private void tsmiOldMesssage_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+
+                this.LastAuthor = "";
+                tbxMessage.Clear();
+                User user = lsbEmployees.SelectedItem as User;
+                ToolStripMenuItem tsmiFocus = sender as ToolStripMenuItem;
+                foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
+                {
+
+                    tsmi.Checked = false;
+                }
+                tsmiFocus.Checked = true;
+                this.DayOldMessages = Convert.ToInt32(tsmiFocus.Tag);
+                Thread.Sleep(10);
+                if (lsbEmployees.SelectedIndex != 0)
+                {
+                    if (this.DayOldMessages != 0)
+                    {
+                        this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), false, this.DayOldMessages);
+                        Thread.Sleep(10);
+                        this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
+                    }
+                    else
+                    {
+                        this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
+                    }
+
+                }
+                else
+                {
+                    if (this.DayOldMessages != 0)
+                    {
+                        this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), true, this.DayOldMessages);
+                        Thread.Sleep(10);
+                        this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+                    }
+                    else
+                    {
+                        this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
+                    }
+                }
+
+
+                this.NbMessages = 0;
+            }
+            catch (Exception)
+            {
+
+                this.ServerClosed();
+            }
+
+        }
+        private void tsmiAbout_Click(object sender, EventArgs e)
+        {
+            FrmAbout about = new FrmAbout();
+            about.ShowDialog();
+        }
+        private void tsmiOldMessages_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void tsmiSettings_Click(object sender, EventArgs e)
+        {
+            DialogResult res = new DialogResult();
+            FrmSettings settings = new FrmSettings(this, this.UserConnected.GetPassword());
+            res = settings.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                try
+                {
+                    if (settings.GetNewPassword() != string.Empty)
+                    {
+                        this.Ctrl.ChangePassword(this.UserConnected.GetIdUser(), settings.GetNewPassword());
+                    }
+                    else
+                    {
+                        tsmiSettings_Click(sender, e);
+                    }
+
+
+
+                }
+                catch (Exception)
+                {
+
+                    this.ServerClosed();
+                }
+            }
+        }
+private void tsmDateTime_Tick(object sender, EventArgs e)
+        {
+            tssDate.Text = DateTime.Now.ToLocalTime().ToString() + " (Heure UTC)";
+        }
+        ////////méthodes///////
+        /// <summary>
+        /// permet de mettre à jour la liste des employés
+        /// </summary>
+        /// <param name="listUsers">liste d'employés</param>
+        public void SetEmployees(List<User> listUsers)
+        {
+            this.LstUser = listUsers;
+            Invoke(new MethodInvoker(delegate
+            {
+
+                try
+                {
+                    int getLastSelected = lsbEmployees.SelectedIndex;
+                    this.LastSelectedUser = lsbEmployees.SelectedItem as User;
+                    this.lsbEmployees.DataSource = null;
+                    this.lsbEmployees.DataSource = listUsers;
+
+                    if (getLastSelected < 0)
+                    {
+                        this.lsbEmployees.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        this.lsbEmployees.SelectedIndex = getLastSelected;
+                    }
+                }
+                catch (Exception)
+                {
+
+                    this.Close();
+                }
+            }));
+        }
         /// <summary>
         /// permet d'afficher les messages
         /// </summary>
@@ -278,7 +509,7 @@ namespace talkEntreprise_client
         /// <param name="destination">destinataire</param>
         /// <param name="iduser">envoyeur</param>
         /// <param name="isforGroup">si c'est envoyé au groupe</param>
-        public void showMessage(List<Message> lstNewMessages, string destination, string iduser, bool isforGroup)
+        public void ShowMessages(List<Message> lstNewMessages, string destination, string iduser, bool isforGroup)
         {
 
             Invoke(new MethodInvoker(delegate
@@ -320,81 +551,6 @@ namespace talkEntreprise_client
 
             }));
         }
-
-        private void btnSend_Click(object sender, EventArgs e)
-        {
-            try
-            {
-
-
-                string allDestinations = string.Empty;
-                bool first = true;
-                User destination = lsbEmployees.SelectedItem as User;
-                if (tbxWriteMessage.Text.Trim() != "" && destination != null)
-                {
-                    if (lsbEmployees.SelectedIndex == 0)
-                    {
-
-                        foreach (User user in lsbEmployees.Items)
-                        {
-                            if (user.GetIdGroup() == this.UserConnected.GetIdGroup())
-                            {
-                                if (first)
-                                {
-                                    first = false;
-                                }
-                                else
-                                {
-                                    allDestinations += user.GetIdUser() + "!";
-                                }
-
-                            }
-                        }
-
-                        if (this.DayOldMessages != 0)
-                        {
-                            this.GetOlDConversation();
-                            Thread.Sleep(200);
-                        }
-                        this.Ctrl.sendMessageGroup(this.UserConnected.GetIdUser(), allDestinations, this.tbxWriteMessage.Text, true);
-
-                        Thread.Sleep(10);
-                        this.UpdateStateMessagesGroup();
-                        Thread.Sleep(10);
-                        this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetIdUser(), this.UserConnected.GetIdGroup());
-                        this.tbxWriteMessage.Clear();
-
-
-                    }
-                    else
-                    {
-                        if (this.DayOldMessages != 0)
-                        {
-                            this.GetOlDConversation();
-                            Thread.Sleep(200);
-                        }
-                        this.Ctrl.sendMessage(this.UserConnected.GetIdUser(), destination.GetIdUser(), this.tbxWriteMessage.Text, false);
-
-                        Thread.Sleep(10);
-                        this.UpdateStateMessagesOneUser();
-                        Thread.Sleep(10);
-                        this.Ctrl.UpdateUsers(this.UserConnected.GetNameGroup(), this.UserConnected.GetIdUser(), this.UserConnected.GetIdGroup());
-                        this.tbxWriteMessage.Clear();
-
-
-
-                    }
-
-                }
-
-            }
-            catch (Exception)
-            {
-
-                this.ServerClosed();
-            }
-
-        }
         /// <summary>
         /// permet de donner la connexion du client
         /// </summary>
@@ -411,7 +567,6 @@ namespace talkEntreprise_client
         {
             return this.Ctrl.Stream;
         }
-
         /// <summary>
         /// permet de décoder le message
         /// </summary>
@@ -441,90 +596,9 @@ namespace talkEntreprise_client
             MessageBox.Show("La base de donnée a été étinte. vous allez être automatiquement déconnecté", "Base de données Inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
-        private void lsbEmployees_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-
-
-                User user = this.lsbEmployees.SelectedItem as User;
-                if (user != null)
-                {
-
-                    if (this.LastSelectedUser != null)
-                    {
-                        if (this.LastSelectedUser.GetIdUser() != user.GetIdUser())
-                        {
-                            this.NbMessages = 0;
-                            this.tbxMessage.Clear();
-                            this.LastAuthor = string.Empty;
-                            if (lsbEmployees.SelectedIndex != 0)
-                            {
-                                if (this.DayOldMessages != 0)
-                                {
-                                    this.GetOlDConversation();
-                                    Thread.Sleep(3);
-                                }
-
-                                this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
-                                Thread.Sleep(200);
-                                this.UpdateStateMessagesOneUser();
-
-
-
-                            }
-                            else
-                            {
-                                if (this.DayOldMessages != 0)
-                                {
-                                    this.GetOlDConversation();
-                                    Thread.Sleep(200);
-                                }
-                                this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
-                                Thread.Sleep(20);
-
-                                Thread.Sleep(20);
-                                this.UpdateStateMessagesGroup();
-
-
-                            }
-
-                            this.LastSelectedUser = user;
-                        }
-
-
-                    }
-                    else
-                    {
-                        this.LastSelectedUser = user;
-                        foreach (User userInfo in this.lsbEmployees.Items)
-                        {
-
-                            Thread.Sleep(3);
-                            this.Ctrl.UpdateStateMessages(userInfo.GetIdUser(), this.UserConnected.GetIdUser(), true, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
-                            Thread.Sleep(3);
-                            if (this.DayOldMessages != 0)
-                            {
-                                this.GetOlDConversation();
-                                Thread.Sleep(200);
-                            }
-
-                            this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
-
-
-
-                        }
-                    }
-
-                }
-
-            }
-            catch (Exception)
-            {
-                this.ServerClosed();
-            }
-
-        }
+        /// <summary>
+        /// permet de ^mettre à jour les états des messages de son groupe
+        /// </summary>
         private void UpdateStateMessagesGroup()
         {
 
@@ -538,66 +612,18 @@ namespace talkEntreprise_client
 
             }
         }
+        /// <summary>
+        /// permete de mettre à jour les états des messages entre deux utilisateurs
+        /// </summary>
         private void UpdateStateMessagesOneUser()
         {
             User user = this.lsbEmployees.SelectedItem as User;
             this.Ctrl.UpdateStateMessages(user.GetIdUser(), this.UserConnected.GetIdUser(), false, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
         }
-
-        private void tsmiQuit_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void tsmiOldMesssage_Click(object sender, EventArgs e)
-        {
-            this.LastAuthor = "";
-            tbxMessage.Clear();
-            User user = lsbEmployees.SelectedItem as User;
-            ToolStripMenuItem tsmiFocus = sender as ToolStripMenuItem;
-            foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
-            {
-
-                tsmi.Checked = false;
-            }
-            tsmiFocus.Checked = true;
-            this.DayOldMessages = Convert.ToInt32(tsmiFocus.Tag);
-            Thread.Sleep(10);
-            if (lsbEmployees.SelectedIndex != 0)
-            {
-                if (this.DayOldMessages != 0)
-                {
-                    this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), false, this.DayOldMessages);
-                    Thread.Sleep(10);
-                    this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
-                }
-
-            }
-            else
-            {
-                if (this.DayOldMessages != 0)
-                {
-                    this.Ctrl.GetOldMessages(this.UserConnected.GetIdUser(), user.GetIdUser(), true, this.DayOldMessages);
-                    Thread.Sleep(10);
-                    this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
-                }
-                else
-                {
-                    this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
-                }
-            }
-
-
-            this.NbMessages = 0;
-        }
-
-        private void tsmiAbout_Click(object sender, EventArgs e)
-        {
-            FrmAbout about = new FrmAbout();
-            about.ShowDialog();
-        }
-
-        private void GetOlDConversation()
+        /// <summary>
+        /// permet de récupérer les anciennes converstaions présent dans la base de données
+        /// </summary>
+        private void GetOldConversation()
         {
             foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
             {
@@ -624,54 +650,26 @@ namespace talkEntreprise_client
                 }
             }
         }
-        private void tsmiOldMessages_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tsmiSettings_Click(object sender, EventArgs e)
-        {
-            DialogResult res = new DialogResult();
-            FrmSettings settings = new FrmSettings(this,this.UserConnected.GetPassword());
-           res= settings.ShowDialog();
-           if (res == DialogResult.OK)
-           {
-               try
-               {
-                   if (settings.GetNewPassword() != string.Empty)
-                   {
-                       this.Ctrl.ChangePassword(this.UserConnected.GetIdUser(), settings.GetNewPassword());
-                   }
-                   else
-                   {
-                       tsmiSettings_Click(sender, e);
-                   }
-                       
-                   
-
-               }
-               catch (Exception)
-               {
-
-                   this.ServerClosed();
-               }
-           }
-        }
         // <summary>
         /// permet de coder le mot de passe de l'utilisateur
         /// </summary>
         /// <param name="password">mot de passe de l'utilisateur</param>
         /// <returns></returns>
-        public string sha1(string password)
+        public string Sha1(string password)
         {
-            return this.Ctrl.sha1(password);
+            return this.Ctrl.Sha1(password);
         }
+        /// <summary>
+        /// permet de savoir si le mot de passe a bel et bien été enregistré dans la base de données
+        /// </summary>
+        /// <param name="isChanged">si le changement c'est effectué</param>
+        /// <param name="password"> le nouveau mot de passe de l'utilisateur </param>
         public void PasswordIsChanged(bool isChanged, string password)
         {
             if (isChanged)
             {
                 MessageBox.Show("Votre nouveau mot de passe a été enregistré", "Le mot de passe a été modifié", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.UserConnected.setPassword(password);
+                this.UserConnected.SetPassword(password);
             }
             else
             {
@@ -679,6 +677,8 @@ namespace talkEntreprise_client
                 this.DatabaseClosed();
             }
         }
+
+        
 
 
     }

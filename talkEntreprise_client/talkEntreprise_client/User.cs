@@ -68,7 +68,7 @@ namespace talkEntreprise_client
        
         public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
         {
-            setUser(id, pwd, group, connect, nbMessagesNotRead, nameGroup);
+            SetUser(id, pwd, group, connect, nbMessagesNotRead, nameGroup);
         }
 
         /////////méthodes/////////
@@ -81,7 +81,7 @@ namespace talkEntreprise_client
         /// <param name="connect">état de connection de l'utilisateur</param>
         /// <param name="nbMessagesNotRead">nombre de message en attente</param>
         /// <param name="nameGroup">nom du groupe de l'utilisateur</param>
-        public void setUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
+        public void SetUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
         {
             this.IdUser = id;
             this.Password = pwd;
@@ -172,7 +172,7 @@ namespace talkEntreprise_client
         {
             return this.Admin;
         }
-        public void setPassword(string password)
+        public void SetPassword(string password)
         {
             this.Password = password;
         }

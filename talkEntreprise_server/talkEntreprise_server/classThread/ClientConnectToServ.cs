@@ -45,23 +45,23 @@ namespace talkEntreprise_server.classThread
         /// <returns>true ou false</returns>
         public Boolean validateConnection(string id, string password)
         {
-            return this.Serv.validateConnection(id, password);
+            return this.Serv.ValidateConnection(id, password);
         }
         /// <summary>
         /// permet de vérifier si un nouveau client essye de communiquer
         /// </summary>
-        public void init()
+        public void Init()
         {
             TcpListener serverSocket = new TcpListener(8888);
             TcpClient clientSocket = default(TcpClient);
-            int counter = 0;
+          
 
             serverSocket.Start();
 
-            counter = 0;
+         
             while ((true))
             {
-                counter += 1;
+                
                 //si un client veut se connecter on accepte
                 clientSocket = serverSocket.AcceptTcpClient();
                 byte[] sendBytedMessage = null;
@@ -71,7 +71,7 @@ namespace talkEntreprise_server.classThread
                 string password = string.Empty;
                 bool sendToClient = false;
                 string sendInfo = string.Empty;
-                List<string> UserInfo = new List<string>();
+                List<string> userInfo = new List<string>();
                 ///initialisation du flux et récupération des informations envoyé par le client
                 NetworkStream networkStream = clientSocket.GetStream();
                 networkStream.Read(bytesFrom, 0, bytesFrom.Length);
@@ -106,9 +106,9 @@ namespace talkEntreprise_server.classThread
                 if (sendToClient)
                 {
                     Thread.Sleep(10);
-                    UserInfo = this.GetInformation(user);
+                    userInfo = this.GetInformation(user);
                     sendInfo = "#0004;" + user + ",";
-                    foreach (var info in UserInfo)
+                    foreach (var info in userInfo)
                     {
                         sendInfo += info + ",";
                     }
@@ -134,7 +134,7 @@ namespace talkEntreprise_server.classThread
         /// <param name="user">identifiant de l'utilisateur</param>
         public void CloseConnection(string user, string nameGroup, int idGroup)
         {
-            Thread t = this.Serv.getThreadlist(user);
+            Thread t = this.Serv.GetThreadlist(user);
             this.Serv.DeconnectionToServer(user);
             Thread.Sleep(5);
             this.Serv.DelInList(user);
@@ -161,7 +161,7 @@ namespace talkEntreprise_server.classThread
         /// <param name="user">identifiant de l'utilisateur</param>
         public void updateAllClient(string nameGroup, int idGroup, string user)
         {
-            //envoiela liste des employee à l'utilisateur qui vient de se connecter
+            //envoie la liste des employee à l'utilisateur qui vient de se connecter
             byte[] sendBytedMessage = null;
             TcpClient client;
             NetworkStream stream;
@@ -197,7 +197,7 @@ namespace talkEntreprise_server.classThread
         /// <param name="forGroup">si c'est pour un groupe</param>
         public void sendMessage(string user, string destinationUsername, string message, bool forGroup)
         {
-            this.Serv.sendMessage(user, destinationUsername, message, forGroup);
+            this.Serv.SendMessage(user, destinationUsername, message, forGroup);
         }
         /// <summary>
         /// permet de mettre à jour la liste de conversation des utilisateurs

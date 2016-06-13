@@ -46,7 +46,7 @@ namespace talkEntreprise_client
                     tbxPassword.Clear();
                     tbxPassword.Focus();
                     this.Visible = !this.Visible;
-                    this.Ctrl.setUserConnected();
+                    this.Ctrl.SetUserConnected();
                     Thread.Sleep(40);
                     this.Ctrl.CreateProgram(tbxId.Text);
                 }

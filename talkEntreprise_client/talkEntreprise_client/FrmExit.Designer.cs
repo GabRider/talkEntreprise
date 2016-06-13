@@ -62,7 +62,7 @@
             this.btnYes.Name = "btnYes";
             this.btnYes.Size = new System.Drawing.Size(127, 43);
             this.btnYes.TabIndex = 4;
-            this.btnYes.Text = "Connexion";
+            this.btnYes.Text = "se déconnecter";
             this.btnYes.UseVisualStyleBackColor = true;
             // 
             // pbxImg
@@ -81,7 +81,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 272);
+            this.ClientSize = new System.Drawing.Size(470, 271);
             this.Controls.Add(this.pbxImg);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);

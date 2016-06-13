@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnSend = new System.Windows.Forms.Button();
             this.tbxWriteMessage = new System.Windows.Forms.TextBox();
             this.lsbEmployees = new System.Windows.Forms.ListBox();
@@ -36,18 +37,18 @@
             this.tsmiSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiQuit = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.msProgram = new System.Windows.Forms.MenuStrip();
             this.tsmHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOldMessages = new System.Windows.Forms.ToolStripMenuItem();
-            this.aujourdhuiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiToday = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOneDayAgo = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTwoDaysAgo = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOneWeekAgo = new System.Windows.Forms.ToolStripMenuItem();
             this.tssDate = new System.Windows.Forms.ToolStripStatusLabel();
             this.ssProgram = new System.Windows.Forms.StatusStrip();
-            this.tbxMessage = new System.Windows.Forms.TextBox();
+            this.tbxMessages = new System.Windows.Forms.TextBox();
+            this.tsmDateTime = new System.Windows.Forms.Timer(this.components);
             this.msProgram.SuspendLayout();
             this.ssProgram.SuspendLayout();
             this.SuspendLayout();
@@ -107,8 +108,7 @@
             this.tsmIOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSettings,
             this.toolStripSeparator2,
-            this.tsmiQuit,
-            this.toolStripMenuItem1});
+            this.tsmiQuit});
             this.tsmIOption.Name = "tsmIOption";
             this.tsmIOption.Size = new System.Drawing.Size(56, 20);
             this.tsmIOption.Text = "&Option";
@@ -133,11 +133,6 @@
             this.tsmiQuit.Size = new System.Drawing.Size(227, 22);
             this.tsmiQuit.Text = "&Quitter";
             this.tsmiQuit.Click += new System.EventHandler(this.tsmiQuit_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
             // 
             // msProgram
             // 
@@ -169,7 +164,7 @@
             // tsmiOldMessages
             // 
             this.tsmiOldMessages.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aujourdhuiToolStripMenuItem,
+            this.tsmiToday,
             this.tsmiOneDayAgo,
             this.tsmiTwoDaysAgo,
             this.tsmiOneWeekAgo});
@@ -179,14 +174,14 @@
             this.tsmiOldMessages.Text = "voir anciens messages";
             this.tsmiOldMessages.Click += new System.EventHandler(this.tsmiOldMessages_Click);
             // 
-            // aujourdhuiToolStripMenuItem
+            // tsmiToday
             // 
-            this.aujourdhuiToolStripMenuItem.Checked = true;
-            this.aujourdhuiToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.aujourdhuiToolStripMenuItem.Name = "aujourdhuiToolStripMenuItem";
-            this.aujourdhuiToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.aujourdhuiToolStripMenuItem.Text = "Aujourd\'hui";
-            this.aujourdhuiToolStripMenuItem.Click += new System.EventHandler(this.tsmiOldMesssage_Click);
+            this.tsmiToday.Checked = true;
+            this.tsmiToday.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiToday.Name = "tsmiToday";
+            this.tsmiToday.Size = new System.Drawing.Size(159, 22);
+            this.tsmiToday.Text = "Aujourd\'hui";
+            this.tsmiToday.Click += new System.EventHandler(this.tsmiOldMesssage_Click);
             // 
             // tsmiOneDayAgo
             // 
@@ -222,29 +217,34 @@
             // 
             this.ssProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssDate});
-            this.ssProgram.Location = new System.Drawing.Point(0, 439);
+            this.ssProgram.Location = new System.Drawing.Point(0, 438);
             this.ssProgram.Name = "ssProgram";
             this.ssProgram.Size = new System.Drawing.Size(723, 22);
             this.ssProgram.SizingGrip = false;
             this.ssProgram.TabIndex = 15;
             // 
-            // tbxMessage
+            // tbxMessages
             // 
-            this.tbxMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.tbxMessage.Location = new System.Drawing.Point(139, 26);
-            this.tbxMessage.Multiline = true;
-            this.tbxMessage.Name = "tbxMessage";
-            this.tbxMessage.ReadOnly = true;
-            this.tbxMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbxMessage.Size = new System.Drawing.Size(580, 322);
-            this.tbxMessage.TabIndex = 17;
+            this.tbxMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.tbxMessages.Location = new System.Drawing.Point(139, 26);
+            this.tbxMessages.Multiline = true;
+            this.tbxMessages.Name = "tbxMessages";
+            this.tbxMessages.ReadOnly = true;
+            this.tbxMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbxMessages.Size = new System.Drawing.Size(580, 322);
+            this.tbxMessages.TabIndex = 17;
+            // 
+            // tsmDateTime
+            // 
+            this.tsmDateTime.Enabled = true;
+            this.tsmDateTime.Tick += new System.EventHandler(this.tsmDateTime_Tick);
             // 
             // FrmProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(723, 461);
-            this.Controls.Add(this.tbxMessage);
+            this.ClientSize = new System.Drawing.Size(723, 460);
+            this.Controls.Add(this.tbxMessages);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.tbxWriteMessage);
             this.Controls.Add(this.lsbEmployees);
@@ -282,13 +282,13 @@
         private System.Windows.Forms.ToolStripMenuItem tsmHelp;
         private System.Windows.Forms.ToolStripStatusLabel tssDate;
         private System.Windows.Forms.StatusStrip ssProgram;
-        private System.Windows.Forms.TextBox tbxMessage;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.TextBox tbxMessages;
         private System.Windows.Forms.ToolStripMenuItem tsmiAbout;
         private System.Windows.Forms.ToolStripMenuItem tsmiOldMessages;
-        private System.Windows.Forms.ToolStripMenuItem aujourdhuiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiToday;
         private System.Windows.Forms.ToolStripMenuItem tsmiOneDayAgo;
         private System.Windows.Forms.ToolStripMenuItem tsmiTwoDaysAgo;
         private System.Windows.Forms.ToolStripMenuItem tsmiOneWeekAgo;
+        private System.Windows.Forms.Timer tsmDateTime;
     }
 }

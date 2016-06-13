@@ -46,7 +46,7 @@ namespace talkEntreprise_server
         /// permet d'initialiser la connexion à la base de données
         /// </summary>
         /// <returns>true false</returns>
-        public bool connectionDB()
+        public bool ConnectionDB()
         {
             try
             {
@@ -67,7 +67,7 @@ namespace talkEntreprise_server
         /// <summary>
         /// permet de fermer la connexion à la base de données
         /// </summary>
-        public void shutdownConnectionDB()
+        public void ShutdownConnectionDB()
         {
             ConnectionUser.Close();
         }
@@ -80,8 +80,8 @@ namespace talkEntreprise_server
         /// 
         public Boolean ValidateConnectionUser(string user, string password)
         {
-            bool result = true;
-            if (this.connectionDB())
+            bool result = false;
+            if (this.ConnectionDB())
             {
                 string sql = String.Format("SELECT Count(*) as total FROM t_users where  idUser  = '{0}' AND Password = '{1}'", user, password);
                 MySqlCommand cmd = new MySqlCommand(sql, ConnectionUser);
@@ -94,21 +94,13 @@ namespace talkEntreprise_server
                     result = true;
 
                 }
-                else
-                {
-
-                    result = false;
-                }
+               
                 reader.Close();
 
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
 
             }
-            else
-            {
-
-                result = false;
-            }
+           
             return result;
         }
         /// <summary>
@@ -120,7 +112,7 @@ namespace talkEntreprise_server
         {
             List<string> lstInfoUser = new List<string>();
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 string sql = String.Format("SELECT u.idGroup, g.group, password FROM t_users u, t_group g where u.idGroup = g.idGroup AND  idUser  = '{0}'", user);
                 MySqlCommand cmd = new MySqlCommand(sql, ConnectionUser);
@@ -143,7 +135,7 @@ namespace talkEntreprise_server
         public void SucessConnectionToServer(string user)
         {
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 string destination = "Host";
                 long lastId = 0;
@@ -179,7 +171,7 @@ namespace talkEntreprise_server
 
                 cmd.CommandText = String.Format("Update `t_users` set Connection = 1 where idUser = '{0}'", user);
                 cmd.ExecuteNonQuery();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
         }
 
@@ -190,7 +182,7 @@ namespace talkEntreprise_server
         public void DeconnectionToServer(string user)
         {
 
-            if (connectionDB())
+            if (ConnectionDB())
             {
 
 
@@ -227,7 +219,7 @@ namespace talkEntreprise_server
 
                 cmd.CommandText = String.Format("Update `t_users` set Connection = 0 where idUser = '{0}'", user);
                 cmd.ExecuteNonQuery();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
         }
         /// <summary>
@@ -256,7 +248,7 @@ namespace talkEntreprise_server
             }
 
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
 
 
@@ -269,7 +261,7 @@ namespace talkEntreprise_server
                     lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0, nameGroup));
 
                 }
-                shutdownConnectionDB();
+                ShutdownConnectionDB();
             }
             else
             {
@@ -314,7 +306,7 @@ namespace talkEntreprise_server
             {
                 sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, user);
             }
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
 
 
@@ -327,7 +319,7 @@ namespace talkEntreprise_server
                     lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0, nameGroup));
 
                 }
-                shutdownConnectionDB();
+                ShutdownConnectionDB();
             }
             else
             {
@@ -373,7 +365,7 @@ namespace talkEntreprise_server
                 sql = String.Format("SELECT COUNT(*) as numberMessages FROM t_log where valueSender = \'{0}\' AND valueDestination = \'{1}\' AND state = {2} AND forGroup={3} OR valueSender = \'{4}\' AND valueDestination = \'{5}\' AND state= {6} AND forGroup={7} ", userDestination, user, STATEDEFAULT, forGroup, userDestination, user, STATENOTREAD, forGroup);
             }
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -391,7 +383,7 @@ namespace talkEntreprise_server
                 }
 
                 cmd.ExecuteNonQuery();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
 
             return numberMessages;
@@ -403,9 +395,9 @@ namespace talkEntreprise_server
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="destination">destinataire du message</param>
         /// <param name="forGroup">si c'est pour un groupe</param>
-        public void sendMessage(string user, string destination, string message, bool forGroup)
+        public void SendMessage(string user, string destination, string message, bool forGroup)
         {
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 long lastInsertId = 0;
                 //string date = DateTime.Now.ToUniversalTime().AddDays(-1).ToString("yyyy-MM-dd_HH-mm-ss");
@@ -448,7 +440,7 @@ namespace talkEntreprise_server
                 cmd.CommandText = sql;
                 cmd.ExecuteNonQuery();
 
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
         }
 
@@ -485,7 +477,7 @@ namespace talkEntreprise_server
           + "AND forGroup  ={9} ", user, destination, forGroup, LastDay, date, destination, user, LastDay, date, forGroup);
             }
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
 
 
@@ -498,7 +490,7 @@ namespace talkEntreprise_server
                     lsbMessage.Add(new Message(reader.GetString("valueSender"), reader.GetString("valueMessage"), reader.GetString("valueDate")));
                 }
                 reader.Close();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
             else
             {
@@ -519,11 +511,11 @@ namespace talkEntreprise_server
 
 
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 cmd.ExecuteNonQuery();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
         }
         /// <summary>
@@ -532,11 +524,11 @@ namespace talkEntreprise_server
         public void SetAllEmployeesDeconnected()
         {
             string sql = "UPDATE t_users SET connection= false ";
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 cmd.ExecuteNonQuery();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
 
             }
         }
@@ -556,8 +548,8 @@ namespace talkEntreprise_server
             if (forGroup)
             {
                 sql = string.Format("SELECT DISTINCT  valueSender, valueMessage, DATE_FORMAT(valueDate,'%Y-%m-%d_%H-%i-%S') AS valueDate FROM t_log"
-               + " where valueSender=\'{0}\' AND valueMessage!=\"\" AND forGroup ={1} OR valueDestination=\'{2}\'  AND valuedate BETWEEN  '{3} 00:00:00' AND '{4} 23:59:59'"
-           + "AND forGroup ={5}   ", user, forGroup, user, oldDate, date, forGroup);
+               + " where valueSender=\'{0}\' AND valueMessage!=\"\" AND forGroup ={1} AND valuedate BETWEEN  '{2} 00:00:00' AND '{3} 23:59:59' OR valueDestination=\'{4}\'  AND valuedate BETWEEN  '{5} 00:00:00' AND '{6} 23:59:59'"
+           + "AND forGroup ={7}   ", user, forGroup, oldDate, date, user, oldDate, date, forGroup);
             }
             else
             {
@@ -573,7 +565,7 @@ namespace talkEntreprise_server
           + "AND forGroup  ={9} ", user, destination, forGroup, oldDate, date, destination, user, oldDate, date, forGroup);
             }
 
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
 
 
@@ -586,7 +578,7 @@ namespace talkEntreprise_server
                     lsbMessage.Add(new Message(reader.GetString("valueSender"), reader.GetString("valueMessage"), reader.GetString("valueDate")));
                 }
                 reader.Close();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
             }
             else
             {
@@ -603,11 +595,11 @@ namespace talkEntreprise_server
         public bool ChangePassword(string user, string password)
         {
             string sql = string.Format("UPDATE t_users SET password= '{0}' where idUser = '{1}' ", password, user);
-            if (this.connectionDB())
+            if (this.ConnectionDB())
             {
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 cmd.ExecuteNonQuery();
-                this.shutdownConnectionDB();
+                this.ShutdownConnectionDB();
                 return true;
             }
             else

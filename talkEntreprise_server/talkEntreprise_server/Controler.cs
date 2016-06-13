@@ -59,7 +59,7 @@ namespace talkEntreprise_server
         /// <param name="password"> mot de passe de l'utilisateur</param>
         /// <returns>retourne "true" si l'utilisateur à les bonnes informations de connection</returns>
         /// 
-        public Boolean validateConnection(string id, string password)
+        public Boolean ValidateConnection(string id, string password)
         {
             return this.Request.ValidateConnectionUser(id,password);
         }
@@ -126,9 +126,9 @@ namespace talkEntreprise_server
          /// <param name="user">nom de l'utilisateur</param>
          /// <param name="destinationUsername">destinataire du message</param>
          /// <param name="forGroup">si c'est pour un groupe</param>
-        public void sendMessage(string user, string destinationUsername, string message, bool forGroup)
+        public void SendMessage(string user, string destinationUsername, string message, bool forGroup)
         {
-            this.Request.sendMessage(user, destinationUsername, message, forGroup);
+            this.Request.SendMessage(user, destinationUsername, message, forGroup);
         }
          /// <summary>
          /// permet de récupérer les messages envoyé par les utilisateur

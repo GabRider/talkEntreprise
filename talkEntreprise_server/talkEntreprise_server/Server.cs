@@ -43,7 +43,7 @@ namespace talkEntreprise_server
         {
             this.Ctrl = c;
 
-            this.FirstConnection = new Thread(new ClientConnectToServ(this).init);
+            this.FirstConnection = new Thread(new ClientConnectToServ(this).Init);
             this.FirstConnection.IsBackground = true;
             this.FirstConnection.Start();
             
@@ -81,7 +81,7 @@ namespace talkEntreprise_server
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <returns>processus de l'utilisateur concerné</returns>
-           public Thread getThreadlist(string user)
+           public Thread GetThreadlist(string user)
            {
                return UserThreadsList[user] as Thread;
            }
@@ -100,9 +100,9 @@ namespace talkEntreprise_server
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="password">mot de passe de l'utilisateur</param>
         /// <returns></returns>
-        public Boolean validateConnection(string user, string password)
+        public Boolean ValidateConnection(string user, string password)
         {
-            return this.Ctrl.validateConnection(user, password);
+            return this.Ctrl.ValidateConnection(user, password);
         }
         /// <summary>
         /// permet d'envoyer un message à la base de données pour dir que l'utilisateur c'est connectée
@@ -177,9 +177,9 @@ namespace talkEntreprise_server
          /// <param name="user">nom de l'utilisateur</param>
          /// <param name="destinationUsername">destinataire du message</param>
          /// <param name="forGroup">si c'est pour un groupe</param>
-        public void sendMessage(string user, string destinationUsername, string message, bool forGroup)
+        public void SendMessage(string user, string destinationUsername, string message, bool forGroup)
         {
-            this.Ctrl.sendMessage(user, destinationUsername, message, forGroup);
+            this.Ctrl.SendMessage(user, destinationUsername, message, forGroup);
         }
         /// <summary>
         /// permet de récupérer les messages envoyé par les utilisateur

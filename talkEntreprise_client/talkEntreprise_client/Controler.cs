@@ -78,7 +78,7 @@ namespace talkEntreprise_client
         /// </summary>
         /// <param name="password">mot de passe de l'utilisateur</param>
         /// <returns></returns>
-        public string sha1(string password)
+        public string Sha1(string password)
         {
             //créer une instance sha1
             SHA1 sha1 = SHA1.Create();
@@ -124,7 +124,7 @@ namespace talkEntreprise_client
         /// </summary>
         /// <param name="t">connexion du client</param>
         /// <param name="s">flux d'information entre le client et le serveur</param>
-        public void setTcpClientAndNetworkStream(TcpClient t, NetworkStream s)
+        public void SetTcpClientAndNetworkStream(TcpClient t, NetworkStream s)
         {
             this.TClient = t;
             this.Stream = s;
@@ -139,7 +139,7 @@ namespace talkEntreprise_client
         /// <returns></returns>
         public bool Connection(string user, string password)
         {
-            return this.Client.connection(user, password);
+            return this.Client.Connection(user, password);
         }
 
         /// <summary>
@@ -164,9 +164,9 @@ namespace talkEntreprise_client
         /// permet d'envoyer le message ua serveur
         /// </summary>
         /// <param name="message">message</param>
-        public bool sendMessage(string user, string destination, string message, bool forGroup)
+        public bool SendMessage(string user, string destination, string message, bool forGroup)
         {
-            return this.Client.sendMessage(user, destination, message, forGroup);
+            return this.Client.SendMessage(user, destination, message, forGroup);
         }
         /// <summary>
         /// met à jour la liste des employés
@@ -182,9 +182,9 @@ namespace talkEntreprise_client
         /// permet d'envoyer le message au serveur
         /// </summary>
         /// <param name="message">message</param>
-        public void sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
+        public void SendMessageGroup(string user, string Alldestination, string message, bool forGroup)
         {
-            this.Client.sendMessageGroup(user,Alldestination,message,forGroup);
+            this.Client.SendMessageGroup(user,Alldestination,message,forGroup);
         }
          /// <summary>
         /// permet d'afficher la conversation de l'utilisateur
@@ -279,9 +279,9 @@ namespace talkEntreprise_client
             return this.Stream;
         }
 
-        public void setUserConnected()
+        public void SetUserConnected()
         {
-            this.UserInformation = this.Client.getInformationUserConnected();
+            this.UserInformation = this.Client.GetInformationUserConnected();
         }
         public User GetUserConnected()
         {

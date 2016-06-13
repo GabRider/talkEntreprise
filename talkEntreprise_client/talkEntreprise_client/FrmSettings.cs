@@ -42,7 +42,7 @@ namespace talkEntreprise_client
 
         private bool PasswordIsOk()
         {
-            if (this.OldPassword == this.Prog.sha1(tbxOldPassword.Text))
+            if (this.OldPassword == this.Prog.Sha1(tbxOldPassword.Text))
             {
                 if (tbxNewPassword.Text.Trim().Length>=6)
                 {
@@ -74,11 +74,11 @@ namespace talkEntreprise_client
             return this.NewPassword;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnChange_Click(object sender, EventArgs e)
         {
             if (this.PasswordIsOk())
             {
-                this.NewPassword = this.Prog.sha1(tbxNewPassword.Text);
+                this.NewPassword = this.Prog.Sha1(tbxNewPassword.Text);
             }
            
         }

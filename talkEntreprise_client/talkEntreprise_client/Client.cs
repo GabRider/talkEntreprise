@@ -56,10 +56,10 @@ namespace talkEntreprise_client
         /// <param name="id">identifiant de l'utilisateur</param>
         /// <param name="password">mot de passe de l'utilisateur</param>
         /// <returns>vrais ou faux</returns>
-        public bool connection(string id, string password)
+        public bool Connection(string id, string password)
         {
-            string cryptedPassword = this.Ctrl.sha1(password);
-            return connectionServer(id, cryptedPassword);
+            string cryptedPassword = this.Ctrl.Sha1(password);
+            return ConnectionServer(id, cryptedPassword);
         }
         /// <summary>
         /// elle permet d'envoyer l'identifiant et le mot de passe au serveur et récupérer la réponse.
@@ -67,7 +67,7 @@ namespace talkEntreprise_client
         /// <param name="id">identifiant de l'utilisateur</param>
         /// <param name="password">mot de passe de l'utilisateur</param>
         /// <returns>vrais ou faux</returns>
-        private bool connectionServer(string id, string password)
+        private bool ConnectionServer(string id, string password)
         {
 
             Thread.Sleep(10);
@@ -90,7 +90,7 @@ namespace talkEntreprise_client
 
             if (result)
             {
-                this.Ctrl.setTcpClientAndNetworkStream(this.ClientSocket, this.ServerStream);
+                this.Ctrl.SetTcpClientAndNetworkStream(this.ClientSocket, this.ServerStream);
             }
             return result;
         }
@@ -117,7 +117,7 @@ namespace talkEntreprise_client
 
         }
         /// <summary>
-        /// permet d'envoyer un message au serveur pour lui dire de se connecter
+        /// permet d'envoyer un message au serveur pour lui dire de se déconnecter
         /// </summary>
         public void CloseConnection()
         {
@@ -136,7 +136,7 @@ namespace talkEntreprise_client
         /// </summary>
         /// <param name="user"> identifiant user</param>
         /// <returns>utilisateur</returns>
-        public User getInformationUserConnected()
+        public User GetInformationUserConnected()
         {
 
             byte[] inStream = new byte[10025];
@@ -161,7 +161,7 @@ namespace talkEntreprise_client
         /// permet d'envoyer le message ua serveur
         /// </summary>
         /// <param name="message">message</param>
-        public bool sendMessage(string user, string destination, string message, bool forGroup)
+        public bool SendMessage(string user, string destination, string message, bool forGroup)
         {
             string sendMessage = "#0003;" + user + "-" + destination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
             byte[] inStream = new byte[10025];
@@ -187,7 +187,7 @@ namespace talkEntreprise_client
         /// permet d'envoyer le message au serveur
         /// </summary>
         /// <param name="message">message</param>
-        public void sendMessageGroup(string user, string Alldestination, string message, bool forGroup)
+        public void SendMessageGroup(string user, string Alldestination, string message, bool forGroup)
         {
          
  string sendMessage = "#0003;" + user + "-" + Alldestination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
