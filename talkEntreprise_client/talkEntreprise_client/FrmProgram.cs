@@ -298,7 +298,7 @@ namespace talkEntreprise_client
                         if (this.LastSelectedUser.GetIdUser() != user.GetIdUser())
                         {
                             this.NbMessages = 0;
-                            this.tbxMessage.Clear();
+                            this.tbxMessages.Clear();
                             this.LastAuthor = string.Empty;
                             if (lsbEmployees.SelectedIndex != 0)
                             {
@@ -378,7 +378,7 @@ namespace talkEntreprise_client
 
 
                 this.LastAuthor = "";
-                tbxMessage.Clear();
+                tbxMessages.Clear();
                 User user = lsbEmployees.SelectedItem as User;
                 ToolStripMenuItem tsmiFocus = sender as ToolStripMenuItem;
                 foreach (ToolStripMenuItem tsmi in this.tsmiOldMessages.DropDownItems)
@@ -540,7 +540,7 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
                         }
 
                         this.NbMessages = lstNewMessages.Count;
-                        tbxMessage.AppendText(messages);
+                        tbxMessages.AppendText(messages);
                     }
 
                 }
@@ -642,7 +642,7 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
 
                     if (Convert.ToInt32(tsmi.Tag) != this.DayOldMessages)
                     {
-                        tbxMessage.Clear();
+                        tbxMessages.Clear();
                         this.NbMessages = 0;
                     }
 
