@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="talkEntreprise_client.classThread.UpdateUser">
+    <Position X="16.75" Y="5.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABACAAAAAgAIAABAIAACAAAAABg=</HashCode>
+      <FileName>classThread\UpdateUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.Client">
+    <Position X="16.75" Y="0.5" Width="7.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAABABACggEAQCAAIFAAAIACACAAAgAACBAAAAA=</HashCode>
+      <FileName>Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.Controler">
+    <Position X="29" Y="0.5" Width="8" />
+    <TypeIdentifier>
+      <HashCode>ghQAAAABCIACgEESADEgYJgAAAAKAGAgACAACAAEQBw=</HashCode>
+      <FileName>Controler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.FrmAbout">
+    <Position X="45.25" Y="0.5" Width="2.75" />
+    <Members>
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="labelCompanyName" Hidden="true" />
+      <Field Name="labelCopyright" Hidden="true" />
+      <Field Name="labelProductName" Hidden="true" />
+      <Field Name="labelVersion" Hidden="true" />
+      <Field Name="logoPictureBox" Hidden="true" />
+      <Field Name="okButton" Hidden="true" />
+      <Field Name="tableLayoutPanel" Hidden="true" />
+      <Field Name="textBoxDescription" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>kIAAAAgAACAgCAUAAACAAAADAAAAEIAAAAAAAAAAAAA=</HashCode>
+      <FileName>FrmAbout.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.FrmConnection">
+    <Position X="41.75" Y="0.5" Width="3.5" />
+    <Members>
+      <Field Name="btnConnect" Hidden="true" />
+      <Field Name="btnQuit" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="lblID" Hidden="true" />
+      <Field Name="lblPassword" Hidden="true" />
+      <Field Name="tbxId" Hidden="true" />
+      <Field Name="tbxPassword" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIQAgACAACAAAAACQACAAGACAEAAAgAAAgBAAAAAAAA=</HashCode>
+      <FileName>FrmConnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.FrmExit">
+    <Position X="48" Y="0.5" Width="1.5" />
+    <Members>
+      <Field Name="btnCancel" Hidden="true" />
+      <Field Name="btnOk" Hidden="true" />
+      <Field Name="btnYes" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="pbxImg" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAEAAACAAAACAEAABAAAAAAAAABAAAA=</HashCode>
+      <FileName>FrmExit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.FrmProgram">
+    <Position X="37" Y="0.5" Width="4.75" />
+    <Members>
+      <Field Name="btnSend" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="lsbEmployees" Hidden="true" />
+      <Field Name="msProgram" Hidden="true" />
+      <Field Name="ssProgram" Hidden="true" />
+      <Field Name="tbxMessage" Hidden="true" />
+      <Field Name="tbxUser" Hidden="true" />
+      <Field Name="tbxWriteMessage" Hidden="true" />
+      <Field Name="toolStripSeparator2" Hidden="true" />
+      <Field Name="tsmDateTime" Hidden="true" />
+      <Field Name="tsmHelp" Hidden="true" />
+      <Field Name="tsmiAbout" Hidden="true" />
+      <Field Name="tsmiOldMessages" Hidden="true" />
+      <Field Name="tsmiOneDayAgo" Hidden="true" />
+      <Field Name="tsmiOneWeekAgo" Hidden="true" />
+      <Field Name="tsmIOption" Hidden="true" />
+      <Field Name="tsmiQuit" Hidden="true" />
+      <Field Name="tsmiSettings" Hidden="true" />
+      <Field Name="tsmiToday" Hidden="true" />
+      <Field Name="tsmiTwoDaysAgo" Hidden="true" />
+      <Field Name="tssDate" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>VEiAEJocQSgQASACQGGggQqSQASMgUAACsAJIQEcASI=</HashCode>
+      <FileName>FrmProgram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.FrmSettings">
+    <Position X="54" Y="0.5" Width="6" />
+    <Members>
+      <Field Name="btnCancel" Hidden="true" />
+      <Field Name="btnChange" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="lblInfo" Hidden="true" />
+      <Field Name="lblNewPassword" Hidden="true" />
+      <Field Name="lblOldPassword" Hidden="true" />
+      <Field Name="tbxNewPassword" Hidden="true" />
+      <Field Name="tbxOldPassword" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AACAggAACCAAAAEAARCAAAASEkAAAAVAYAAAABAAAAA=</HashCode>
+      <FileName>FrmSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.ManageMessages">
+    <Position X="49.5" Y="0.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AwAAAAAAAAAAAAQQQACAAAgAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>ManageMessages.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.Message">
+    <Position X="24.5" Y="0.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAgEAAAABhAAAAAAgAAAAAAABACAAAAAAAAA=</HashCode>
+      <FileName>Message.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="talkEntreprise_client.User">
+    <Position X="9.75" Y="0.5" Width="6.75" />
+    <TypeIdentifier>
+      <HashCode>AAUAChAACAABkgkgAEAAAQAAACAwAAACCAABgEABBAA=</HashCode>
+      <FileName>User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
