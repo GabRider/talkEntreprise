@@ -103,9 +103,13 @@
             this.Controls.Add(this.tbxPassword);
             this.Controls.Add(this.lblID);
             this.Controls.Add(this.tbxId);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(381, 156);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(381, 156);
             this.Name = "FrmConnection";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = " Connexion";
             this.ResumeLayout(false);

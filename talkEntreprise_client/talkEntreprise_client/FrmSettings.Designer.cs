@@ -106,7 +106,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 190);
+            this.ClientSize = new System.Drawing.Size(454, 191);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnChange);
@@ -114,6 +114,7 @@
             this.Controls.Add(this.lblNewPassword);
             this.Controls.Add(this.tbxOldPassword);
             this.Controls.Add(this.tbxNewPassword);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(470, 229);
             this.MinimizeBox = false;
