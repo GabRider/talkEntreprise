@@ -56,7 +56,7 @@ namespace talkEntreprise_server
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="tcp">connection au client</param>
-        public void addClientList(string user, TcpClient tcp)
+        public void AddClientList(string user, TcpClient tcp)
         {
             if (!clientsList.ContainsKey(user))
             {

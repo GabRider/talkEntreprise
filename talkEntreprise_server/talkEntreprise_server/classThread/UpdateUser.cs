@@ -57,7 +57,7 @@ namespace talkEntreprise_server.classThread
             Thread.Sleep(10);
             this.UserInformations = new User(user, userInformations[2], Convert.ToInt32(userInformations[0]), stateConnect, 0, userInformations[1]);
             Thread.Sleep(10);
-            this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup(), this.UserInformations.GetidUser());
+            this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup(), this.UserInformations.GetIdUser());
         }
 
 
@@ -68,10 +68,10 @@ namespace talkEntreprise_server.classThread
         public void Update()
         {
             List<string> destinationMessag = new List<string>();
-            Byte[] sendBytedMessage = null;
+          
             byte[] bytesFrom = new byte[10025];
             string dataFromClient = null;
-            string sendClient = null;
+          
 
             ////tant que l'utilisateur est connecté
             while (this.UserInformations.GetInformationConnection())
@@ -181,7 +181,7 @@ namespace talkEntreprise_server.classThread
                 
                
             }
-            this.ClientServ.CloseConnection(this.UserInformations.GetidUser(), this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup());
+            this.ClientServ.CloseConnection(this.UserInformations.GetIdUser(), this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup());
         }
     }
 }

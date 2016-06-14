@@ -44,6 +44,7 @@
             this.btnQuit.TabIndex = 11;
             this.btnQuit.Text = "Quitter";
             this.btnQuit.UseVisualStyleBackColor = true;
+            this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
             // 
             // btnConnect
             // 
@@ -53,6 +54,7 @@
             this.btnConnect.TabIndex = 10;
             this.btnConnect.Text = "Connexion";
             this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // lblPassword
             // 

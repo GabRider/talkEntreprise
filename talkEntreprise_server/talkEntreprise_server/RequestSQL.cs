@@ -184,8 +184,6 @@ namespace talkEntreprise_server
 
             if (ConnectionDB())
             {
-
-
                 string destination = "Host";
                 long lastId = 0;
 
@@ -247,19 +245,13 @@ namespace talkEntreprise_server
                 sql = string.Format("SELECT * From t_users where idGroup = {0} AND idUser != \"{1}\" ORDER BY `idUser` ASC", idGroup, user);
             }
 
-
             if (this.ConnectionDB())
             {
-
-
-
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 MySqlDataReader reader = cmd.ExecuteReader();
-
                 while (reader.Read())
                 {
                     lsbUsers.Add(new User(reader.GetString("idUser"), reader.GetString("password"), Convert.ToInt32(reader.GetString("idGroup")), Convert.ToBoolean(reader.GetString("connection")), 0, nameGroup));
-
                 }
                 ShutdownConnectionDB();
             }
@@ -272,12 +264,12 @@ namespace talkEntreprise_server
 
                 if (first)
                 {
-                    friend.SetMessagesNotRead(GetStatesMessages(user, friend.GetidUser(), true));
+                    friend.SetMessagesNotRead(GetStatesMessages(user, friend.GetIdUser(), true));
                     first = false;
                 }
                 else
                 {
-                    friend.SetMessagesNotRead(GetStatesMessages(user, friend.GetidUser(), false));
+                    friend.SetMessagesNotRead(GetStatesMessages(user, friend.GetIdUser(), false));
                 }
 
             }
@@ -308,9 +300,6 @@ namespace talkEntreprise_server
             }
             if (this.ConnectionDB())
             {
-
-
-
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -331,14 +320,14 @@ namespace talkEntreprise_server
 
                 if (first)
                 {
-                    userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetidUser(), true));
-                    result += userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
+                    userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetIdUser(), true));
+                    result += userInfo.GetIdUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                     first = false;
                 }
                 else
                 {
-                    userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetidUser(), false));
-                    result += ";" + userInfo.GetidUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
+                    userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetIdUser(), false));
+                    result += ";" + userInfo.GetIdUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                 }
 
             }
@@ -479,9 +468,6 @@ namespace talkEntreprise_server
 
             if (this.ConnectionDB())
             {
-
-
-
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -506,11 +492,7 @@ namespace talkEntreprise_server
         /// <param name="isforGroup"></param>
         public void UpdateStateMessages(string user, string destination, bool isforGroup)
         {
-
             string sql = String.Format("UPDATE t_log set state={0} where valueSender = \'{1}\' AND valueDestination = \'{2}\' AND state = {3}  AND forGroup={4}  ", STATEREAD, user, destination, STATENOTREAD, isforGroup);
-
-
-
             if (this.ConnectionDB())
             {
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
@@ -529,7 +511,6 @@ namespace talkEntreprise_server
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 cmd.ExecuteNonQuery();
                 this.ShutdownConnectionDB();
-
             }
         }
         /// <summary>
@@ -567,9 +548,6 @@ namespace talkEntreprise_server
 
             if (this.ConnectionDB())
             {
-
-
-
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -607,7 +585,38 @@ namespace talkEntreprise_server
                 return false;
             }
         }
+        /// <summary>
+        /// Permet de vérifier si les informations entrées par l'administrateur sont valide ou non
+        /// </summary>
+        /// <param name="user">Identifiant de l'administrateur</param>
+        /// <param name="password"> mot de passe de l'administrateurn</param>
+        /// <returns>retourne "true" si l'administrateur à les bonnes informations de connection</returns>
+        /// 
+        public Boolean ValidateConnectionAdmin(string user, string password)
+        {
+            bool result = false;
+            if (this.ConnectionDB())
+            {
+                string sql = String.Format("SELECT Count(*) as total FROM t_users where  idUser  = '{0}' AND Password = '{1}' AND idGroup = {2}", user, password,IDADMINISTRATORS);
+                MySqlCommand cmd = new MySqlCommand(sql, ConnectionUser);
+                cmd.ExecuteNonQuery();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                if (Convert.ToInt32(reader.GetString("total")) == 1)
+                {
 
+                    result = true;
+
+                }
+
+                reader.Close();
+
+                this.ShutdownConnectionDB();
+
+            }
+
+            return result;
+        }
     }
 
 }

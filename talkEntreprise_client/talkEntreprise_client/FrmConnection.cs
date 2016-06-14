@@ -74,7 +74,7 @@ namespace talkEntreprise_client
             {
                  this.Visible = !this.Visible;
             }));
-           
+
         }
     }
 }

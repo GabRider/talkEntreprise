@@ -43,7 +43,7 @@
             this.tbxId.Name = "tbxId";
             this.tbxId.Size = new System.Drawing.Size(161, 20);
             this.tbxId.TabIndex = 0;
-            this.tbxId.Text = "gabriel@aspirateur.com";
+            this.tbxId.Text = "@aspirateur.com";
             // 
             // lblID
             // 
@@ -61,7 +61,6 @@
             this.tbxPassword.PasswordChar = '*';
             this.tbxPassword.Size = new System.Drawing.Size(161, 20);
             this.tbxPassword.TabIndex = 2;
-            this.tbxPassword.Text = "123456";
             // 
             // lblPassword
             // 

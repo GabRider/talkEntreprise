@@ -8,15 +8,21 @@ namespace talkEntreprise_server
 {
     public class User
     {
-
         ///////Champs///////////
         private string _idUser;
         private string _password;
         private int _idGroup;
         private bool _connection;
         private string _groupeName;
+        private bool _forGroup;
+        private string _admin;
 
 
+        public bool ForGroup
+        {
+            get { return _forGroup; }
+            set { _forGroup = value; }
+        }
         ///////propriétées///////
 
         public bool Connection
@@ -52,7 +58,11 @@ namespace talkEntreprise_server
             get { return _groupeName; }
             set { _groupeName = value; }
         }
-
+        public string Admin
+        {
+            get { return _admin; }
+            set { _admin = value; }
+        }
 
         ////////Constructeur/////////
 
@@ -80,6 +90,14 @@ namespace talkEntreprise_server
             this.MessageNotRead = nbMessagesNotRead;
             this.GroupeName = nameGroup;
 
+            if (this.IdGroup == 3)
+            {
+                this.Admin = "Administrateur";
+            }
+            else
+            {
+                this.Admin = "";
+            }
         }
         ///////////méthodes//////////
         /// <summary>
@@ -94,7 +112,7 @@ namespace talkEntreprise_server
         /// donne l'identifiant de connexion de l'utilisateur
         /// </summary>
         /// <returns></returns>
-        public string GetidUser()
+        public string GetIdUser()
         {
             return this.IdUser;
         }
@@ -145,6 +163,18 @@ namespace talkEntreprise_server
         public string GetPassword()
         {
             return this.Password;
+        }
+        /// <summary>
+        /// si la personne est admin
+        /// </summary>
+        /// <returns>si admin</returns>
+        public string GetAdmin()
+        {
+            return this.Admin;
+        }
+        public void SetPassword(string password)
+        {
+            this.Password = password;
         }
     }
 }

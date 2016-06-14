@@ -1,45 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Security.Cryptography;
+using System.Windows.Threading;
+using System.Threading;
+using System.Net.Sockets;
 namespace talkEntreprise_server
 {
-    
-     public class Controler
+
+    public class Controler
     {
         /////Champs/////
         FrmConnection _frmLogin;
         private Server _serv;
         private RequestSQL _request;
         private Converter _conv;
+        private User _admin;
+        private Thread _frmProg;
+
+
 
         /////propriétées/////
         public FrmConnection FrmLogin
-                 {
+        {
             get { return _frmLogin; }
             set { _frmLogin = value; }
         }
-        
+
 
         public Server Serv
         {
             get { return _serv; }
             set { _serv = value; }
         }
-        
+
 
         public RequestSQL Request
         {
             get { return _request; }
             set { _request = value; }
         }
-         public Converter Conv
+        public Converter Conv
         {
             get { return _conv; }
             set { _conv = value; }
+        }
+        public User Admin
+        {
+            get { return _admin; }
+            set { _admin = value; }
+        }
+        public Thread FrmProg
+        {
+            get { return _frmProg; }
+            set { _frmProg = value; }
         }
         /////Constructeur/////
         public Controler(FrmConnection frm)
@@ -50,8 +66,67 @@ namespace talkEntreprise_server
             this.Conv = new Converter(this);
 
         }
-       
+        //////méthodes Générales///////
+
+        /// <summary>
+        /// permet de coder le mot de passe de l'utilisateur
+        /// </summary>
+        /// <param name="password">mot de passe de l'utilisateur</param>
+        /// <returns></returns>
+        public string Sha1(string password)
+        {
+            //créer une instance sha1
+            SHA1 sha1 = SHA1.Create();
+            //convertit le texte en byte
+            byte[] hashData = sha1.ComputeHash(Encoding.Default.GetBytes(password));
+            //créer une instance StringBuilder pour sauver les hashData
+            StringBuilder returnValue = new StringBuilder();
+            //transform un tableau en string
+            for (int i = 0; i < hashData.Length; i++)
+            {
+                returnValue.Append(hashData[i].ToString());
+            }
+
+            // return hexadecimal string
+            return returnValue.ToString();
+        }
+        /// <summary>
+        /// elle permet de lancer le programme principal 
+        /// </summary>
+        public void CreateProgram(string user, User u)
+        {
+            this.Admin = u;
+            //création d'un nouveau processus
+            this.FrmProg = new Thread(new ThreadStart(ThreadProgram));
+            this.FrmProg.SetApartmentState(ApartmentState.STA);
+           
+            //lancer le processus
+            this.FrmProg.Start();
+        }
+        /// <summary>
+        /// permet de créer la fenêre FrmProgram dans un aute processus
+        /// </summary>
+        public void ThreadProgram()
+        {
+            FrmProgram prog = new FrmProgram(this,this.Admin);
+            prog.FormClosed += (s, e) => Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
+            prog.Show();
+
+            //permet de garder la fenêtre ouverte
+            Dispatcher.Run();
+        }
         //////méthodes RequestSQL///
+        /// <summary>
+        /// Permet de vérifier si les informations entrées par l'administrateur sont valide ou non
+        /// </summary>
+        /// <param name="user">Identifiant de l'administrateur</param>
+        /// <param name="password"> mot de passe de l'administrateurn</param>
+        /// <returns>retourne "true" si l'administrateur à les bonnes informations de connection</returns>
+        /// 
+        public Boolean ValidateConnectionAdmin(string user, string password)
+        {
+            return this.Request.ValidateConnectionAdmin(user, password);
+        }
         /// <summary>
         /// Permet de vérifier si les informations entrées par l'utilisateur sont valide ou non
         /// </summary>
@@ -61,14 +136,14 @@ namespace talkEntreprise_server
         /// 
         public Boolean ValidateConnection(string id, string password)
         {
-            return this.Request.ValidateConnectionUser(id,password);
+            return this.Request.ValidateConnectionUser(id, password);
         }
         /// <summary>
         /// permet de convertire un nombre en hexadécimal
         /// </summary>
         /// <param name="number">nombre à convertire</param>
         /// <returns>nombre en hexadécimal</returns>
-        public string NumberToHexadecimal(int number) 
+        public string NumberToHexadecimal(int number)
         {
             return this.Conv.NumberToHexadecimal(number);
         }
@@ -106,7 +181,7 @@ namespace talkEntreprise_server
         /// <returns>list des employés</returns>
         public List<User> GetUserList(string nameGroup, int idGroup, string user)
         {
-            return this.Request.GetUserList(nameGroup,idGroup,user);
+            return this.Request.GetUserList(nameGroup, idGroup, user);
         }
         /// <summary>
         /// permet de récupérer les informations relatifs au messages non lu de l'utilisateur
@@ -119,29 +194,29 @@ namespace talkEntreprise_server
         {
             return this.Request.GetUserListInString(nameGroup, idGroup, user);
         }
-         /// <summary>
-         /// permet  d'enregistrer le message dans la base de données
-         /// </summary>
-         /// <param name="message">message crypter</param>
-         /// <param name="user">nom de l'utilisateur</param>
-         /// <param name="destinationUsername">destinataire du message</param>
-         /// <param name="forGroup">si c'est pour un groupe</param>
+        /// <summary>
+        /// permet  d'enregistrer le message dans la base de données
+        /// </summary>
+        /// <param name="message">message crypter</param>
+        /// <param name="user">nom de l'utilisateur</param>
+        /// <param name="destinationUsername">destinataire du message</param>
+        /// <param name="forGroup">si c'est pour un groupe</param>
         public void SendMessage(string user, string destinationUsername, string message, bool forGroup)
         {
             this.Request.SendMessage(user, destinationUsername, message, forGroup);
         }
-         /// <summary>
-         /// permet de récupérer les messages envoyé par les utilisateur
-         /// </summary>
-         /// <param name="user">identifiant de l'utilisateur</param>
-         /// <param name="destination">destinataire du messahe</param>
-         /// <param name="forGroup">si c'est pour le groupe</param>
-         /// <returns></returns>
+        /// <summary>
+        /// permet de récupérer les messages envoyé par les utilisateur
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="destination">destinataire du messahe</param>
+        /// <param name="forGroup">si c'est pour le groupe</param>
+        /// <returns></returns>
         public List<Message> GetConversation(string user, string destination, bool forGroup)
         {
-            return this.Request.GetConversation(user,destination,forGroup);
+            return this.Request.GetConversation(user, destination, forGroup);
         }
-         /// <summary>
+        /// <summary>
         /// permet de récupérer les anciens messages envoyé par les utilisateur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
@@ -150,9 +225,9 @@ namespace talkEntreprise_server
         /// <returns></returns>
         public List<Message> GetOldConversation(string user, string destination, bool forGroup, int nbDays)
         {
-            return this.Request.GetOldConversation(user,destination,forGroup,nbDays);
+            return this.Request.GetOldConversation(user, destination, forGroup, nbDays);
         }
-         /// <summary>
+        /// <summary>
         /// permet de mettre à jour l'état des messages
         /// </summary>
         /// <param name="user"></param>
@@ -160,30 +235,57 @@ namespace talkEntreprise_server
         /// <param name="forGroup"></param>
         public void UpdateStateMessages(string user, string destination, bool isforGroup)
         {
-            this.Request.UpdateStateMessages(user,destination,isforGroup);
+            this.Request.UpdateStateMessages(user, destination, isforGroup);
         }
-         /// <summary>
+        /// <summary>
         /// permet de mettre à zéro tous les utilisateurs
         /// </summary>
         public void SetAllEmployeesDeconnected()
         {
             this.Request.SetAllEmployeesDeconnected();
         }
-        
+
         /// <summary>
         /// permet de changer le mot de passe de l'utilisateur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="password">nouveau mot de passe de l'utilisateur</param>
         /// <returns>réussit ou annuler</returns>
-          public bool ChangePassword(string user, string password)
-          {
-              return this.Request.ChangePassword(user, password);
-          }
-         //////méthodes Server///////
-          /// <summary>
+        public bool ChangePassword(string user, string password)
+        {
+            return this.Request.ChangePassword(user, password);
+        }
+        //////méthodes Server///////
+        /// <summary>
         /// permet de quitter la connection
         /// </summary>
-        
+
+        ////Server////
+        /// <summary>
+        /// permet d'ajouter le nouveau client à la liste de client
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="tcp">connection au client</param>
+        public void AddClientList(string user, TcpClient tcp)
+        {
+            this.Serv.AddClientList(user, tcp);
+        }
+        /// <summary>
+        /// permet d'ajouter le nouveau processus à la liste de processus
+        /// </summary>
+        /// <param name="user">identifiant de l'utilisateur</param>
+        /// <param name="t">processus de l'utilisateur</param>
+        public void AddThreadList(string user, Thread t)
+        {
+            this.Serv.AddThreadList(user, t);
+        }
+        //méthode FrmConnection
+        /// <summary>
+        /// changer l'état visuel de la forme de connexion
+        /// </summary>
+        public void isVisible()
+    {
+        this.FrmLogin.IsVisible();
+    }
     }
 }
