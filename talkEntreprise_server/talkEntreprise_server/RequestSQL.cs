@@ -50,8 +50,9 @@ namespace talkEntreprise_server
         {
             try
             {
-
+                //information de connexion pour accéder à la table spécifier
                 string connectionString = @"server=127.0.0.1;userid=IT;password=Super;database=db_talkEntreprise";
+                //Initialisation de la connection avec la base de données
                 this.ConnectionUser = new MySqlConnection(connectionString);
                 this.ConnectionUser.Open();
                 return true;
@@ -81,12 +82,18 @@ namespace talkEntreprise_server
         public Boolean ValidateConnectionUser(string user, string password)
         {
             bool result = false;
+            //si la connexion a réussi
             if (this.ConnectionDB())
             {
+                //Requête permettant de vérifier si l'utilisateur se trouve bien dans la base de données
                 string sql = String.Format("SELECT Count(*) as total FROM t_users where  idUser  = '{0}' AND Password = '{1}'", user, password);
+                //permet de préparer l'exécution de la requête
                 MySqlCommand cmd = new MySqlCommand(sql, ConnectionUser);
+                //exécute la requête
                 cmd.ExecuteNonQuery();
+                //Instantiation de l'objet qui permet de lire les informations retournées pare la base de données 
                 MySqlDataReader reader = cmd.ExecuteReader();
+                //Lecture des informations retournées
                 reader.Read();
                 if (Convert.ToInt32(reader.GetString("total")) == 1)
                 {
@@ -94,13 +101,13 @@ namespace talkEntreprise_server
                     result = true;
 
                 }
-               
+
                 reader.Close();
 
                 this.ShutdownConnectionDB();
 
             }
-           
+
             return result;
         }
         /// <summary>

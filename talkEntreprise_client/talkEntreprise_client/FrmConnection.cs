@@ -52,7 +52,7 @@ namespace talkEntreprise_client
                 }
                 else
                 {  
-                    MessageBox.Show("Identifiant ou mot de passe incorrecte. ", "Connexion non valide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Identifiant,mot de passe incorrecte ou utilisateur déjà connecté. ", "Connexion non valide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else

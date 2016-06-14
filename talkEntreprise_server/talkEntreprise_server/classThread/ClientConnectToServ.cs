@@ -52,19 +52,21 @@ namespace talkEntreprise_server.classThread
         /// </summary>
         public void Init()
         {
+            //Initialisation du client et initialisation de l'objet permettant de recevoir les connexions
             TcpListener serverSocket = new TcpListener(8888);
             TcpClient clientSocket = default(TcpClient);
-          
+
 
             serverSocket.Start();
 
-         
+
             while ((true))
             {
-                
+
                 //si un client veut se connecter on accepte
                 clientSocket = serverSocket.AcceptTcpClient();
                 byte[] sendBytedMessage = null;
+                //Initialisation d'un tableau qui contient le maximum de byte que le serveur peux envoyer
                 byte[] bytesFrom = new byte[10025];
                 string dataFromClient = null;
                 string user = string.Empty;
@@ -87,24 +89,26 @@ namespace talkEntreprise_server.classThread
                 //si la base de données connait l'utilisateur
                 if (this.validateConnection(user, password))
                 {
-                    this.Serv.SucessConnectionToServer(user);
-                    sendToClient = true;
+                    if (this.Serv.IsInClientList(user))
+                    {
+                        sendToClient = false;
+                    }
+                    else
+                    {
+                        this.Serv.SucessConnectionToServer(user);
+                        sendToClient = true;
 
-                    this.Serv.addClientList(user, clientSocket);
-                    //   this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
-
-
-
-
+                        this.Serv.addClientList(user, clientSocket);
+                    }         
                 }
                 //envoi true ou false au client 
                 Thread.Sleep(10);
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
                 networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
-
-
+                //si la connexion a abouti 
                 if (sendToClient)
                 {
+                    //récupération des informations de l'utilisateur dans la bas de données
                     Thread.Sleep(10);
                     userInfo = this.GetInformation(user);
                     sendInfo = "#0004;" + user + ",";
@@ -123,7 +127,7 @@ namespace talkEntreprise_server.classThread
                 }
 
             }
-
+            //stop toutes les communications
             clientSocket.Close();
             serverSocket.Stop();
 
@@ -169,7 +173,7 @@ namespace talkEntreprise_server.classThread
             {
                 client = this.Serv.GetTcpClientInClientList(user);
                 stream = client.GetStream();
-                
+
                 sendBytedMessage = Encoding.ASCII.GetBytes(this.Serv.GetUserListInString(nameGroup, idGroup, user) + "####");
                 stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             }
@@ -177,7 +181,7 @@ namespace talkEntreprise_server.classThread
             //permet d'envoyer la mise à jour des employés seulement aux employés du mêmes groupe et qui sont connecté.
             foreach (User Employees in this.Serv.GetUserList(nameGroup, idGroup, user))
             {
-                if (this.Serv.IsInClientList(Employees.GetidUser())&& idGroup== Employees.GetIdGroup())
+                if (this.Serv.IsInClientList(Employees.GetidUser()) && idGroup == Employees.GetIdGroup())
                 {
                     client = this.Serv.GetTcpClientInClientList(Employees.GetidUser());
                     stream = client.GetStream();
@@ -287,13 +291,13 @@ namespace talkEntreprise_server.classThread
         {
             return this.Serv.ChangePassword(user, password);
         }
-        public void PasswordIsChanged(string user, bool isChanged,string password)
+        public void PasswordIsChanged(string user, bool isChanged, string password)
         {
             byte[] sendBytedMessage = null;
             TcpClient client = this.Serv.GetTcpClientInClientList(user);
             NetworkStream stream = client.GetStream();
-            string sendAllMessages = "#0008;"+isChanged+";"+password;
-           
+            string sendAllMessages = "#0008;" + isChanged + ";" + password;
+
             sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
             stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
         }

@@ -95,7 +95,7 @@ namespace talkEntreprise_client
             this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetIdUser().Split('@')[0];
             this.NbMessages = 0;
             this.DayOldMessages = 0;
-            
+
             // this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), this.UserConnected.GetIdUser(), true);
 
         }
@@ -464,7 +464,7 @@ namespace talkEntreprise_client
                 }
             }
         }
-private void tsmDateTime_Tick(object sender, EventArgs e)
+        private void tsmDateTime_Tick(object sender, EventArgs e)
         {
             tssDate.Text = DateTime.Now.ToLocalTime().ToString() + " (Heure UTC)";
         }
@@ -511,25 +511,27 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
         /// <param name="isforGroup">si c'est envoyé au groupe</param>
         public void ShowMessages(List<Message> lstNewMessages, string destination, string iduser, bool isforGroup)
         {
-
+            //sécursation pour pouvoir exécuter les prochaines instructions.
             Invoke(new MethodInvoker(delegate
             {
+                //récupération de l'utilisateur sélectionné
                 User user = this.lsbEmployees.SelectedItem as User;
 
                 if (user != null)
                 {
 
-
+                    // si les messages reçus sont pour la conversation actuellement visible par l'utilisateur 
                     if ((user.GetIdUser() == destination || user.GetIdUser() == iduser && user.GetIdUser().Contains("@")) || (isforGroup && lsbEmployees.SelectedIndex == 0))
                     {
-
+                        //variable permettant de stocker les nouveau messages à afficher
                         string messages = string.Empty;
+                        //pour chaque nouveau message
                         for (int i = this.NbMessages; i < lstNewMessages.Count; i++)
                         {
-
+                            //récupération des informations relatif au message
                             Message msg = lstNewMessages[i] as Message;
 
-
+                            //Si le message n'est pas envoyé par le même utilisateur alors afficher l'autheur du messae
                             if (this.LastAuthor != msg.Author)
                             {
 
@@ -538,14 +540,16 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
                             messages += Environment.NewLine + msg.GetContent() + Environment.NewLine + String.Format(" {0,130 }Date: ", string.Empty) + msg.GetDate();
                             this.LastAuthor = msg.GetAuthor();
                         }
-
+                        //permet de sauvegarder le nombre de message afficher sur l'écran
                         this.NbMessages = lstNewMessages.Count;
+                        // Ajout des nouveaux messages visuellement (l'instruction "Invoke" permet de modifier les composants du programme)
                         tbxMessages.AppendText(messages);
                     }
 
                 }
                 else
                 {
+                    //lancer la méthode qui permet
                     this.ServerClosed();
                 }
 
@@ -678,7 +682,7 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
             }
         }
 
-        
+
 
 
     }

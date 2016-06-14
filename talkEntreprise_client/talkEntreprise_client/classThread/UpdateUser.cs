@@ -124,7 +124,7 @@ namespace talkEntreprise_client.classThread
                         }
                         this.Prog.SetEmployees(lstUsers);
                         break;
-                        ///récupération des messages envoyés par le serveur
+                    ///récupération des messages envoyés par le serveur
                     case "#0004":
                         foreach (string message in result.Split(';'))
                         {
