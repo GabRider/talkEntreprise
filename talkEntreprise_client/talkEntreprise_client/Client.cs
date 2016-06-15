@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messgaerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -10,44 +18,30 @@ namespace talkEntreprise_client
 {
     public class Client
     {
-
         //////////Champs//////////
-
         private Controler _ctrl;
         private TcpClient _clientSocket;
         private NetworkStream _serverStream;
-
-
         ////////////propriétées///////////
-
         public Controler Ctrl
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
-
-
         public TcpClient ClientSocket
         {
             get { return _clientSocket; }
             set { _clientSocket = value; }
         }
-
-
         public NetworkStream ServerStream
         {
             get { return _serverStream; }
             set { _serverStream = value; }
         }
-
-
-
         //////////////Constructeur////////////
-
         public Client(Controler c)
         {
             this.Ctrl = c;
-
         }
         //////////////méthodes////////////
         /// <summary>
@@ -69,10 +63,8 @@ namespace talkEntreprise_client
         /// <returns>vrais ou faux</returns>
         private bool ConnectionServer(string id, string password)
         {
-
             Thread.Sleep(10);
             byte[] inStream = new byte[10025];
-
             string toSend = "#0001;" + id + ";" + password + ";####";
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(toSend);
@@ -80,14 +72,9 @@ namespace talkEntreprise_client
             this.ServerStream.Write(outStream, 0, outStream.Length);
             //Efface l'historique
             this.ServerStream.Flush();
-
-
-            //Savoir la taille de mémoire à allouer
-
             //Assignation de la valeur envoyée par le serveur(sous forme de tableau de bytes)
             this.ServerStream.Read(inStream, 0, inStream.Length);
             bool result = Convert.ToBoolean(Encoding.ASCII.GetString(inStream));
-
             if (result)
             {
                 this.Ctrl.SetTcpClientAndNetworkStream(this.ClientSocket, this.ServerStream);
@@ -103,18 +90,14 @@ namespace talkEntreprise_client
             {
                 this.ClientSocket = new TcpClient();
                 this.ServerStream = default(NetworkStream);
-
-
                 this.ClientSocket.Connect("127.0.0.1", 8888);
                 this.ServerStream = this.ClientSocket.GetStream();
                 return true;
             }
             catch (Exception)
             {
-
                 return false;
             }
-
         }
         /// <summary>
         /// permet d'envoyer un message au serveur pour lui dire de se déconnecter
@@ -138,25 +121,18 @@ namespace talkEntreprise_client
         /// <returns>utilisateur</returns>
         public User GetInformationUserConnected()
         {
-
             byte[] inStream = new byte[10025];
             List<string> lstInfo = new List<string>();
-
-
             this.ServerStream.Read(inStream, 0, inStream.Length);
-
             string result = Encoding.ASCII.GetString(inStream);
             result = result.Substring(0, result.IndexOf("####"));
             result = result.Split(';')[1];
             foreach (string info in result.Split(','))
             {
-
                 lstInfo.Add(info);
-
             }
             return new User(lstInfo[0], lstInfo[3], Convert.ToInt32(lstInfo[1]), true, 0, lstInfo[2]);
         }
-
         /// <summary>
         /// permet d'envoyer le message ua serveur
         /// </summary>
@@ -165,23 +141,20 @@ namespace talkEntreprise_client
         {
             string sendMessage = "#0003;" + user + "-" + destination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
             byte[] inStream = new byte[10025];
-
             try
             {
-  //Encode le texte en tableau de byte
-            byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
-            //Envoie au serveur les données
-            this.ServerStream.Write(outStream, 0, outStream.Length);
-            //Efface l'historique
-            this.ServerStream.Flush();
-            return true;
+                //Encode le texte en tableau de byte
+                byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
+                //Envoie au serveur les données
+                this.ServerStream.Write(outStream, 0, outStream.Length);
+                //Efface l'historique
+                this.ServerStream.Flush();
+                return true;
             }
             catch (Exception)
             {
-
                 return false;
             }
-          
         }
         /// <summary>
         /// permet d'envoyer le message au serveur
@@ -189,20 +162,14 @@ namespace talkEntreprise_client
         /// <param name="message">message</param>
         public void SendMessageGroup(string user, string Alldestination, string message, bool forGroup)
         {
-         
- string sendMessage = "#0003;" + user + "-" + Alldestination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
+            string sendMessage = "#0003;" + user + "-" + Alldestination + "-" + this.Ctrl.EncryptMessage(message) + "-" + forGroup + "#####";
             byte[] inStream = new byte[10025];
-
-
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
             //Envoie au serveur les données
             this.ServerStream.Write(outStream, 0, outStream.Length);
             //Efface l'historique
             this.ServerStream.Flush();
-           
-           
-           
         }
         /// <summary>
         /// permet d'afficher la conversation de l'utilisateur
@@ -223,15 +190,12 @@ namespace talkEntreprise_client
                 this.ServerStream.Write(outStream, 0, outStream.Length);
                 //Efface l'historique
                 this.ServerStream.Flush();
-             
+
             }
             catch (Exception)
             {
 
-               
             }
-
-
         }
         /// <summary>
         /// met à jour la liste des employés
@@ -260,19 +224,14 @@ namespace talkEntreprise_client
         /// <param name="isForGroup">pour un groupe</param>
         public void UpdateStateMessages(string user, string destination, bool isForGroup, string nameGroup, int idGroup, string userSecure)
         {
-           
- string sendMessage = "#0006;" + user + ";" + destination + ";" + isForGroup + ";" + nameGroup + ";" + idGroup + ";" + userSecure + "#####";
+            string sendMessage = "#0006;" + user + ";" + destination + ";" + isForGroup + ";" + nameGroup + ";" + idGroup + ";" + userSecure + "#####";
             byte[] inStream = new byte[10025];
-
-
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
             //Envoie au serveur les données
             this.ServerStream.Write(outStream, 0, outStream.Length);
             //Efface l'historique
             this.ServerStream.Flush();
-          
-           
         }
         /// <summary>
         /// permet de récupérer les anciens messages
@@ -281,12 +240,10 @@ namespace talkEntreprise_client
         /// <param name="destination">destinataire</param>
         /// <param name="forGroup">pour le groupe</param>
         /// <param name="nbDays">jour avant aujourd'huit</param>
-        public void GetOldMessages(string user, string destination,bool forGroup, int nbDays)
+        public void GetOldMessages(string user, string destination, bool forGroup, int nbDays)
         {
-            string sendMessage = "#0007;" + user + ";" + destination + ";" +forGroup+";"+nbDays+ "#####";
+            string sendMessage = "#0007;" + user + ";" + destination + ";" + forGroup + ";" + nbDays + "#####";
             byte[] inStream = new byte[10025];
-
-
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
             //Envoie au serveur les données
@@ -298,12 +255,10 @@ namespace talkEntreprise_client
         /// permet de modifier le mot de passe actuelle
         /// </summary>
         /// <param name="password"></param>
-        public void ChangePassword(string user,string password)
+        public void ChangePassword(string user, string password)
         {
-            string sendMessage = "#0008;"+user+";"+password+"#####";
+            string sendMessage = "#0008;" + user + ";" + password + "#####";
             byte[] inStream = new byte[10025];
-
-
             //Encode le texte en tableau de byte
             byte[] outStream = Encoding.ASCII.GetBytes(sendMessage);
             //Envoie au serveur les données
@@ -312,5 +267,4 @@ namespace talkEntreprise_client
             this.ServerStream.Flush();
         }
     }
-    
 }

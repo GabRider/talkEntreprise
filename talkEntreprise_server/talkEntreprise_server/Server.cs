@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,44 +21,31 @@ namespace talkEntreprise_server
     public class Server
     {
         /////Champs//////
-
         //tableau contenant les différentes connexions (nom utilisateur, connexion)
         public static Hashtable clientsList = new Hashtable();
         public static Hashtable UserThreadsList = new Hashtable();
         private Controler _ctrl;
         private Thread _firstConnection;
-
         ///////propriété/////////
-
         public Controler Ctrl
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
-
-
         public Thread FirstConnection
         {
             get { return _firstConnection; }
             set { _firstConnection = value; }
         }
-
-
-        
         /////Constructeur////
-       
         public Server(Controler c)
         {
             this.Ctrl = c;
-
             this.FirstConnection = new Thread(new ClientConnectToServ(this).Init);
             this.FirstConnection.IsBackground = true;
             this.FirstConnection.Start();
-            
         }
-
         /////////méthodes////////
-     
         /// <summary>
         /// permet d'ajouter le nouveau client à la liste de client
         /// </summary>
@@ -68,32 +63,31 @@ namespace talkEntreprise_server
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="t">processus de l'utilisateur</param>
-           public void AddThreadList(string user,Thread t)
+        public void AddThreadList(string user, Thread t)
         {
             if (!UserThreadsList.ContainsKey(user))
             {
                 UserThreadsList.Add(user, t);
             }
-          
         }
         /// <summary>
         /// permet de récupérer le processus d'un utilisateur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <returns>processus de l'utilisateur concerné</returns>
-           public Thread GetThreadlist(string user)
-           {
-               return UserThreadsList[user] as Thread;
-           }
+        public Thread GetThreadlist(string user)
+        {
+            return UserThreadsList[user] as Thread;
+        }
         /// <summary>
         /// permet la suppresion de la connection d'un utilisateur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
-           public void DelInList(string user)
-           {
-               UserThreadsList.Remove(user);
-               clientsList.Remove(user);
-           }
+        public void DelInList(string user)
+        {
+            UserThreadsList.Remove(user);
+            clientsList.Remove(user);
+        }
         /// <summary>
         /// permet de savoir su l'utilisateur se trouve dans la base de données
         /// </summary>
@@ -169,14 +163,14 @@ namespace talkEntreprise_server
         {
             return clientsList.ContainsKey(user);
         }
-           
-         /// <summary>
-         /// permet  d'enregistrer le message dans la base de données
-         /// </summary>
-         /// <param name="message">message crypter</param>
-         /// <param name="user">nom de l'utilisateur</param>
-         /// <param name="destinationUsername">destinataire du message</param>
-         /// <param name="forGroup">si c'est pour un groupe</param>
+
+        /// <summary>
+        /// permet  d'enregistrer le message dans la base de données
+        /// </summary>
+        /// <param name="message">message crypter</param>
+        /// <param name="user">nom de l'utilisateur</param>
+        /// <param name="destinationUsername">destinataire du message</param>
+        /// <param name="forGroup">si c'est pour un groupe</param>
         public void SendMessage(string user, string destinationUsername, string message, bool forGroup)
         {
             this.Ctrl.SendMessage(user, destinationUsername, message, forGroup);
@@ -192,7 +186,7 @@ namespace talkEntreprise_server
         {
             return this.Ctrl.GetConversation(user, destination, forGroup);
         }
-         /// permet de récupérer les anciens messages envoyé par les utilisateur
+        /// permet de récupérer les anciens messages envoyé par les utilisateur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         /// <param name="destination">destinataire du messahe</param>
@@ -200,7 +194,7 @@ namespace talkEntreprise_server
         /// <returns></returns>
         public List<Message> GetOldConversation(string user, string destination, bool forGroup, int nbDays)
         {
-            return this.Ctrl.GetOldConversation(user,destination,forGroup,nbDays);
+            return this.Ctrl.GetOldConversation(user, destination, forGroup, nbDays);
         }
         /// <summary>
         /// permet de mettre à jour l'état des messages
@@ -223,7 +217,4 @@ namespace talkEntreprise_server
             return this.Ctrl.ChangePassword(user, password);
         }
     }
-
-
-   
 }

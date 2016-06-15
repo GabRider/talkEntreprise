@@ -121,7 +121,6 @@
             this.MinimumSize = new System.Drawing.Size(470, 229);
             this.Name = "FrmSettings";
             this.Text = "Paramètres";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmSettings_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

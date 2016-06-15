@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,14 +35,6 @@ namespace talkEntreprise_client
         private bool _serverError;
         private const int IDADMINISTRATOR = 3;
         private int _dayOldMessages;
-
-
-
-
-
-
-
-
         public Controler Ctrl
         {
             get { return _ctrl; }
@@ -80,9 +80,7 @@ namespace talkEntreprise_client
             get { return _dayOldMessages; }
             set { _dayOldMessages = value; }
         }
-
         /////////Constructeur////////
-
         public FrmProgram(Controler c)
         {
             InitializeComponent();
@@ -95,11 +93,8 @@ namespace talkEntreprise_client
             this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetIdUser().Split('@')[0];
             this.NbMessages = 0;
             this.DayOldMessages = 0;
-
             // this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), this.UserConnected.GetIdUser(), true);
-
         }
-
         ////méthodes de la fenêtre//////////
         private void FrmProgram_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -127,7 +122,6 @@ namespace talkEntreprise_client
                             Process.GetCurrentProcess().Kill();
                         }
                     }
-
                     else
                     {
                         try
@@ -139,8 +133,6 @@ namespace talkEntreprise_client
                         {
                             this.Ctrl.VisibleChange(true);
                         }
-
-
                     }
                 }
             }
@@ -172,33 +164,25 @@ namespace talkEntreprise_client
                                           e.ForeColor,
                                           Color.LightBlue);//Couleur de son choix
             e.DrawBackground();
-
             // Définition du pinceau par défaut en noir...
             Brush myBrush = Brushes.Black;
-
             Pen myPen = new Pen(Color.Black);
             myPen.Width = 2;
-
             if (userDrawing.GetInformationConnection())
                 myBrush = Brushes.Green;
             else
                 myBrush = Brushes.Red;
-
             // Dessine un Cercle rouge ou vert
             e.Graphics.FillEllipse(myBrush, e.Bounds.Left + 8, e.Bounds.Top + 15, 12, 12);
             e.Graphics.DrawEllipse(myPen, e.Bounds.Left + 8, e.Bounds.Top + 15, 12, 12);
             myBrush = Brushes.Black;
             e.Graphics.DrawString(userDrawing.GetIdUser().Split('@')[0], new Font("Arial", 10, FontStyle.Bold), myBrush, e.Bounds.Left + 30, e.Bounds.Top + 15, StringFormat.GenericTypographic);
             // Dessine un Rectangle gris autour de chaque éléments
-
             myBrush = Brushes.Red;
             e.Graphics.DrawString(userDrawing.GetAdmin(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 30, e.Bounds.Top + 32, StringFormat.GenericTypographic);
-
-
             myPen.Color = Color.LightGray;
             myPen.Width = 1;
             e.Graphics.DrawRectangle(myPen, e.Bounds);
-
             if (userDrawing.GetMessagesNotRead() != 0)
             {
                 myBrush = Brushes.Yellow;
@@ -221,7 +205,6 @@ namespace talkEntreprise_client
                 {
                     e.Graphics.DrawString(userDrawing.GetMessagesNotRead().ToString(), new Font("Arial", 8, FontStyle.Bold), myBrush, e.Bounds.Left + 110, e.Bounds.Top + 18, StringFormat.GenericTypographic);
                 }
-
             }
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
@@ -282,21 +265,16 @@ namespace talkEntreprise_client
                         this.tbxWriteMessage.Clear();
                     }
                 }
-
             }
             catch (Exception)
             {
-
                 this.ServerClosed();
             }
-
         }
         private void lsbEmployees_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-
-
                 User user = this.lsbEmployees.SelectedItem as User;
                 if (user != null)
                 {
@@ -319,9 +297,6 @@ namespace talkEntreprise_client
                                 this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
                                 Thread.Sleep(200);
                                 this.UpdateStateMessagesOneUser();
-
-
-
                             }
                             else
                             {
@@ -335,14 +310,10 @@ namespace talkEntreprise_client
 
                                 Thread.Sleep(20);
                                 this.UpdateStateMessagesGroup();
-
-
                             }
 
                             this.LastSelectedUser = user;
                         }
-
-
                     }
                     else
                     {
@@ -360,9 +331,6 @@ namespace talkEntreprise_client
                             }
 
                             this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
-
-
-
                         }
                     }
 
@@ -373,7 +341,6 @@ namespace talkEntreprise_client
             {
                 this.ServerClosed();
             }
-
         }
         private void tsmiQuit_Click(object sender, EventArgs e)
         {
@@ -383,8 +350,6 @@ namespace talkEntreprise_client
         {
             try
             {
-
-
                 this.LastAuthor = "";
                 tbxMessages.Clear();
                 User user = lsbEmployees.SelectedItem as User;
@@ -409,7 +374,6 @@ namespace talkEntreprise_client
                     {
                         this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), false);
                     }
-
                 }
                 else
                 {
@@ -424,8 +388,6 @@ namespace talkEntreprise_client
                         this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), user.GetIdUser(), true);
                     }
                 }
-
-
                 this.NbMessages = 0;
             }
             catch (Exception)
@@ -433,7 +395,6 @@ namespace talkEntreprise_client
 
                 this.ServerClosed();
             }
-
         }
         private void tsmiAbout_Click(object sender, EventArgs e)
         {
@@ -442,7 +403,6 @@ namespace talkEntreprise_client
         }
         private void tsmiOldMessages_Click(object sender, EventArgs e)
         {
-
         }
         private void tsmiSettings_Click(object sender, EventArgs e)
         {
@@ -461,13 +421,9 @@ namespace talkEntreprise_client
                     {
                         tsmiSettings_Click(sender, e);
                     }
-
-
-
                 }
                 catch (Exception)
                 {
-
                     this.ServerClosed();
                 }
             }
@@ -486,7 +442,6 @@ namespace talkEntreprise_client
             this.LstUser = listUsers;
             Invoke(new MethodInvoker(delegate
             {
-
                 try
                 {
                     int getLastSelected = lsbEmployees.SelectedIndex;
@@ -526,8 +481,6 @@ namespace talkEntreprise_client
 
                 if (user != null)
                 {
-
-
                     if ((user.GetIdUser() == destination || user.GetIdUser() == iduser && user.GetIdUser().Contains("@")) || (isforGroup && lsbEmployees.SelectedIndex == 0))
                     {
 
@@ -550,13 +503,11 @@ namespace talkEntreprise_client
                         this.NbMessages = lstNewMessages.Count;
                         tbxMessages.AppendText(messages);
                     }
-
                 }
                 else
                 {
                     this.ServerClosed();
                 }
-
             }));
         }
         /// <summary>
@@ -593,7 +544,6 @@ namespace talkEntreprise_client
             MessageBox.Show("Le serveur a été éteint. Vous allez être automatiquement déconnecté.", "Serveur inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             this.Close();
-
         }
         /// <summary>
         /// fait quitter le programme à l'utilisateur
@@ -606,7 +556,6 @@ namespace talkEntreprise_client
             {
                 this.Close();
             }));
-
         }
         /// <summary>
         /// permet de ^mettre à jour les états des messages de son groupe
@@ -621,7 +570,6 @@ namespace talkEntreprise_client
                     this.Ctrl.UpdateStateMessages(userInfo.GetIdUser(), this.UserConnected.GetIdUser(), true, this.UserConnected.GetNameGroup(), this.UserConnected.GetIdGroup(), this.UserConnected.GetIdUser());
                     Thread.Sleep(4);
                 }
-
             }
         }
         /// <summary>
@@ -689,9 +637,5 @@ namespace talkEntreprise_client
                 this.DatabaseClosed();
             }
         }
-
-
-
-
     }
 }

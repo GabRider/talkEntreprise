@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,27 +23,26 @@ namespace talkEntreprise_server
 {
     public partial class FrmConnection : Form
     {
+        ////Champs////////
         private Controler _ctrl;
-
-        internal Controler Ctrl
+        ////Propriétées///////
+        public Controler Ctrl
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
+        ////////Constructeur//////////
         public FrmConnection()
         {
             InitializeComponent();
             this.Ctrl = new Controler(this);
             this.Ctrl.SetAllEmployeesDeconnected();
         }
-
+        //////méthodes////
         private void FrmConnection_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-
             Application.Exit();
         }
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
             if (this.Ctrl.ValidateConnectionAdmin(tbxId.Text, this.Ctrl.Sha1(tbxPassword.Text)))
@@ -43,19 +50,14 @@ namespace talkEntreprise_server
                 this.IsVisible();
                 List<string> lstInfo = this.Ctrl.GetInformation(tbxId.Text);
                 User user = new User(tbxId.Text, lstInfo[2], Convert.ToInt32(lstInfo[0]), true, 0, lstInfo[1]);
-
                 this.Ctrl.SucessConnectionToServer(tbxId.Text);
-
                 this.Ctrl.CreateProgram(tbxId.Text, user);
-                
-
             }
             else
             {
                 MessageBox.Show("Identifiant ou mot de passe incorrecte. ", "Connexion non valide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
         private void btnQuit_Click(object sender, EventArgs e)
         {
             Application.Exit();

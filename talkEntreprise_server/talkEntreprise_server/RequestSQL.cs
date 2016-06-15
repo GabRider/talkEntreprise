@@ -1,4 +1,12 @@
-﻿using MySql.Data.MySqlClient;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +17,13 @@ namespace talkEntreprise_server
 {
     public class RequestSQL
     {
-
         ///////Champs//////
-
         private const int STATEDEFAULT = 2;
         private const int STATENOTREAD = 3;
         private const int STATEREAD = 4;
         private const int IDADMINISTRATORS = 3;
         private MySqlConnection _connectionUser;
-
         /////propriétées///// 
-
         public MySqlConnection ConnectionUser
         {
             get { return _connectionUser; }
@@ -39,9 +43,7 @@ namespace talkEntreprise_server
         {
             this.Ctrl = c;
         }
-
         ///////méhthodes////
-
         /// <summary>
         /// permet d'initialiser la connexion à la base de données
         /// </summary>
@@ -50,7 +52,6 @@ namespace talkEntreprise_server
         {
             try
             {
-
                 string connectionString = @"server=127.0.0.1;userid=IT;password=Super;database=db_talkEntreprise";
                 this.ConnectionUser = new MySqlConnection(connectionString);
                 this.ConnectionUser.Open();
@@ -58,12 +59,9 @@ namespace talkEntreprise_server
             }
             catch (MySqlException ex)
             {
-
                 return false;
             }
-
         }
-
         /// <summary>
         /// permet de fermer la connexion à la base de données
         /// </summary>
@@ -90,17 +88,12 @@ namespace talkEntreprise_server
                 reader.Read();
                 if (Convert.ToInt32(reader.GetString("total")) == 1)
                 {
-
                     result = true;
-
                 }
-               
                 reader.Close();
 
                 this.ShutdownConnectionDB();
-
             }
-           
             return result;
         }
         /// <summary>
@@ -123,8 +116,6 @@ namespace talkEntreprise_server
                 lstInfoUser.Add(reader.GetString("group"));
                 lstInfoUser.Add(reader.GetString("password"));
             }
-
-
             return lstInfoUser;
         }
 
@@ -134,7 +125,6 @@ namespace talkEntreprise_server
         /// <param name="user">identifiant de l'utilisateur</param>
         public void SucessConnectionToServer(string user)
         {
-
             if (this.ConnectionDB())
             {
                 string destination = "Host";
@@ -152,7 +142,6 @@ namespace talkEntreprise_server
                     DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd_HH-mm-ss"),//date de la connection (heure universelle)
                     "#####" // Code de fin
                     );
-
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
                 cmd.ExecuteNonQuery();
                 lastId = cmd.LastInsertedId;
@@ -168,25 +157,21 @@ namespace talkEntreprise_server
                 reader.Close();
                 cmd.CommandText = sql;
                 cmd.ExecuteNonQuery();
-
                 cmd.CommandText = String.Format("Update `t_users` set Connection = 1 where idUser = '{0}'", user);
                 cmd.ExecuteNonQuery();
                 this.ShutdownConnectionDB();
             }
         }
-
         /// <summary>
         /// permet de dire que l'utilisateur c'est déconnecté du serveur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
         public void DeconnectionToServer(string user)
         {
-
             if (ConnectionDB())
             {
                 string destination = "Host";
                 long lastId = 0;
-
                 string sql = string.Format("INSERT INTO t_log (`Code`,`lenTot`,`CodeSender`,`lenSender`,`valueSender`,`CodeDestination`,`lenDestination`,`valueDestination`,`valueDate`,`CodeEnd`) VALUES( '{0}', '{1}' , '{2}' , '{3}' , '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')",
                       "0002",//0 quel type de message
                       "0000", //1 longueur de tout la chaine (depuis idCode sender à idCodeEnd)
@@ -214,7 +199,6 @@ namespace talkEntreprise_server
                 reader.Close();
                 cmd.CommandText = sql;
                 cmd.ExecuteNonQuery();
-
                 cmd.CommandText = String.Format("Update `t_users` set Connection = 0 where idUser = '{0}'", user);
                 cmd.ExecuteNonQuery();
                 this.ShutdownConnectionDB();
@@ -288,7 +272,6 @@ namespace talkEntreprise_server
             List<User> lsbUsers = new List<User>();
             bool first = true;
             string sql;
-
             lsbUsers.Add(new User(nameGroup, "", idGroup, true, 0, nameGroup));
             if (idGroup != IDADMINISTRATORS)
             {
@@ -317,7 +300,6 @@ namespace talkEntreprise_server
 
             foreach (User userInfo in lsbUsers)
             {
-
                 if (first)
                 {
                     userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetIdUser(), true));
@@ -329,7 +311,6 @@ namespace talkEntreprise_server
                     userInfo.SetMessagesNotRead(GetStatesMessages(user, userInfo.GetIdUser(), false));
                     result += ";" + userInfo.GetIdUser() + "," + userInfo.GetPassword() + "," + userInfo.GetIdGroup() + "," + userInfo.GetInformationConnection() + "," + userInfo.GetMessagesNotRead() + "," + userInfo.GetMessagesNotRead() + "," + nameGroup;
                 }
-
             }
             return result;
         }
@@ -432,7 +413,6 @@ namespace talkEntreprise_server
                 this.ShutdownConnectionDB();
             }
         }
-
         /// <summary>
         /// permet de récupérer les messages envoyé par les utilisateur
         /// </summary>
@@ -545,7 +525,6 @@ namespace talkEntreprise_server
               + "AND valuedate BETWEEN  '{7} 00:00:00' AND '{8} 23:59:59'"
           + "AND forGroup  ={9} ", user, destination, forGroup, oldDate, date, destination, user, oldDate, date, forGroup);
             }
-
             if (this.ConnectionDB())
             {
                 MySqlCommand cmd = new MySqlCommand(sql, this.ConnectionUser);
@@ -597,16 +576,14 @@ namespace talkEntreprise_server
             bool result = false;
             if (this.ConnectionDB())
             {
-                string sql = String.Format("SELECT Count(*) as total FROM t_users where  idUser  = '{0}' AND Password = '{1}' AND idGroup = {2}", user, password,IDADMINISTRATORS);
+                string sql = String.Format("SELECT Count(*) as total FROM t_users where  idUser  = '{0}' AND Password = '{1}' AND idGroup = {2}", user, password, IDADMINISTRATORS);
                 MySqlCommand cmd = new MySqlCommand(sql, ConnectionUser);
                 cmd.ExecuteNonQuery();
                 MySqlDataReader reader = cmd.ExecuteReader();
                 reader.Read();
                 if (Convert.ToInt32(reader.GetString("total")) == 1)
                 {
-
                     result = true;
-
                 }
 
                 reader.Close();
@@ -618,6 +595,5 @@ namespace talkEntreprise_server
             return result;
         }
     }
-
 }
 

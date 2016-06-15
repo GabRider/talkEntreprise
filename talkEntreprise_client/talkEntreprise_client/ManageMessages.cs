@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,38 +19,29 @@ namespace talkEntreprise_client
 {
     public class ManageMessages
     {
-
-
+        //////Champs//////////////
         private Controler _ctrl;
         private DESCryptoServiceProvider _key;
-
+        //////propriétées//////////////
         public DESCryptoServiceProvider Key
         {
             get { return _key; }
             set { _key = value; }
         }
-
-
-
-
         public Controler Ctrl
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
-
+        //////Constructeur//////////////
         public ManageMessages(Controler c)
         {
             this.Ctrl = c;
-
-
             this.Key = new DESCryptoServiceProvider();
             this.Key.Key = new byte[8] { 178, 107, 216, 40, 30, 50, 250, 253 };
             this.Key.IV = new byte[8] { 249, 169, 4, 183, 39, 35, 176, 26 };
         }
-
-
-
+        //////méthodes//////////////
         /// <summary>
         /// permet de crypter le message en tableau de byte
         /// </summary>
@@ -53,27 +52,20 @@ namespace talkEntreprise_client
         {
             // Create a memory stream.
             MemoryStream ms = new MemoryStream();
-
             // Create a CryptoStream using the memory stream and the
             // CSP(cryptoserviceprovider) DES key.
             CryptoStream crypstream = new CryptoStream(ms, key.CreateEncryptor(key.Key, key.IV), CryptoStreamMode.Write);
-
             // Create a StreamWriter to write a string to the stream.
             StreamWriter sw = new StreamWriter(crypstream);
-
             // Write the strText to the stream.
             sw.WriteLine(strText);
-
             // Close the StreamWriter and CryptoStream.
             sw.Close();
             crypstream.Close();
-
             // Get an array of bytes that represents the memory stream.
             byte[] buffer = ms.ToArray();
-
             // Close the memory stream.
             ms.Close();
-
             // Return the encrypted byte array.
             return buffer;
         }

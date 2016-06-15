@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,34 +21,31 @@ namespace talkEntreprise_client
 {
     public partial class FrmConnection : Form
     {
-
+        ///////Champs///////////
         private Controler _ctrl;
         private bool _reConnection;
-
-
         public Controler Ctrl
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
+        ///////propriétées///////////
         public bool ReConnection
         {
             get { return _reConnection; }
             set { _reConnection = value; }
         }
+        ///////méthodes///////////
         public FrmConnection()
         {
             InitializeComponent();
             this.Ctrl = new Controler(this);
             this.ReConnection = false;
         }
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
             if (this.Ctrl.ResetConnection())
             {
-
-
                 if (this.Ctrl.Connection(tbxId.Text, tbxPassword.Text))
                 {
                     tbxPassword.Clear();
@@ -74,7 +79,6 @@ namespace talkEntreprise_client
             {
                  this.Visible = !this.Visible;
             }));
-
         }
     }
 }

@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -10,19 +18,12 @@ namespace talkEntreprise_client.classThread
 {
     class UpdateUser
     {
-
         //////Champs////////
-
         private FrmProgram _prog;
         private TcpClient _tClient;
         private NetworkStream _stream;
         private List<Message> _lstOldMessages;
-
-
-
         ///////propriétées/////////
-
-
         public FrmProgram Prog
         {
             get { return _prog; }
@@ -47,13 +48,10 @@ namespace talkEntreprise_client.classThread
         public UpdateUser(FrmProgram p, Controler c)
         {
             this.Prog = p;
-
             this.TClient = this.Prog.GetTcpClient();
             this.Stream = this.Prog.GetNetStream();
-
         }
         /////////méthodes///////////
-
         /// <summary>
         /// permet de vérifier si l'utilisateur reçoit un message du serveur
         /// </summary>
@@ -67,18 +65,10 @@ namespace talkEntreprise_client.classThread
             List<Message> lstMessages = new List<Message>();
             string[] userInfos;
             bool first = true;
-
-
             while (true)
             {
-
                 lstUsers.Clear();
-
-
                 first = true;
-
-
-
                 try
                 {
                     //récupération du flux de données envoyé par le serveur --> recodage du message
@@ -89,10 +79,7 @@ namespace talkEntreprise_client.classThread
                 catch (Exception)
                 {
                     stop = true;
-
-
                 }
-
                 if (stop)
                 {
                     break;

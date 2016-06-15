@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -10,23 +18,14 @@ namespace talkEntreprise_server.classThread
 {
     public class ClientConnectToServ
     {
-
         ///////champs///////
-
         private Server _serv;
-
-
         ////propriétées/////
-
         public Server Serv
         {
             get { return _serv; }
             set { _serv = value; }
         }
-
-
- 
-
         //////////////////Constructeur///////////
         public ClientConnectToServ(Server s)
         {
@@ -53,11 +52,8 @@ namespace talkEntreprise_server.classThread
 
             Thread userUpdate;
             serverSocket.Start();
-
-         
             while ((true))
             {
-                
                 //si un client veut se connecter on accepte
                 clientSocket = serverSocket.AcceptTcpClient();
                 byte[] sendBytedMessage = null;
@@ -85,20 +81,12 @@ namespace talkEntreprise_server.classThread
                 {
                     this.Serv.SucessConnectionToServer(user);
                     sendToClient = true;
-
                     this.Serv.AddClientList(user, clientSocket);
-                    //   this.UserUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this).update);
-
-
-
-
                 }
                 //envoi true ou false au client 
                 Thread.Sleep(10);
                 sendBytedMessage = Encoding.ASCII.GetBytes(sendToClient.ToString());
                 networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
-
-
                 if (sendToClient)
                 {
                     Thread.Sleep(10);
@@ -113,7 +101,7 @@ namespace talkEntreprise_server.classThread
                     networkStream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
                     //permet de mettre à jour la liste des threads
                     userUpdate = new Thread(new UpdateUser(clientSocket, networkStream, sendToClient, this, user).Update);
-                  Serv.AddThreadList(user, userUpdate);
+                    Serv.AddThreadList(user, userUpdate);
                     userUpdate.IsBackground = true;
                     userUpdate.Start();
                 }
@@ -122,7 +110,6 @@ namespace talkEntreprise_server.classThread
 
             clientSocket.Close();
             serverSocket.Stop();
-
         }
         public void initAdmin(string user)
         {
@@ -130,15 +117,8 @@ namespace talkEntreprise_server.classThread
             NetworkStream stream = client.GetStream();
             this.Serv.SucessConnectionToServer(user);
             this.Serv.AddClientList(user, client);
-
-                //this.Serv.AddClientList();
-                ;
+            ;
         }
-
-
-
-
-
         /// <summary>
         /// permet de mettre à jour l'état d'un utilisateur lors de sa déconnection
         /// </summary>
@@ -151,8 +131,6 @@ namespace talkEntreprise_server.classThread
             this.Serv.DelInList(user);
             Thread.Sleep(5);
             this.updateAllClient(nameGroup, idGroup, user);
-
-
             t.Abort();
         }
         /// <summary>
@@ -180,7 +158,7 @@ namespace talkEntreprise_server.classThread
             {
                 client = this.Serv.GetTcpClientInClientList(user);
                 stream = client.GetStream();
-                
+
                 sendBytedMessage = Encoding.ASCII.GetBytes(this.Serv.GetUserListInString(nameGroup, idGroup, user) + "####");
                 stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             }
@@ -188,7 +166,7 @@ namespace talkEntreprise_server.classThread
             //permet d'envoyer la mise à jour des employés seulement aux employés du mêmes groupe et qui sont connecté.
             foreach (User Employees in this.Serv.GetUserList(nameGroup, idGroup, user))
             {
-                if (this.Serv.IsInClientList(Employees.GetIdUser())&& idGroup== Employees.GetIdGroup())
+                if (this.Serv.IsInClientList(Employees.GetIdUser()) && idGroup == Employees.GetIdGroup())
                 {
                     client = this.Serv.GetTcpClientInClientList(Employees.GetIdUser());
                     stream = client.GetStream();
@@ -250,10 +228,7 @@ namespace talkEntreprise_server.classThread
             {
                 stream2.Write(sendBytedMessage, 0, sendBytedMessage.Length);
             }
-
-
         }
-
         /// <summary>
         /// permet de chercher les anciens messages de l'utilisateur.
         /// </summary>
@@ -298,16 +273,15 @@ namespace talkEntreprise_server.classThread
         {
             return this.Serv.ChangePassword(user, password);
         }
-        public void PasswordIsChanged(string user, bool isChanged,string password)
+        public void PasswordIsChanged(string user, bool isChanged, string password)
         {
             byte[] sendBytedMessage = null;
             TcpClient client = this.Serv.GetTcpClientInClientList(user);
             NetworkStream stream = client.GetStream();
-            string sendAllMessages = "#0008;"+isChanged+";"+password;
-           
+            string sendAllMessages = "#0008;" + isChanged + ";" + password;
+
             sendBytedMessage = Encoding.ASCII.GetBytes(sendAllMessages + "####");
             stream.Write(sendBytedMessage, 0, sendBytedMessage.Length);
         }
     }
-
 }

@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -22,35 +30,25 @@ namespace talkEntreprise_server.classThread
             get { return _stream; }
             set { _stream = value; }
         }
-
-
         public TcpClient Client
         {
             get { return _client; }
             set { _client = value; }
         }
-
-
         private ClientConnectToServ ClientServ
         {
             get { return _clientServ; }
             set { _clientServ = value; }
         }
-
         public User UserInformations
         {
             get { return _userInformations; }
             set { _userInformations = value; }
         }
-
         ////////////Constructeur//////////////////
-
         public UpdateUser(TcpClient c, NetworkStream s, bool stateConnect, ClientConnectToServ clientToServ, string user)
         {
-
-
             this.Client = c;
-
             this.Stream = s;
             this.ClientServ = clientToServ;
             List<string> userInformations = this.ClientServ.GetInformation(user);
@@ -59,8 +57,6 @@ namespace talkEntreprise_server.classThread
             Thread.Sleep(10);
             this.ClientServ.updateAllClient(this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup(), this.UserInformations.GetIdUser());
         }
-
-
         ////////////méthodes//////////////////
         /// <summary>
         /// permet de récupérer les informations du client
@@ -68,28 +64,25 @@ namespace talkEntreprise_server.classThread
         public void Update()
         {
             List<string> destinationMessag = new List<string>();
-          
             byte[] bytesFrom = new byte[10025];
             string dataFromClient = null;
-          
-
             ////tant que l'utilisateur est connecté
             while (this.UserInformations.GetInformationConnection())
             {
                 try
                 {
-  destinationMessag.Clear();
-                //permet de récupérer les informations envoyé par le client
-                this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
-                //encode le tableau de bytes
-                dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
+                    destinationMessag.Clear();
+                    //permet de récupérer les informations envoyé par le client
+                    this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
+                    //encode le tableau de bytes
+                    dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
                 }
                 catch (Exception)
                 {
-                    
+
                     break;
                 }
-              
+
                 //récupère la valeure envoyée
                 if (dataFromClient.Contains("####"))
                 {
@@ -114,22 +107,18 @@ namespace talkEntreprise_server.classThread
                                     this.ClientServ.sendMessage(messageInformation.Split('-')[0], messageInformation.Split('-')[1], messageInformation.Split('-')[2], Convert.ToBoolean(messageInformation.Split('-')[3]));
                                     Thread.Sleep(1);
                                     this.ClientServ.UpdateAllClientMessages(messageInformation.Split('-')[0], messageInformation.Split('-')[1], Convert.ToBoolean(messageInformation.Split('-')[3]));
-
                                 }
                             }
                         }
                         //enregistre les messages dans la base de données,
                         else if (dataFromClient.Contains("!"))
                         {
-
-
                             foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
                             {
                                 if (info != "")
                                 {
                                     this.ClientServ.sendMessage(dataFromClient.Split(';')[1].Split('-')[0], info, dataFromClient.Split('-')[2], Convert.ToBoolean(dataFromClient.Split('-')[3]));
                                 }
-
                             }
 
                             foreach (string info in (dataFromClient.Split(';')[1]).Split('-')[1].Split('!'))
@@ -138,12 +127,8 @@ namespace talkEntreprise_server.classThread
                                 if (info != "")
                                 {
                                     this.ClientServ.UpdateAllClientMessages(dataFromClient.Split(';')[1].Split('-')[0], info, Convert.ToBoolean(dataFromClient.Split('-')[3]));
-
                                 }
-
                             }
-
-
                         }
                         break;
                     case "#0004":
@@ -152,7 +137,6 @@ namespace talkEntreprise_server.classThread
                         {
                             if (!info.Contains("#0004"))
                             {
-
                                 this.ClientServ.UpdateAllClientMessages(info.Split('-')[0], info.Split('-')[1], Convert.ToBoolean(info.Split('-')[2]));
                             }
                         }
@@ -161,14 +145,14 @@ namespace talkEntreprise_server.classThread
                         this.ClientServ.updateAllClient(dataFromClient.Split(';')[1], Convert.ToInt32(dataFromClient.Split(';')[3]), dataFromClient.Split(';')[2]);
                         break;
                     case "#0006":
- //permet de mettre à jour les  états des messages
-                         this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
-                    this.ClientServ.updateAllClient(dataFromClient.Split(';')[4], Convert.ToInt32(dataFromClient.Split(';')[5]), dataFromClient.Split(';')[6]);
+                        //permet de mettre à jour les  états des messages
+                        this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
+                        this.ClientServ.updateAllClient(dataFromClient.Split(';')[4], Convert.ToInt32(dataFromClient.Split(';')[5]), dataFromClient.Split(';')[6]);
                         break;
                     case "#0007":
                         //récupération ancien messages
-                         this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
-                    this.ClientServ.GetOldMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]), Convert.ToInt32(dataFromClient.Split(';')[4]));
+                        this.ClientServ.UpdateStateMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]));
+                        this.ClientServ.GetOldMessages(dataFromClient.Split(';')[1], dataFromClient.Split(';')[2], Convert.ToBoolean(dataFromClient.Split(';')[3]), Convert.ToInt32(dataFromClient.Split(';')[4]));
 
                         break;
                     case "#0008":
@@ -184,11 +168,6 @@ namespace talkEntreprise_server.classThread
                     default:
                         break;
                 }
-               
-                
-                
-                
-               
             }
             this.ClientServ.CloseConnection(this.UserInformations.GetIdUser(), this.UserInformations.GetNameGroup(), this.UserInformations.GetIdGroup());
         }

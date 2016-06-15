@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +20,11 @@ namespace talkEntreprise_client
 {
     public partial class FrmSettings : Form
     {
+        ////Champs//////
         private string _oldPassword;
         private string _newPassword;
         private FrmProgram _prog;
-
-
+        ////propriétées//////
         public string OldPassword
         {
             get { return _oldPassword; }
@@ -39,12 +47,11 @@ namespace talkEntreprise_client
             this.OldPassword = pwd;
             this.NewPassword = string.Empty;
         }
-
         private bool PasswordIsOk()
         {
             if (this.OldPassword == this.Prog.Sha1(tbxOldPassword.Text))
             {
-                if (tbxNewPassword.Text.Trim().Length>=6)
+                if (tbxNewPassword.Text.Trim().Length >= 6)
                 {
                     return true;
                 }
@@ -53,34 +60,24 @@ namespace talkEntreprise_client
                     MessageBox.Show("Votre nouveau mot de passe est trop court", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
-                
+
             }
             else
             {
-               
                 MessageBox.Show("Vous avez tapé le mauvais mot de passe", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-        }
-        private void FrmSettings_FormClosing(object sender, FormClosingEventArgs e)
-        {
-          
-           
-            
-            
         }
         public string GetNewPassword()
         {
             return this.NewPassword;
         }
-
         private void btnChange_Click(object sender, EventArgs e)
         {
             if (this.PasswordIsOk())
             {
                 this.NewPassword = this.Prog.Sha1(tbxNewPassword.Text);
             }
-           
         }
     }
 }

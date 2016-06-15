@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,12 +17,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace talkEntreprise_server
-{   
+{
     public partial class FrmProgram : Form
     {
+        //////Champs////
         private Controler _ctrl;
         private User _userConnected;
-
+        //////Propriétées////////
         public User UserConnected
         {
             get { return _userConnected; }
@@ -25,6 +34,7 @@ namespace talkEntreprise_server
             get { return _ctrl; }
             set { _ctrl = value; }
         }
+        ////////Constructeur////////
         public FrmProgram(Controler c, User u)
         {
             InitializeComponent();

@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +17,6 @@ using System.Threading;
 using System.Net.Sockets;
 namespace talkEntreprise_client
 {
-
     public class Controler
     {
         ////////////////Champs/////////////
@@ -26,17 +33,12 @@ namespace talkEntreprise_client
             get { return _manMessage; }
             set { _manMessage = value; }
         }
-
-
         //////////////propriétées///////////
-
-
         public Client Client
         {
             get { return _client; }
             set { _client = value; }
         }
-
         public FrmConnection Connect
         {
             get { return _connect; }
@@ -70,9 +72,7 @@ namespace talkEntreprise_client
             this.Client = new Client(this);
             this.ManMessage = new ManageMessages(this);
         }
-
         //////méthodes Générales///////
-
         /// <summary>
         /// permet de coder le mot de passe de l'utilisateur
         /// </summary>
@@ -103,7 +103,7 @@ namespace talkEntreprise_client
             //création d'un nouveau processus
             this.FrmProg = new Thread(new ThreadStart(ThreadProgram));
             this.FrmProg.SetApartmentState(ApartmentState.STA);
-            
+
             //lancer le processus
             this.FrmProg.Start();
         }
@@ -115,7 +115,7 @@ namespace talkEntreprise_client
             FrmProgram prog = new FrmProgram(this);
             prog.FormClosed += (s, e) => Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
             prog.Show();
-            
+
             //permet de garder la fenêtre ouverte
             Dispatcher.Run();
         }
@@ -128,7 +128,6 @@ namespace talkEntreprise_client
         {
             this.TClient = t;
             this.Stream = s;
-
         }
         ///////////////méthodes Client /////////////////7
         /// <summary>
@@ -147,10 +146,7 @@ namespace talkEntreprise_client
         /// </summary>
         public void CloseConnection()
         {
-
             this.Client.CloseConnection();
-
-
         }
         /// <summary>
         /// permet de réinitialiser la connexion avec le server
@@ -159,7 +155,6 @@ namespace talkEntreprise_client
         {
             return this.Client.ResetConnection();
         }
-
         /// <summary>
         /// permet d'envoyer le message ua serveur
         /// </summary>
@@ -176,7 +171,7 @@ namespace talkEntreprise_client
         /// <param name="idGroup">id du groupe de l'utilisateur</param>
         public void UpdateUsers(string nameGroupe, string user, int idGroup)
         {
-            this.Client.UpdateUsers(nameGroupe,user,idGroup);
+            this.Client.UpdateUsers(nameGroupe, user, idGroup);
         }
         /// <summary>
         /// permet d'envoyer le message au serveur
@@ -184,9 +179,9 @@ namespace talkEntreprise_client
         /// <param name="message">message</param>
         public void SendMessageGroup(string user, string Alldestination, string message, bool forGroup)
         {
-            this.Client.SendMessageGroup(user,Alldestination,message,forGroup);
+            this.Client.SendMessageGroup(user, Alldestination, message, forGroup);
         }
-         /// <summary>
+        /// <summary>
         /// permet d'afficher la conversation de l'utilisateur
         /// </summary>
         /// <param name="user">identifiant de l'utilisateur</param>
@@ -194,7 +189,7 @@ namespace talkEntreprise_client
         /// <param name="forGroup">si c'est pour le groupe</param>
         public void GetConversation(string user, string destination, bool forGroup)
         {
-             this.Client.GetConversation(user,destination,forGroup);
+            this.Client.GetConversation(user, destination, forGroup);
         }
         /// <summary>
         /// permet de mettre à jour l'état des messages
@@ -204,7 +199,7 @@ namespace talkEntreprise_client
         /// <param name="isForGroup">pour un groupe</param>
         public void UpdateStateMessages(string user, string destination, bool isForGroup, string nameGroup, int idGroup, string userSecure)
         {
-            this.Client.UpdateStateMessages(user,destination,isForGroup,nameGroup,idGroup,userSecure);
+            this.Client.UpdateStateMessages(user, destination, isForGroup, nameGroup, idGroup, userSecure);
         }
         /// <summary>
         /// permet de modifier le mot de passe actuelle
@@ -212,7 +207,7 @@ namespace talkEntreprise_client
         /// <param name="password"></param>
         public void ChangePassword(string user, string password)
         {
-            this.Client.ChangePassword(user,password);
+            this.Client.ChangePassword(user, password);
         }
         /// <summary>
         /// permet de récupérer les anciens messages
@@ -256,10 +251,7 @@ namespace talkEntreprise_client
             {
                 this.TClient.Close();
                 this.Stream.Close();
-                
-                
             }
-            
         }
         /////////////méthodes spécifique au controler////
         /// <summary>
@@ -287,6 +279,5 @@ namespace talkEntreprise_client
         {
             return this.UserInformation;
         }
-       
     }
 }

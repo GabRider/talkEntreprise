@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_server
+* Description : création d'une messagerie instantanée
+* Date : 15.06.2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +17,6 @@ using System.Threading;
 using System.Net.Sockets;
 namespace talkEntreprise_server
 {
-
     public class Controler
     {
         /////Champs/////
@@ -19,23 +26,17 @@ namespace talkEntreprise_server
         private Converter _conv;
         private User _admin;
         private Thread _frmProg;
-
-
-
         /////propriétées/////
         public FrmConnection FrmLogin
         {
             get { return _frmLogin; }
             set { _frmLogin = value; }
         }
-
-
         public Server Serv
         {
             get { return _serv; }
             set { _serv = value; }
         }
-
 
         public RequestSQL Request
         {
@@ -64,10 +65,8 @@ namespace talkEntreprise_server
             this.Request = new RequestSQL(this);
             this.Serv = new Server(this);
             this.Conv = new Converter(this);
-
         }
         //////méthodes Générales///////
-
         /// <summary>
         /// permet de coder le mot de passe de l'utilisateur
         /// </summary>
@@ -99,7 +98,6 @@ namespace talkEntreprise_server
             //création d'un nouveau processus
             this.FrmProg = new Thread(new ThreadStart(ThreadProgram));
             this.FrmProg.SetApartmentState(ApartmentState.STA);
-           
             //lancer le processus
             this.FrmProg.Start();
         }
@@ -108,10 +106,9 @@ namespace talkEntreprise_server
         /// </summary>
         public void ThreadProgram()
         {
-            FrmProgram prog = new FrmProgram(this,this.Admin);
+            FrmProgram prog = new FrmProgram(this, this.Admin);
             prog.FormClosed += (s, e) => Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
             prog.Show();
-
             //permet de garder la fenêtre ouverte
             Dispatcher.Run();
         }
@@ -259,7 +256,6 @@ namespace talkEntreprise_server
         /// <summary>
         /// permet de quitter la connection
         /// </summary>
-
         ////Server////
         /// <summary>
         /// permet d'ajouter le nouveau client à la liste de client
@@ -284,8 +280,8 @@ namespace talkEntreprise_server
         /// changer l'état visuel de la forme de connexion
         /// </summary>
         public void isVisible()
-    {
-        this.FrmLogin.IsVisible();
-    }
+        {
+            this.FrmLogin.IsVisible();
+        }
     }
 }

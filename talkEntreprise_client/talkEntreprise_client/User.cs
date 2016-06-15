@@ -1,4 +1,12 @@
-﻿using System;
+﻿/******************************************
+* Projet : TalkEntreprise_client
+* Description : création d'une messagerie instantanée
+* Date : juin 2016
+* Version : 1.0
+* Auteur :Gabriel Strano
+*
+******************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +25,8 @@ namespace talkEntreprise_client
         private bool _forGroup;
         private string _admin;
 
-       
-        public bool ForGroup
-        {
-            get { return _forGroup; }
-            set { _forGroup = value; }
-        }        
         ///////propriétées///////
-       
+
         public bool Connection
         {
             get { return _connection; }
@@ -63,10 +65,14 @@ namespace talkEntreprise_client
             get { return _admin; }
             set { _admin = value; }
         }
-         
-         ////////Constructeur/////////
-       
-        public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
+        public bool ForGroup
+        {
+            get { return _forGroup; }
+            set { _forGroup = value; }
+        }
+        ////////Constructeur/////////
+
+        public User(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
         {
             SetUser(id, pwd, group, connect, nbMessagesNotRead, nameGroup);
         }
@@ -81,7 +87,7 @@ namespace talkEntreprise_client
         /// <param name="connect">état de connection de l'utilisateur</param>
         /// <param name="nbMessagesNotRead">nombre de message en attente</param>
         /// <param name="nameGroup">nom du groupe de l'utilisateur</param>
-        public void SetUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup )
+        public void SetUser(string id, string pwd, int group, bool connect, int nbMessagesNotRead, string nameGroup)
         {
             this.IdUser = id;
             this.Password = pwd;
@@ -90,7 +96,7 @@ namespace talkEntreprise_client
             this.MessageNotRead = nbMessagesNotRead;
             this.GroupeName = nameGroup;
 
-            if (this.IdGroup ==3)
+            if (this.IdGroup == 3)
             {
                 this.Admin = "Administrateur";
             }
