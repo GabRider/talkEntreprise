@@ -76,11 +76,20 @@ namespace talkEntreprise_server.classThread
             ////tant que l'utilisateur est connecté
             while (this.UserInformations.GetInformationConnection())
             {
-                destinationMessag.Clear();
+                try
+                {
+  destinationMessag.Clear();
                 //permet de récupérer les informations envoyé par le client
                 this.Stream.Read(bytesFrom, 0, bytesFrom.Length);
                 //encode le tableau de bytes
                 dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
+                }
+                catch (Exception)
+                {
+                    
+                    break;
+                }
+              
                 //récupère la valeure envoyée
                 if (dataFromClient.Contains("####"))
                 {

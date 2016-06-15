@@ -95,7 +95,7 @@ namespace talkEntreprise_client
             this.tbxUser.Text = Environment.NewLine + this.UserConnected.GetIdUser().Split('@')[0];
             this.NbMessages = 0;
             this.DayOldMessages = 0;
-            
+
             // this.Ctrl.GetConversation(this.UserConnected.GetIdUser(), this.UserConnected.GetIdUser(), true);
 
         }
@@ -146,7 +146,15 @@ namespace talkEntreprise_client
             }
             else
             {
-                this.Ctrl.VisibleChange(true);
+                try
+                {
+                    this.Ctrl.CloseConnection();
+                    this.Ctrl.VisibleChange(true);
+                }
+                catch (Exception)
+                {
+                    this.Ctrl.VisibleChange(true);
+                }
             }
         }
         private void lsbEmployees_DrawItem(object sender, DrawItemEventArgs e)
@@ -464,7 +472,7 @@ namespace talkEntreprise_client
                 }
             }
         }
-private void tsmDateTime_Tick(object sender, EventArgs e)
+        private void tsmDateTime_Tick(object sender, EventArgs e)
         {
             tssDate.Text = DateTime.Now.ToLocalTime().ToString() + " (Heure UTC)";
         }
@@ -582,7 +590,7 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
         public void ServerClosed()
         {
             this.ServerError = true;
-            MessageBox.Show("Le Serveur a été étint. vous allez être automatiquement déconnecté", "Serveur Inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Le serveur a été éteint. Vous allez être automatiquement déconnecté.", "Serveur inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             this.Close();
 
@@ -593,8 +601,12 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
         public void DatabaseClosed()
         {
             this.ServerError = true;
-            MessageBox.Show("La base de donnée a été étinte. vous allez être automatiquement déconnecté", "Base de données Inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
+            MessageBox.Show("La base de données a été éteinte. Vous allez être automatiquement déconnecté.", "Base de données inaccessible", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Invoke(new MethodInvoker(delegate
+            {
+                this.Close();
+            }));
+
         }
         /// <summary>
         /// permet de ^mettre à jour les états des messages de son groupe
@@ -668,17 +680,17 @@ private void tsmDateTime_Tick(object sender, EventArgs e)
         {
             if (isChanged)
             {
-                MessageBox.Show("Votre nouveau mot de passe a été enregistré", "Le mot de passe a été modifié", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Votre nouveau mot de passe a été enregistré.", "Le mot de passe a été modifié", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.UserConnected.SetPassword(password);
             }
             else
             {
-                MessageBox.Show("Votre nouveau mot de passe a été enregistré", "Le mot de passe n'a pas pu être modifié", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Votre nouveau mot de passe n'a pas été enregistré.", "Le mot de passe n'a pas pu être modifié", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.DatabaseClosed();
             }
         }
 
-        
+
 
 
     }

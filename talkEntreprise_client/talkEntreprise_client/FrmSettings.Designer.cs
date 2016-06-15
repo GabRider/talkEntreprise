@@ -98,9 +98,9 @@
             this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.lblInfo.Location = new System.Drawing.Point(29, 31);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(413, 17);
+            this.lblInfo.Size = new System.Drawing.Size(418, 17);
             this.lblInfo.TabIndex = 6;
-            this.lblInfo.Text = "le nouveau mot de passe doit être au minimum de 6 charactères";
+            this.lblInfo.Text = "Le nouveau mot de passe doit être au minimum de 6 charactères";
             // 
             // FrmSettings
             // 

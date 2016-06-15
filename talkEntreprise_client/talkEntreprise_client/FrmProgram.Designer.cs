@@ -171,7 +171,7 @@
             this.tsmiOldMessages.Name = "tsmiOldMessages";
             this.tsmiOldMessages.Size = new System.Drawing.Size(212, 22);
             this.tsmiOldMessages.Tag = "0";
-            this.tsmiOldMessages.Text = "voir anciens messages";
+            this.tsmiOldMessages.Text = "Voir anciens messages";
             this.tsmiOldMessages.Click += new System.EventHandler(this.tsmiOldMessages_Click);
             // 
             // tsmiToday
@@ -217,7 +217,7 @@
             // 
             this.ssProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssDate});
-            this.ssProgram.Location = new System.Drawing.Point(0, 438);
+            this.ssProgram.Location = new System.Drawing.Point(0, 439);
             this.ssProgram.Name = "ssProgram";
             this.ssProgram.Size = new System.Drawing.Size(723, 22);
             this.ssProgram.SizingGrip = false;
@@ -243,7 +243,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(723, 460);
+            this.ClientSize = new System.Drawing.Size(723, 461);
             this.Controls.Add(this.tbxMessages);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.tbxWriteMessage);
