@@ -257,7 +257,7 @@
             this.MinimumSize = new System.Drawing.Size(739, 499);
             this.Name = "FrmProgram";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FrmProgram";
+            this.Text = "Messagerie";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmProgram_FormClosing);
             this.msProgram.ResumeLayout(false);
             this.msProgram.PerformLayout();
